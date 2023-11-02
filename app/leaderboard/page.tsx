@@ -42,7 +42,7 @@ export default function Leaderboard() {
   };
 
   return (
-    <main className="flex min-h-screen flex-col items-center px-64 gap-10 justify-center py-10">
+    <main className="flex min-h-screen flex-col items-center gap-10 justify-center py-10 px-4 sm:px-14 md:px-18 lg:px-44 xl:px-64">
       <h1 className="text-5xl text-accent font-bold font-sans text-left w-full small-caps">Leaderboard</h1>
       <div className="w-full overflow-auto min-w-[320px] border-[0.5px] border-secondary">
         <table className="table-auto w-full text-left text-accent">
