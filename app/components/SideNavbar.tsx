@@ -1,8 +1,8 @@
 'use client';
-import Image from 'next/image';
-import Link from 'next/link';
 import React, { useState, useEffect, useRef } from 'react';
 import ReactDOM from 'react-dom';
+import Image from 'next/image';
+import Link from 'next/link';
 import { signIn, signOut, useSession } from 'next-auth/react';
 import UserDropdown from './UserDropdown';
 
@@ -78,7 +78,7 @@ const SideNavbar: React.FC = () => {
                   />
                 </g>
               </svg>
-              {session?.user && (
+              {session && (
                 <div className="relative">
                   <button
                     className="w-full bg-background mb-1 px-10 h-12 cursor-pointer font-bold border border-secondary text-text rounded-md flex justify-center items-center hover:bg-secondary transition-all duration-300 relative"
@@ -115,10 +115,10 @@ const SideNavbar: React.FC = () => {
                   </Link>
                 );
               })}
-              {!session?.user ? (
+              {!session ? (
                 <button
                   className="bg-background mb-1 mt-auto px-10 h-12 cursor-pointer font-bold border border-secondary text-text rounded-md flex justify-center items-center hover:bg-secondary transition-all duration-300 relative"
-                  onClick={() => signIn()}>
+                  onClick={() => signIn('google')}>
                   <Image
                     src={'/Google.svg'}
                     alt={''}

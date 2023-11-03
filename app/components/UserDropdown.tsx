@@ -1,9 +1,9 @@
 'use client';
+import { useEffect, useRef } from 'react';
 import { useSession, signOut } from 'next-auth/react';
 import { PiSignOutBold } from 'react-icons/pi';
 import { ImStatsDots } from 'react-icons/im';
 import { AiOutlineUser } from 'react-icons/ai';
-import { useEffect, useRef } from 'react';
 import Link from 'next/link';
 
 type UserDropdownProps = {
@@ -26,7 +26,7 @@ export default function UserDropdown({ isDropdownOpen, setIsDropdownOpen }: User
 
   return (
     <>
-      {isDropdownOpen && session?.user && (
+      {isDropdownOpen && session && (
         <section
           ref={dropdownRef}
           className="bg-[#0a0c20] w-40 text-text text-md font-semibold absolute top-[3.1rem] right-0 border gap-1 border-secondary p-1 rounded-md flex-col justify-center items-center">

@@ -1,8 +1,8 @@
 'use client';
-import Dropdown from '../components/Dropdown';
+import { useSearchParams, usePathname, useRouter } from 'next/navigation';
 import { MdOutlineKeyboardDoubleArrowRight, MdOutlineKeyboardArrowRight } from 'react-icons/md';
 import Image from 'next/image';
-import { useSearchParams, usePathname, useRouter } from 'next/navigation';
+import Dropdown from '../components/Dropdown';
 
 export default function Leaderboard() {
   const searchParams = useSearchParams();

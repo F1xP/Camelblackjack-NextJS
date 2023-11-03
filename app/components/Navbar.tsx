@@ -2,9 +2,9 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import SideNavbar from './SideNavbar';
 import { useSession, signIn } from 'next-auth/react';
 import { useState } from 'react';
+import SideNavbar from './SideNavbar';
 import UserDropdown from './UserDropdown';
 
 export default function Navbar() {
@@ -52,10 +52,10 @@ export default function Navbar() {
           );
         })}
       </div>
-      {!session?.user ? (
+      {!session ? (
         <button
           className="flex-row hidden md:flex h-10 ml-auto justify-center items-center gap-1 border rounded-md text-text border-secondary text-[1.2rem] hover:bg-secondary cursor-pointer transition-all duration-300"
-          onClick={() => signIn()}>
+          onClick={() => signIn('google')}>
           <div className="bg-secondary h-10 p-2 flex justify-center items-center rounded-md rounded-r-none">
             <Image
               src={'/Google.svg'}
@@ -76,7 +76,7 @@ export default function Navbar() {
             }}>
             <div className="bg-secondary h-10 p-2 flex justify-center items-center rounded-md rounded-r-none flex-shrink-0">
               <Image
-                src={session.user.image || ''}
+                src={session?.user?.image || ''}
                 alt={''}
                 width={28}
                 height={28}
@@ -84,7 +84,7 @@ export default function Navbar() {
               />
             </div>
             <p className="font-bold p-1 px-3 small-caps whitespace-nowrap overflow-hidden text-ellipsis max-w-[100px] lg:max-w-xs">
-              {session.user.name || ''}
+              {session?.user?.name || ''}
             </p>
           </button>
           <UserDropdown

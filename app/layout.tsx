@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
 import { GeistSans } from 'geist/font';
-import Navbar from './components/Navbar';
 import { getServerSession } from 'next-auth';
 import SessionProvider from './components/SessionProvider';
+import Navbar from './components/Navbar';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -16,7 +16,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html lang="en">
       <body className={`${GeistSans.className} bg-background font-sans`}>
-        <SessionProvider session={session}>
+        <SessionProvider
+          session={session}
+          refetchInterval={5 * 60}>
           <div id="side-navbar-portal-root"></div>
           <Navbar />
           {children}
