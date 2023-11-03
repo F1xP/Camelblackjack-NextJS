@@ -16,7 +16,7 @@ export default function Home() {
           <Link
             href={'/play'}
             className="bg-primary py-2 px-10 md:px-16 lg:px-20 text-lg md:text-xl lg:text-2xl font-bold text-accent rounded-md flex justify-center items-center hover:text-text transition-all duration-300">
-            <p className="mb-1"> Play Now</p>
+            <p> Play Now</p>
           </Link>
         </div>
         <div className="flex-shrink flex-grow max-w-[300px]">

@@ -1,17 +1,16 @@
+'use client';
 import Image from 'next/image';
 import Link from 'next/link';
 import React, { useState, useEffect, useRef } from 'react';
 import ReactDOM from 'react-dom';
+import { signIn, signOut, useSession } from 'next-auth/react';
+import UserDropdown from './UserDropdown';
 
-type DropdownProps = {
-  list: { href: any; name: any }[];
-  current: any;
-  setCurrent: (newValue: any) => void;
-};
-
-const SideNavbar: React.FC<DropdownProps> = ({ list, current, setCurrent }) => {
+const SideNavbar: React.FC = () => {
   const [isSideNavbarOpen, setIsSideNavbarOpen] = useState<boolean>(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
   const navbarRef = useRef<HTMLDivElement | null>(null);
+  const { data: session } = useSession();
 
   const Links = [
     {
@@ -69,35 +68,80 @@ const SideNavbar: React.FC<DropdownProps> = ({ list, current, setCurrent }) => {
                 width="40px"
                 height="40px"
                 viewBox="0 0 121.31 122.876"
-                enable-background="new 0 0 121.31 122.876"
+                enableBackground="new 0 0 121.31 122.876"
                 className="fill-accent hover:bg-secondary p-1 rounded-md cursor-pointer transition-all duration-300 hover:fill-text mb-1 self-end">
                 <g>
                   <path
-                    fill-rule="evenodd"
-                    clip-rule="evenodd"
+                    fillRule="evenodd"
+                    clipRule="evenodd"
                     d="M90.914,5.296c6.927-7.034,18.188-7.065,25.154-0.068 c6.961,6.995,6.991,18.369,0.068,25.397L85.743,61.452l30.425,30.855c6.866,6.978,6.773,18.28-0.208,25.247 c-6.983,6.964-18.21,6.946-25.074-0.031L60.669,86.881L30.395,117.58c-6.927,7.034-18.188,7.065-25.154,0.068 c-6.961-6.995-6.992-18.369-0.068-25.397l30.393-30.827L5.142,30.568c-6.867-6.978-6.773-18.28,0.208-25.247 c6.983-6.963,18.21-6.946,25.074,0.031l30.217,30.643L90.914,5.296L90.914,5.296z"
                   />
                 </g>
               </svg>
+              {session?.user && (
+                <div className="relative">
+                  <button
+                    className="w-full bg-background mb-1 px-10 h-12 cursor-pointer font-bold border border-secondary text-text rounded-md flex justify-center items-center hover:bg-secondary transition-all duration-300 relative"
+                    onClick={(e) => {
+                      setIsDropdownOpen((current) => !current);
+                      e.stopPropagation();
+                    }}>
+                    <div className="bg-secondary h-full p-2 flex justify-center items-center rounded-md rounded-r-none flex-shrink-0 absolute left-0">
+                      <Image
+                        src={session?.user?.image || ''}
+                        alt={''}
+                        width={28}
+                        height={28}
+                        className="rounded-full"
+                      />
+                    </div>
+                    <p className="font-bold text-ellipsis overflow-hidden whitespace-nowrap ml-3">
+                      {session?.user?.name || ''}
+                    </p>
+                  </button>
+                  <UserDropdown
+                    isDropdownOpen={isDropdownOpen}
+                    setIsDropdownOpen={setIsDropdownOpen}
+                  />
+                </div>
+              )}
               {Links.map((link) => {
                 return (
                   <Link
+                    key={link.name}
                     href={link.href}
                     className="bg-background mb-1 h-12 px-10 font-bold border border-secondary text-text rounded-md flex justify-center items-center hover:bg-secondary transition-all duration-300">
-                    <p className="mb-1"> {link.name}</p>
+                    <p> {link.name}</p>
                   </Link>
                 );
               })}
-              <div className="bg-background mb-1 mt-auto px-10 h-12 cursor-pointer font-bold border border-secondary text-text rounded-md flex justify-center items-center hover:bg-secondary transition-all duration-300 relative">
-                <Image
-                  src={'/Google.svg'}
-                  alt={''}
-                  width={50}
-                  height={50}
-                  className="bg-secondary flex h-12 px-3 justify-center items-center rounded-md rounded-r-none absolute left-0"
-                />
-                <p className="font-bold mb-1">Sign In </p>
-              </div>
+              {!session?.user ? (
+                <button
+                  className="bg-background mb-1 mt-auto px-10 h-12 cursor-pointer font-bold border border-secondary text-text rounded-md flex justify-center items-center hover:bg-secondary transition-all duration-300 relative"
+                  onClick={() => signIn()}>
+                  <Image
+                    src={'/Google.svg'}
+                    alt={''}
+                    width={50}
+                    height={50}
+                    className="bg-secondary flex h-12 px-3 justify-center items-center rounded-md rounded-r-none absolute left-0"
+                  />
+                  <p className="font-bold">Sign In </p>
+                </button>
+              ) : (
+                <button
+                  className="bg-background mb-1 mt-auto px-10 h-12 cursor-pointer font-bold border border-secondary text-text rounded-md flex justify-center items-center hover:bg-secondary transition-all duration-300 relative"
+                  onClick={() => signOut()}>
+                  <Image
+                    src={'/Google.svg'}
+                    alt={''}
+                    width={50}
+                    height={50}
+                    className="bg-secondary flex h-12 px-3 justify-center items-center rounded-md rounded-r-none absolute left-0"
+                  />
+                  <p className="font-bold">Sign Out </p>
+                </button>
+              )}
             </aside>
           </div>,
           document.getElementById('side-navbar-portal-root')!
