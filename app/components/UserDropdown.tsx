@@ -29,7 +29,7 @@ export default function UserDropdown({ isDropdownOpen, setIsDropdownOpen }: User
       {isDropdownOpen && session && (
         <section
           ref={dropdownRef}
-          className="bg-[#0a0c20] w-40 text-text text-md font-semibold absolute top-[3.1rem] right-0 border gap-1 border-secondary p-1 rounded-md flex-col justify-center items-center">
+          className="bg-secondary_bg w-40 text-text text-md font-semibold absolute top-[3.1rem] right-0 border gap-1 border-secondary p-1 rounded-md flex-col justify-center items-center">
           <Link
             className="hover:bg-secondary py-1 px-2 rounded-sm w-full transition-all duration-300 flex justify-center items-center"
             href={'/profile'}>
@@ -42,7 +42,7 @@ export default function UserDropdown({ isDropdownOpen, setIsDropdownOpen }: User
             <ImStatsDots className="mr-auto h-3" />
             <p className="mr-auto">Dashboard</p>
           </Link>
-          <span className="border-t border-secondary w-full"></span>
+          <div className="border-t border-secondary w-full my-1"></div>
           <button
             className="hover:bg-secondary py-1 px-2 rounded-sm w-full transition-all duration-300 text-red-500 flex justify-center items-center"
             onClick={() => signOut()}>

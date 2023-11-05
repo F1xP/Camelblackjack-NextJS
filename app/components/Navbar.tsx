@@ -24,7 +24,7 @@ export default function Navbar() {
   ];
 
   return (
-    <nav className="w-full h-12 bg-[#0a0c20] flex px-4 sm:px-14 md:px-18 lg:px-44 xl:px-64 flex-row items-center">
+    <nav className="fixed w-full h-12 bg-secondary_bg flex px-4 sm:px-14 md:px-18 lg:px-44 xl:px-64 flex-row items-center">
       <Link
         className="flex flex-row gap-2 h-full justify-center items-center"
         href={'/'}>
