@@ -79,6 +79,47 @@ const dealCard = async (hand: any[]) => {
   return { rank: randomRank, suit: randomSuit };
 };
 
+type Data = {
+  id: string;
+  active: boolean;
+  payoutMultiplier: number;
+  amountMultiplier: number;
+  amount: number;
+  payout: number;
+  state: {
+    player: {
+      value: number[];
+      actions: string[];
+      cards: any[];
+    };
+    dealer: {
+      value: number[];
+      actions: string[];
+      cards: any[];
+    };
+  };
+  updatedAt: number;
+  user: {
+    id: string;
+    name: string;
+  };
+};
+
+const data: Data = {
+  id: crypto.randomUUID(),
+  active: false,
+  payoutMultiplier: 2,
+  amountMultiplier: 1,
+  amount: 0,
+  payout: 0,
+  state: {
+    player: { value: [0], actions: [], cards: [] },
+    dealer: { value: [0], actions: [], cards: [] },
+  },
+  updatedAt: Date.now(),
+  user: { id: '1', name: 'Player' },
+};
+
 const checkGameStatus = async (playerHand: any, dealerHand: any) => {
   const playerValue: any = await calculateHandValue(playerHand);
   const dealerValue: any = await calculateHandValue(dealerHand);
@@ -99,20 +140,6 @@ const checkGameStatus = async (playerHand: any, dealerHand: any) => {
 
 export async function GET(request: Request) {
   try {
-    const player_card1 = await dealCard(player);
-    const dealer_card1 = await dealCard(dealer);
-    const player_card2 = await dealCard(player);
-    const dealer_card2 = await dealCard(dealer);
-    console.log(player_card1);
-    const data = {
-      active: false,
-      user: { id: '1', name: 'Plyaer' },
-      bet: 123,
-      bet_multiplier: 1,
-      player: { cards: [player_card1, player_card2], actions: [] },
-      dealer: { cards: [dealer_card1, dealer_card2], actions: [] },
-    };
-    const gameStatus = await checkGameStatus([], []);
     return NextResponse.json({ data }, { status: 200 });
   } catch (e) {
     console.log(e);
@@ -127,16 +154,12 @@ export async function POST(request: Request) {
     const dealer_card1 = await dealCard(dealer);
     const player_card2 = await dealCard(player);
     const dealer_card2 = await dealCard(dealer);
-    console.log(player_card1);
-    const data = {
-      active: false,
-      user: { id: '1', name: 'Plyaer' },
-      bet: 123,
-      bet_multiplier: 1,
-      player: { cards: [player_card1, player_card2], actions: [] },
-      dealer: { cards: [dealer_card1, dealer_card2], actions: [] },
-    };
-    const gameStatus = await checkGameStatus([], []);
+    data.state.player.cards.push(player_card1, player_card2);
+    data.state.player.actions.push('deal');
+    data.state.player.value = await calculateHandValue(data.state.player.cards);
+    data.state.dealer.cards.push(dealer_card1, dealer_card2);
+    data.state.dealer.actions.push('deal');
+    data.state.dealer.value = await calculateHandValue(data.state.dealer.cards);
     return NextResponse.json({ data }, { status: 200 });
   } catch (e) {
     console.log(e);
@@ -146,7 +169,11 @@ export async function POST(request: Request) {
 
 export async function PATCH(request: Request) {
   try {
-    return NextResponse.json({ message: 'Message sent.' }, { status: 200 });
+    const player_card1 = await dealCard(player);
+    data.state.player.cards.push(player_card1);
+    data.state.player.actions.push('hit');
+    data.state.player.value = await calculateHandValue(data.state.player.cards);
+    return NextResponse.json({ data }, { status: 200 });
   } catch (e) {
     console.log(e);
     return NextResponse.json({ error: e }, { status: 500 });

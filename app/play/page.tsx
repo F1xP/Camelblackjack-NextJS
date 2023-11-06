@@ -87,21 +87,32 @@ export default function Play() {
             </div>
           </div>
         </section>
+
         <section className="bg-black/30 h-[600px] w-full flex-[2] rounded-r-lg text-text">
-          {gameData?.data?.player?.cards?.map((card: any) => {
-            return (
-              <p>
-                Player Card: {card?.rank} Suit: {card.suit}
-              </p>
-            );
-          })}
-          {gameData?.data?.dealer?.cards?.map((card: any) => {
-            return (
-              <p>
-                Dealer Card: {card?.rank} Suit: {card.suit}
-              </p>
-            );
-          })}
+          <p>
+            Value: {gameData?.data?.state?.player?.value[0]}{' '}
+            {gameData?.data?.state?.player?.value[1] && `,${gameData?.data?.state?.player?.value[1]}`}{' '}
+          </p>
+          <div className="flex w-full justify-around flex-row-reverse bg-blue-500">
+            <div className="flex items-center justify-center flex-col relative bg-red-500">
+              <div className="flex items-start mt-1 relative">
+                {gameData?.data?.state?.player?.cards?.map((card: any, index: number) => {
+                  return (
+                    <div
+                      key={index}
+                      className={`w-20 h-32 mt-[${index}rem] ${
+                        index > 0 && 'ml-2.5'
+                      } bg-blue-300 border overflow-hidden`}
+                      style={{ zIndex: index }}>
+                      <p>
+                        Player Card: {card?.rank} Suit: {card?.suit}
+                      </p>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
         </section>
       </div>
     </main>
