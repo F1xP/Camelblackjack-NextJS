@@ -3,8 +3,13 @@ import { useSearchParams, usePathname, useRouter } from 'next/navigation';
 import { MdOutlineKeyboardDoubleArrowRight, MdOutlineKeyboardArrowRight } from 'react-icons/md';
 import Image from 'next/image';
 import Dropdown from '../components/Dropdown';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+import { IUser } from '@/database/user.model';
 
 export default function Leaderboard() {
+  const [LeaderboardData, setLeaderboardData] = useState<any>(null);
+
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const { replace } = useRouter();
@@ -12,19 +17,11 @@ export default function Leaderboard() {
   const currentPage: string = searchParams.get('page')?.toString() || '1';
   const currentRows: string = searchParams.get('rows')?.toString() || '5';
 
-  const blackjackData = Array.from({ length: 30 }, (_, index) => ({
-    rank: (index + 1).toString(),
-    user: `Player ${index + 1}`,
-    coins: 11,
-    games: 11,
-    winrate: '11%',
-  }));
-
-  const totalPages: number = Math.ceil(blackjackData.length / Number(currentRows));
+  const totalPages: number = Math.ceil(LeaderboardData?.length / Number(currentRows));
   const startIndex: number = (Number(currentPage) - 1) * Number(currentRows);
   const endIndex: number = startIndex + Number(currentRows);
 
-  const itemsToDisplay = blackjackData.slice(startIndex, endIndex);
+  const dataToDisplay = LeaderboardData?.slice(startIndex, endIndex);
 
   const setPage = (page: number) => {
     if (page < 1 || page > totalPages) return;
@@ -41,6 +38,14 @@ export default function Leaderboard() {
     replace(`${pathname}?${params.toString()}`);
   };
 
+  useEffect(() => {
+    const getLeaderboardData = async () => {
+      const response = await axios.get('/api/leaderboard');
+      if (response.data) setLeaderboardData(response.data);
+    };
+    getLeaderboardData();
+  }, []);
+
   return (
     <main className="flex min-h-screen flex-col items-center gap-10 justify-center py-10 px-4 sm:px-14 md:px-18 lg:px-44 xl:px-64">
       <h1 className="text-5xl text-accent font-bold font-sans text-left w-full small-caps">Leaderboard</h1>
@@ -56,7 +61,7 @@ export default function Leaderboard() {
             </tr>
           </thead>
           <tbody>
-            {itemsToDisplay.map((player, index) => (
+            {dataToDisplay?.map((player: IUser, index: number) => (
               <tr
                 key={index}
                 className="border-t-[0.5px] border-secondary text-text font-semibold">
@@ -68,16 +73,16 @@ export default function Leaderboard() {
                 <td className="px-4 py-2 flex flex-row gap-1 items-center">
                   <Image
                     className="rounded-full"
-                    src={'/CamelBlackjackLogo.png'}
+                    src={player.image}
                     alt={''}
                     width={38}
                     height={38}
                   />
-                  <p>{player.user}</p>
+                  <p>{player.name}</p>
                 </td>
                 <td className="px-4 py-2">{player.coins}</td>
                 <td className="px-4 py-2">{player.games}</td>
-                <td className="px-4 py-2">{player.winrate}</td>
+                <td className="px-4 py-2">{`${(player.wins / player.games) * 100}%`}</td>
               </tr>
             ))}
           </tbody>

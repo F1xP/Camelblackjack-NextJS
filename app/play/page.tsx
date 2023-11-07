@@ -5,12 +5,27 @@ import axios from 'axios';
 export default function Play() {
   const [betAmount, setBetAmount] = useState<number>(0);
   const [gameData, setGameData] = useState<any>(null);
-  const [actions, setActions] = useState<{ hit: boolean; stand: boolean; split: boolean; double: boolean }>({
-    hit: false,
-    stand: false,
-    split: false,
-    double: true,
-  });
+  const [currentHand, setCurrentHand] = useState<number>(0);
+
+  const playerData = gameData?.data?.state?.player[currentHand];
+
+  const hit: boolean = playerData?.value[0] < 21;
+  const stand: boolean = playerData?.value[0] < 21;
+  const double: boolean = playerData?.actions[-1] === 'deal' || playerData?.actions[-1] === 'split';
+  const split: boolean =
+    gameData?.data?.state?.player?.length === 1 &&
+    playerData?.cards?.length === 2 &&
+    playerData?.cards[0].rank === playerData?.cards[1].rank;
+
+  const handleNewBet = async () => {
+    const response = await axios.post('/api/blackjack', { betAmount });
+    if (response.data) setGameData(response.data);
+  };
+
+  const handleAction = async (action: 'hit' | 'stand' | 'double' | 'split') => {
+    const response = await axios.patch('/blackjack', { action });
+    if (response.data) setGameData(response.data);
+  };
 
   useEffect(() => {
     const getGameData = async () => {
@@ -27,18 +42,21 @@ export default function Play() {
     checkGameStatus();
   }, [gameData]);
 
-  const handleNewBet = async () => {
-    const response = await axios.post('/api/blackjack', { betAmount });
-    if (response.data) setGameData(response.data);
-  };
-
-  const handleAction = async (action: 'hit' | 'stand' | 'double' | 'split') => {
-    const response = await axios.patch('/blackjack', { action });
-    if (response.data) setGameData(response.data);
-  };
-
   return (
     <main className="flex min-h-screen flex-col items-center gap-10 justify-center py-10 px-4 sm:px-14 md:px-18 lg:px-44 xl:px-64">
+      <div className="bg-orange-500 relative w-full min-h-[250px] flex-grow">
+        <div className="bg-blue-300 flex w-full justify-center">
+          <div className="bg-yellow-300 flex relative items-start mt-1">
+            <div className="bg-blue-200 w-10 h-10 transform translate-x-0 translate-y-0 ml-0 mt-0">
+              <div>das</div>
+            </div>
+            <div className="bg-red-200 w-10 h-10 transform translate-x-0 translate-y-0 ml-2 mt-1">
+              <div>das</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div className="flex flex-row w-full rounded-lg border border-secondary bg-black/30 mt-10">
         <section className="h-[600px] w-full flex-1 flex flex-col">
           <div className="flex flex-col p-2">
@@ -59,13 +77,13 @@ export default function Play() {
           <div className="flex flex-col p-2 gap-2 mt-auto">
             <div className="flex flex-row gap-2">
               <button
-                disabled={actions.hit}
+                disabled={!hit}
                 onClick={() => handleAction('hit')}
                 className="disabled:opacity-25 disabled:cursor-not-allowed font-mono flex-1 py-2 text-lg bg-secondary border border-secondary font-bold text-text rounded-md flex justify-center items-center hover:border-text transition-all duration-300">
                 HIT
               </button>
               <button
-                disabled={actions.stand}
+                disabled={!stand}
                 onClick={() => handleAction('stand')}
                 className="disabled:opacity-25 disabled:cursor-not-allowed font-mono flex-1 py-2 text-lg bg-secondary border border-secondary font-bold text-text rounded-md flex justify-center items-center hover:border-text transition-all duration-300">
                 STAND
@@ -73,13 +91,13 @@ export default function Play() {
             </div>
             <div className="flex flex-row gap-2">
               <button
-                disabled={actions.split}
+                disabled={!split}
                 onClick={() => handleAction('split')}
                 className="disabled:opacity-25 disabled:cursor-not-allowed font-mono flex-1 py-2 text-lg bg-secondary border border-secondary font-bold text-text rounded-md flex justify-center items-center hover:border-text transition-all duration-300">
                 SPLIT
               </button>
               <button
-                disabled={actions.double}
+                disabled={!double}
                 onClick={() => handleAction('double')}
                 className="disabled:opacity-25 disabled:cursor-not-allowed font-mono flex-1 py-2 text-lg bg-secondary border border-secondary font-bold text-text rounded-md flex justify-center items-center hover:border-text transition-all duration-300">
                 DOUBLE
@@ -90,13 +108,14 @@ export default function Play() {
 
         <section className="bg-black/30 h-[600px] w-full flex-[2] rounded-r-lg text-text">
           <p>
-            Value: {gameData?.data?.state?.player?.value[0]}{' '}
-            {gameData?.data?.state?.player?.value[1] && `,${gameData?.data?.state?.player?.value[1]}`}{' '}
+            Value: {gameData?.data?.state?.player[currentHand]?.value[0]}{' '}
+            {gameData?.data?.state?.player[currentHand]?.value[1] &&
+              `,${gameData?.data?.state?.player[currentHand]?.value[1]}`}{' '}
           </p>
           <div className="flex w-full justify-around flex-row-reverse bg-blue-500">
             <div className="flex items-center justify-center flex-col relative bg-red-500">
               <div className="flex items-start mt-1 relative">
-                {gameData?.data?.state?.player?.cards?.map((card: any, index: number) => {
+                {gameData?.data?.state?.player[currentHand]?.cards?.map((card: any, index: number) => {
                   return (
                     <div
                       key={index}

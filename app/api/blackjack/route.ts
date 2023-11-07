@@ -87,11 +87,13 @@ type Data = {
   amount: number;
   payout: number;
   state: {
-    player: {
-      value: number[];
-      actions: string[];
-      cards: any[];
-    };
+    player: [
+      {
+        value: number[];
+        actions: string[];
+        cards: any[];
+      }
+    ];
     dealer: {
       value: number[];
       actions: string[];
@@ -113,7 +115,7 @@ const data: Data = {
   amount: 0,
   payout: 0,
   state: {
-    player: { value: [0], actions: [], cards: [] },
+    player: [{ value: [0], actions: [], cards: [] }],
     dealer: { value: [0], actions: [], cards: [] },
   },
   updatedAt: Date.now(),
@@ -154,9 +156,9 @@ export async function POST(request: Request) {
     const dealer_card1 = await dealCard(dealer);
     const player_card2 = await dealCard(player);
     const dealer_card2 = await dealCard(dealer);
-    data.state.player.cards.push(player_card1, player_card2);
-    data.state.player.actions.push('deal');
-    data.state.player.value = await calculateHandValue(data.state.player.cards);
+    data.state.player[0].cards.push(player_card1, player_card2);
+    data.state.player[0].actions.push('deal');
+    data.state.player[0].value = await calculateHandValue(data.state.player[0].cards);
     data.state.dealer.cards.push(dealer_card1, dealer_card2);
     data.state.dealer.actions.push('deal');
     data.state.dealer.value = await calculateHandValue(data.state.dealer.cards);
@@ -170,9 +172,9 @@ export async function POST(request: Request) {
 export async function PATCH(request: Request) {
   try {
     const player_card1 = await dealCard(player);
-    data.state.player.cards.push(player_card1);
-    data.state.player.actions.push('hit');
-    data.state.player.value = await calculateHandValue(data.state.player.cards);
+    data.state.player[0].cards.push(player_card1);
+    data.state.player[0].actions.push('hit');
+    data.state.player[0].value = await calculateHandValue(data.state.player[0].cards);
     return NextResponse.json({ data }, { status: 200 });
   } catch (e) {
     console.log(e);
