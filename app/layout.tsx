@@ -3,6 +3,7 @@ import { GeistSans } from 'geist/font';
 import { getServerSession } from 'next-auth';
 import SessionProvider from './components/SessionProvider';
 import Navbar from './components/Navbar';
+import { authOptions } from './lib/authOptions';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -11,7 +12,7 @@ export const metadata: Metadata = {
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const session = await getServerSession();
+  const session = await getServerSession(authOptions);
 
   return (
     <html lang="en">
