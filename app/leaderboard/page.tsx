@@ -5,7 +5,6 @@ import Image from 'next/image';
 import Dropdown from '../components/Dropdown';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { IUser } from '@/database/user.model';
 
 export default function Leaderboard() {
   const [LeaderboardData, setLeaderboardData] = useState<any>(null);
@@ -61,7 +60,7 @@ export default function Leaderboard() {
             </tr>
           </thead>
           <tbody>
-            {dataToDisplay?.map((player: IUser, index: number) => (
+            {dataToDisplay?.map((player: any, index: number) => (
               <tr
                 key={index}
                 className="border-t-[0.5px] border-secondary text-text font-semibold">

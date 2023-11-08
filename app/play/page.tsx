@@ -44,20 +44,14 @@ export default function Play() {
 
   return (
     <main className="flex min-h-screen flex-col items-center gap-10 justify-center py-10 px-4 sm:px-14 md:px-18 lg:px-44 xl:px-64">
-      <div className="bg-orange-500 relative w-full min-h-[250px] flex-grow">
-        <div className="bg-blue-300 flex w-full justify-center">
-          <div className="bg-yellow-300 flex relative items-start mt-1">
-            <div className="bg-blue-200 w-10 h-10 transform translate-x-0 translate-y-0 ml-0 mt-0">
-              <div>das</div>
-            </div>
-            <div className="bg-red-200 w-10 h-10 transform translate-x-0 translate-y-0 ml-2 mt-1">
-              <div>das</div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <p className="text-text">
+        Player Value: {gameData?.data?.state?.player[currentHand]?.value[0]}{' '}
+        {gameData?.data?.state?.player[currentHand]?.value[1] &&
+          `,${gameData?.data?.state?.player[currentHand]?.value[1]}`}{' '}
+      </p>
+      <p className="text-text">Dealer Value: {gameData?.data?.state?.dealer?.value[0]}</p>
 
-      <div className="flex flex-row w-full rounded-lg border border-secondary bg-black/30 mt-10">
+      <div className="flex flex-row w-full rounded-lg border border-secondary bg-black/30 mt-10 flex-nowrap md:flex-wrap">
         <section className="h-[600px] w-full flex-1 flex flex-col">
           <div className="flex flex-col p-2">
             <p className="text-text text-xl font-mono small-caps">Bet Amount</p>
@@ -105,30 +99,46 @@ export default function Play() {
             </div>
           </div>
         </section>
-
-        <section className="bg-black/30 h-[600px] w-full flex-[2] rounded-r-lg text-text">
-          <p>
-            Value: {gameData?.data?.state?.player[currentHand]?.value[0]}{' '}
-            {gameData?.data?.state?.player[currentHand]?.value[1] &&
-              `,${gameData?.data?.state?.player[currentHand]?.value[1]}`}{' '}
-          </p>
-          <div className="flex w-full justify-around flex-row-reverse bg-blue-500">
-            <div className="flex items-center justify-center flex-col relative bg-red-500">
-              <div className="flex items-start mt-1 relative">
-                {gameData?.data?.state?.player[currentHand]?.cards?.map((card: any, index: number) => {
-                  return (
-                    <div
-                      key={index}
-                      className={`w-20 h-32 mt-[${index}rem] ${
-                        index > 0 && 'ml-2.5'
-                      } bg-blue-300 border overflow-hidden`}
-                      style={{ zIndex: index }}>
-                      <p>
-                        Player Card: {card?.rank} Suit: {card?.suit}
-                      </p>
-                    </div>
-                  );
-                })}
+        <section className="bg-black/30 h-[600px] w-full flex-[2] rounded-r-lg text-text overflow-hidden relative">
+          <div className="flex flex-col justify-between h-full p-2">
+            <div className="w-full flex justify-around flex-row-reverse absolute top-1">
+              <div className="flex items-center justify-center flex-col relative">
+                <div className="flex relative item-start mt-1 min-h-[7.9rem] min-w-[5rem]">
+                  {gameData?.data?.state?.player[currentHand]?.cards?.map((card: any, index: number) => {
+                    return (
+                      <div
+                        className="w-20 h-32 bg-white rounded-md shadow-sm shadow-black"
+                        key={index}
+                        style={{
+                          marginTop: `${index}rem`,
+                          marginLeft: index > 0 ? '-2.5rem' : '0',
+                          transform: `translate(0px, 0px)`,
+                        }}>
+                        <p className="text-black font-mono text-5xl font-bold ml-2">{card?.rank}</p>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+            <div className="w-full flex justify-around flex-row-reverse absolute bottom-1">
+              <div className="flex items-center justify-center flex-col relative">
+                <div className="flex relative item-start mb-1 min-h-[7.9rem] min-w-[5rem]">
+                  {gameData?.data?.state?.player[currentHand]?.cards?.map((card: any, index: number) => {
+                    return (
+                      <div
+                        className="w-20 h-32 bg-white rounded-md shadow-sm shadow-black"
+                        key={index}
+                        style={{
+                          marginTop: `${index}rem`,
+                          marginLeft: index > 0 ? '-2.5rem' : '0',
+                          transform: `translate(0px, 0px)`,
+                        }}>
+                        <p className="text-black font-mono text-5xl font-bold ml-2">{card?.rank}</p>
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
             </div>
           </div>

@@ -10,7 +10,7 @@ import UserDropdown from './UserDropdown';
 export default function Navbar() {
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
   const location = usePathname();
-  const { data: session } = useSession();
+  const { data: session, update } = useSession();
 
   const Links = [
     {

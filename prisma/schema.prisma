@@ -4,7 +4,7 @@ datasource db {
 }
 
 generator client {
-  provider        = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 model Account {
@@ -20,7 +20,8 @@ model Account {
   scope             String?
   id_token          String? @db.String
   session_state     String?
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@unique([provider, providerAccountId])
 }
 
@@ -32,19 +33,53 @@ model Session {
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
+model VerificationToken {
+  identifier String   @id @default(auto()) @map("_id") @db.ObjectId
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
 model User {
   id            String    @id @default(auto()) @map("_id") @db.ObjectId
   name          String?
   email         String?   @unique
   emailVerified DateTime?
   image         String?
+  coins         Int       @default(500)
+  games         Int       @default(0)
+  wins          Int       @default(0)
+  loses         Int       @default(0)
+  pushes        Int       @default(0)
+  game_history  Game[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
   accounts      Account[]
   sessions      Session[]
 }
 
-model VerificationToken {
-  identifier String   @id @default(auto()) @map("_id") @db.ObjectId
-  token      String   @unique
-  expires    DateTime
-  @@unique([identifier, token])
+model Game {
+  id               String    @id @default(auto()) @map("_id") @db.ObjectId
+  active           Boolean
+  payoutMultiplier Float
+  amountMultiplier Float
+  amount           Float
+  payout           Float
+  state            GameState
+  userId           String    @db.ObjectId
+  user             User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+}
+
+type GameState {
+  player UserState[]
+  dealer UserState
+}
+
+type UserState {
+  value   Int
+  actions String[]
+  cards   Json[]
 }

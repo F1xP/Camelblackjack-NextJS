@@ -3,7 +3,7 @@ import { GeistSans } from 'geist/font';
 import { getServerSession } from 'next-auth';
 import SessionProvider from './components/SessionProvider';
 import Navbar from './components/Navbar';
-import { authOptions } from './lib/authOptions';
+import { authOptions } from '../lib/authOptions';
 import './globals.css';
 
 export const metadata: Metadata = {
