@@ -131,7 +131,7 @@ const SideNavbar: React.FC = () => {
               ) : (
                 <button
                   className="bg-background mb-1 mt-auto px-10 h-12 cursor-pointer font-bold border border-secondary text-text rounded-md flex justify-center items-center hover:bg-secondary transition-all duration-300 relative"
-                  onClick={() => signOut()}>
+                  onClick={() => signOut({ callbackUrl: '/' })}>
                   <Image
                     src={'/Google.svg'}
                     alt={''}
@@ -144,7 +144,7 @@ const SideNavbar: React.FC = () => {
               )}
             </aside>
           </div>,
-          document.getElementById('side-navbar-portal-root')!
+          document.getElementById('portal-root')!
         )}
     </>
   );

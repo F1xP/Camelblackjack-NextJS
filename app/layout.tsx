@@ -4,6 +4,7 @@ import { getServerSession } from 'next-auth';
 import SessionProvider from './components/SessionProvider';
 import Navbar from './components/Navbar';
 import { authOptions } from '../lib/authOptions';
+import { NextUIProvider } from '../lib/nextui';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -17,13 +18,16 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html lang="en">
       <body className={`${GeistSans.className} bg-background font-sans`}>
-        <SessionProvider
-          session={session}
-          refetchInterval={5 * 60}>
-          <div id="side-navbar-portal-root"></div>
-          <Navbar />
-          {children}
-        </SessionProvider>
+        <NextUIProvider>
+          <SessionProvider
+            session={session}
+            refetchInterval={5 * 60}
+            refetchOnWindowFocus={true}>
+            <div id="portal-root"></div>
+            <Navbar />
+            {children}
+          </SessionProvider>
+        </NextUIProvider>
       </body>
     </html>
   );

@@ -45,7 +45,7 @@ export default function UserDropdown({ isDropdownOpen, setIsDropdownOpen }: User
           <div className="border-t border-secondary w-full my-1"></div>
           <button
             className="hover:bg-secondary py-1 px-2 rounded-sm w-full transition-all duration-300 text-red-500 flex justify-center items-center"
-            onClick={() => signOut()}>
+            onClick={() => signOut({ callbackUrl: '/' })}>
             <PiSignOutBold className="mr-auto" />
             <p className="mr-auto">Sign Out</p>
           </button>

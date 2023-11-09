@@ -67,8 +67,8 @@ model Game {
   amount           Float
   payout           Float
   state            GameState
-  userId           String    @db.ObjectId
-  user             User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user_email            String    
+  user             User      @relation(fields: [user_email], references: [email], onDelete: Cascade)
   createdAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt
 }
