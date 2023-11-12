@@ -33,19 +33,31 @@
   animation: slideIn 0.3s forwards;
 }
 
-.animation {
-  animation: cardAnimation 0.5s ease forwards;
+.d-card-animation {
+  animation: dCardAnimation 0.5s ease forwards;
 }
 
-@keyframes cardAnimation {
+.p-card-animation {
+  animation: pCardAnimation 0.5s ease forwards;
+}
+
+@keyframes dCardAnimation {
   from {
-    margin-top: -20px;
+    opacity: 0;
   }
   to {
-    margin-top: 0;
+    opacity: 1;
+    transform: translate(0px, 0px);
   }
 }
 
-.test {
-  transform: translate(0px, 0px);
+@keyframes pCardAnimation {
+  from {
+    opacity: 0;
+    transform: translate(0px, 100px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(0px, 0px);
+  }
 }

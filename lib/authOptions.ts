@@ -16,19 +16,23 @@ export const authOptions: AuthOptions = {
   ],
   callbacks: {
     session: async ({ session, user }) => {
-      const dbUser: any = await prisma.user.findUnique({
-        where: { email: user.email },
-      });
-      if (!dbUser) return session;
-      session.user = {
-        ...session.user,
-        coins: dbUser.coins,
-        games: dbUser.games,
-        wins: dbUser.wins,
-        loses: dbUser.loses,
-        pushes: dbUser.pushes,
-      };
-      console.log(session);
+      try {
+        const dbUser: any = await prisma.user.findUnique({
+          where: { email: user.email },
+        });
+        if (!dbUser) return session;
+        session.user = {
+          ...session.user,
+          coins: dbUser.coins,
+          games: dbUser.games,
+          wins: dbUser.wins,
+          loses: dbUser.loses,
+          pushes: dbUser.pushes,
+        };
+      } catch (e) {
+        console.log(e);
+        return session;
+      }
       return session;
     },
   },

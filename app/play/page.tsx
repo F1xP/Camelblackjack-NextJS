@@ -107,12 +107,13 @@ export default function Play() {
                   {gameData?.data?.state?.player[currentHand]?.cards?.map((card: any, index: number) => {
                     return (
                       <div
-                        className="w-20 h-32 bg-white rounded-md shadow-sm shadow-black"
+                        className="w-20 h-32 bg-white rounded-md shadow-sm shadow-black d-card-animation"
                         key={index}
                         style={{
+                          animationDelay: `${index * 100}ms`,
                           marginTop: `${index}rem`,
                           marginLeft: index > 0 ? '-2.5rem' : '0',
-                          transform: `translate(0px, 0px)`,
+                          transform: `translate(0px, -1000px)`,
                         }}>
                         <p className="text-black font-mono text-5xl font-bold ml-2">{card?.rank}</p>
                       </div>
@@ -127,12 +128,13 @@ export default function Play() {
                   {gameData?.data?.state?.player[currentHand]?.cards?.map((card: any, index: number) => {
                     return (
                       <div
-                        className="w-20 h-32 bg-white rounded-md shadow-sm shadow-black"
+                        className="w-20 h-32 bg-white rounded-md shadow-sm shadow-black p-card-animation"
                         key={index}
                         style={{
+                          animationDelay: `${index * 100}ms`,
                           marginTop: `${index}rem`,
                           marginLeft: index > 0 ? '-2.5rem' : '0',
-                          transform: `translate(0px, 0px)`,
+                          transform: `translate(0px, 1000px)`,
                         }}>
                         <p className="text-black font-mono text-5xl font-bold ml-2">{card?.rank}</p>
                       </div>

@@ -4,23 +4,28 @@ import { prisma } from '@/lib/authOptions';
 import { getCurrentUser } from '@/lib/session';
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
+import { fromZodError } from 'zod-validation-error';
 
-export const updateProfile = async (currentState: string | null, formData: FormData) => {
+export const updateProfile = async (formData: FormData) => {
   const user = await getCurrentUser();
   if (!user?.email) return { message: null, error: `You must be signed in.` };
   const name: any = formData.get('name');
+  const bio: any = formData.get('bio');
   if (!name) return { message: null, error: `Name field is required.` };
 
-  try {
-    const schema = z.object({
-      name: z.string().min(3).max(39),
-    });
+  const schema = z.object({
+    name: z.string().min(3, 'Name must be at least 3 characters long').max(39, 'Name cannot exceed 39 characters'),
+    bio: z.string().max(128, 'Biography cannot exceed 128 characters'),
+  });
 
+  try {
     schema.parse({
       name: name,
+      bio: bio,
     });
-  } catch (e) {
-    return { message: null, error: `Name should be between 3 and 39 characters and in the correct format.` };
+  } catch (e: any) {
+    const validationError = fromZodError(e);
+    return { message: null, error: validationError.message.split(' ').slice(2, -2).join(' ') + '.' || 'Unknown Error' };
   }
 
   try {
@@ -37,22 +42,23 @@ export const updateProfile = async (currentState: string | null, formData: FormD
   }
 };
 
-export const resetProfile = async (currentState: string | null, formData: FormData) => {
+export const resetProfile = async (formData: FormData) => {
   const user = await getCurrentUser();
   if (!user?.email) return { message: null, error: `You must be signed in.` };
   const name: any = formData.get('name');
   if (!name) return { message: null, error: `Name field is required.` };
 
-  try {
-    const schema = z.object({
-      name: z.string(),
-    });
+  const schema = z.object({
+    name: z.string(),
+  });
 
+  try {
     schema.parse({
       name: name,
     });
-  } catch (e) {
-    return { message: null, error: `The name you entered is of an invalid format.` };
+  } catch (e: any) {
+    const validationError = fromZodError(e);
+    return { message: null, error: validationError.message.split(' ').slice(2, -2).join(' ') + '.' || 'Unknown Error' };
   }
 
   try {
@@ -80,22 +86,23 @@ export const resetProfile = async (currentState: string | null, formData: FormDa
   }
 };
 
-export const deleteProfile = async (currentState: string | null, formData: FormData) => {
+export const deleteProfile = async (formData: FormData) => {
   const user = await getCurrentUser();
   if (!user?.email) return { message: null, error: `You must be signed in.` };
   const name: any = formData.get('name');
   if (!name) return { message: null, error: `Name field is required.` };
 
-  try {
-    const schema = z.object({
-      name: z.string(),
-    });
+  const schema = z.object({
+    name: z.string(),
+  });
 
+  try {
     schema.parse({
       name: name,
     });
-  } catch (e) {
-    return { message: null, error: `The name you entered is of an invalid format.` };
+  } catch (e: any) {
+    const validationError = fromZodError(e);
+    return { message: null, error: validationError.message.split(' ').slice(2, -2).join(' ') + '.' || 'Unknown Error' };
   }
 
   try {

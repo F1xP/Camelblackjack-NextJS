@@ -1,5 +1,5 @@
-import { DeleteForm } from './(components)/DeleteForm';
-import { ResetForm } from './(components)/ResetForm';
+import DeleteForm from './(components)/DeleteForm';
+import ResetForm from './(components)/ResetForm';
 import { SaveForm } from './(components)/SaveForm';
 
 export default async function Settings() {
