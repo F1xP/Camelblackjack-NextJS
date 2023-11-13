@@ -5,8 +5,8 @@ import SessionProvider from './components/SessionProvider';
 import Navbar from './components/Navbar';
 import { authOptions } from '../lib/authOptions';
 import { NextUIProvider } from '../lib/nextui';
+import { ToastsDisplay, ToastsProvider } from './components/Toasts';
 import './globals.css';
-import { ToasterProvider, useToaster } from './components/Toast';
 
 export const metadata: Metadata = {
   title: 'Camel Blackjack',
@@ -19,18 +19,19 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html lang="en">
       <body className={`${GeistSans.className} bg-background font-sans`}>
-        <ToasterProvider>
+        <ToastsProvider>
           <NextUIProvider>
             <SessionProvider
               session={session}
               refetchInterval={5 * 60}
               refetchOnWindowFocus={true}>
               <div id="portal-root"></div>
+              <ToastsDisplay />
               <Navbar />
               {children}
             </SessionProvider>
           </NextUIProvider>
-        </ToasterProvider>
+        </ToastsProvider>
       </body>
     </html>
   );

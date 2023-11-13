@@ -16,6 +16,8 @@ export function SaveForm() {
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.name === 'name' && e.target.value.length >= 39) return;
+    if (e.target.name === 'bio' && e.target.value.length >= 128) return;
     setFields({ ...fields, [e.target.name]: e.target.value });
   };
 

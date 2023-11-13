@@ -36,9 +36,9 @@ export const updateProfile = async (formData: FormData) => {
       },
     });
     revalidatePath('/profile');
-    return { message: 'User has been updated successfully.', error: null };
+    return { message: 'Profile Settings have been saved successfully.', error: null };
   } catch (e) {
-    return { message: null, error: 'Failed to update user.' };
+    return { message: null, error: 'An error occurred while trying to save your profile settings. Please try again.' };
   }
 };
 
@@ -80,9 +80,12 @@ export const resetProfile = async (formData: FormData) => {
     ]);
 
     revalidatePath('/profile');
-    return { message: 'User has been reset successfully.', error: null };
+    return { message: 'Your account has been reset successfully.', error: null };
   } catch (e) {
-    return { message: null, error: 'Failed to reset user.' };
+    return {
+      message: null,
+      error: 'An error occurred while trying to reset your account. Please try again.',
+    };
   }
 };
 
@@ -111,8 +114,11 @@ export const deleteProfile = async (formData: FormData) => {
       where: { email: user?.email },
     });
     revalidatePath('/profile');
-    return { message: 'User has been deleted successfully.', error: null };
+    return { message: 'Your account has been deleted successfully.', error: null };
   } catch (e) {
-    return { message: null, error: 'Failed to delete user.' };
+    return {
+      message: null,
+      error: 'An error occurred while trying to delete your account. Please try again.',
+    };
   }
 };
