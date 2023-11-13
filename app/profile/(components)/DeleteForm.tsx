@@ -6,17 +6,14 @@ import { signOut } from 'next-auth/react';
 
 export default function DeleteForm() {
   const { isOpen, onOpen, onClose, onOpenChange } = useDisclosure();
-  const { loading, response, handleAction } = useAction(deleteProfile);
+  const { loading, handleAction } = useAction(deleteProfile);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    try {
-      await handleAction(formData);
-      signOut({ callbackUrl: '/' });
-    } catch (e) {
-      console.log(e);
-    }
+    await handleAction(formData);
+    onClose();
+    signOut({ callbackUrl: '/' });
   };
 
   return (
@@ -55,16 +52,6 @@ export default function DeleteForm() {
                   placeholder="Type here"
                   className="w-full max-w-md self-start font-mono p-1 text-lg border border-text font-bold text-text rounded-sm bg-secondary transition-all duration-300"
                 />
-                {response?.message && (
-                  <p className="text-green-500 font-bold font-sans text-center">
-                    Success:<span className="text-text text-sm"> {response.message}</span>
-                  </p>
-                )}
-                {response?.error && (
-                  <p className="text-red-500 font-bold font-sans text-center">
-                    Error: <span className="text-text text-sm"> {response.error}</span>
-                  </p>
-                )}
               </ModalBody>
               <ModalFooter>
                 <div className="flex flex-col w-full gap-2">

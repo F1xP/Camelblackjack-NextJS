@@ -5,16 +5,13 @@ import { resetProfile } from './actions';
 
 export default function ResetForm() {
   const { isOpen, onOpen, onClose, onOpenChange } = useDisclosure();
-  const { loading, response, handleAction } = useAction(resetProfile);
+  const { loading, handleAction } = useAction(resetProfile);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    try {
-      await handleAction(formData);
-    } catch (e) {
-      console.log(e);
-    }
+    await handleAction(formData);
+    onClose();
   };
 
   return (
@@ -53,16 +50,6 @@ export default function ResetForm() {
                   placeholder="Type here"
                   className="w-full max-w-md self-start font-mono p-1 text-lg border border-text font-bold text-text rounded-sm bg-secondary transition-all duration-300"
                 />
-                {response?.message && (
-                  <p className="text-green-500 font-bold font-sans text-center">
-                    Success:<span className="text-text text-sm"> {response.message}</span>
-                  </p>
-                )}
-                {response?.error && (
-                  <p className="text-red-500 font-bold font-sans text-center">
-                    Error: <span className="text-text text-sm"> {response.error}</span>
-                  </p>
-                )}
               </ModalBody>
               <ModalFooter>
                 <div className="flex flex-col w-full gap-2">

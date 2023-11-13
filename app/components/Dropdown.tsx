@@ -6,7 +6,6 @@ type DropdownProps = {
   current: any;
   setCurrent: (newValue: any) => void;
 };
-
 const Dropdown: React.FC<DropdownProps> = ({ list, current, setCurrent }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
   const dropdownRef = useRef<HTMLDivElement | null>(null);

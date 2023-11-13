@@ -6,22 +6,16 @@ import useAction from '@/app/customhooks/useAction';
 
 export function SaveForm() {
   const { data: session } = useSession();
-  const { loading, response, handleAction } = useAction(updateProfile);
+  const { loading, handleAction } = useAction(updateProfile);
   const [fields, setFields] = useState({ name: session?.user?.name || '', bio: session?.user?.bio || '' });
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    try {
-      await handleAction(formData);
-    } catch (e) {
-      console.log(e);
-    }
+    await handleAction(formData);
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.name === 'name' && e.target.value.length >= 39) return;
-    if (e.target.name === 'bio' && e.target.value.length >= 128) return;
     setFields({ ...fields, [e.target.name]: e.target.value });
   };
 
@@ -61,16 +55,6 @@ export function SaveForm() {
           onChange={handleChange}
           className="w-full max-w-md self-start font-mono p-1 mb-2 text-lg border border-text font-bold text-text rounded-sm bg-secondary transition-all duration-300"
         />
-        {response?.message && (
-          <p className="text-green-500 font-bold font-sans text-center mb-2">
-            Success:<span className="text-text text-sm"> {response.message}</span>
-          </p>
-        )}
-        {response?.error && (
-          <p className="text-red-500 font-bold font-sans text-center mb-2">
-            Error: <span className="text-text text-sm"> {response.error}</span>
-          </p>
-        )}
         <Submit loading={loading} />
       </form>
     </>
