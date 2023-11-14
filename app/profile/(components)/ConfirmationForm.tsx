@@ -1,19 +1,36 @@
 'use client';
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure } from '@nextui-org/react';
 import useAction from '@/app/customhooks/useAction';
-import { deleteProfile } from './actions';
-import { signOut } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
+import { Submit } from './Submit';
 
-export default function DeleteForm() {
+type ConfirmationFormProps = {
+  action: (formData: FormData) => Promise<{ message: string | null; error: string | null }>;
+  text: string;
+  modalTitle: string;
+  submitText: string;
+  submitLoadingText: string;
+  withSignOut: boolean;
+};
+
+export default function ConfirmationForm({
+  action,
+  text,
+  modalTitle,
+  submitText,
+  submitLoadingText,
+  withSignOut,
+}: ConfirmationFormProps) {
   const { isOpen, onOpen, onClose, onOpenChange } = useDisclosure();
-  const { loading, handleAction } = useAction(deleteProfile);
+  const { loading, handleAction } = useAction(action);
+  const { data: session } = useSession();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     await handleAction(formData);
     onClose();
-    signOut({ callbackUrl: '/' });
+    if (withSignOut) signOut({ callbackUrl: '/' });
   };
 
   return (
@@ -21,7 +38,7 @@ export default function DeleteForm() {
       <button
         onClick={onOpen}
         className="w-56 disabled:opacity-25 disabled:cursor-not-allowed font-mono self-start py-2 px-10 text-lg border-2 border-secondary font-bold text-red-500 rounded-md flex justify-center items-center hover:bg-secondary transition-all duration-300">
-        DELETE ACCOUNT
+        {text}
       </button>
       <Modal
         backdrop="opaque"
@@ -39,12 +56,14 @@ export default function DeleteForm() {
         <ModalContent>
           <>
             <form onSubmit={handleSubmit}>
-              <ModalHeader className="flex flex-col gap-1">Delete your account</ModalHeader>
+              <ModalHeader className="flex flex-col gap-1">{modalTitle}</ModalHeader>
               <ModalBody>
                 <label
                   htmlFor="name"
-                  className="self-start text-text font-bold text-xl">
-                  Enter your current name to confirm.
+                  className="self-start text-text font-bold text-xl select-none">
+                  Enter your current name <span className="text-accent">"</span>
+                  {`${session?.user?.name}`}
+                  <span className="text-accent">"</span> to confirm.
                 </label>
                 <input
                   name="name"
@@ -56,7 +75,11 @@ export default function DeleteForm() {
               <ModalFooter>
                 <div className="flex flex-col w-full gap-2">
                   <div className="flex flex-row w-full gap-3">
-                    <Submit loading={loading} />
+                    <Submit
+                      loading={loading}
+                      text={submitText}
+                      loadingText={submitLoadingText}
+                    />
                     <button
                       type="button"
                       onClick={onClose}
@@ -73,14 +96,3 @@ export default function DeleteForm() {
     </>
   );
 }
-
-const Submit: React.FC<{ loading: boolean }> = ({ loading }) => {
-  return (
-    <button
-      disabled={loading}
-      type="submit"
-      className="w-56 disabled:opacity-25 disabled:cursor-not-allowed font-mono self-start py-2 px-10 text-lg border-2 border-secondary font-bold text-text rounded-md flex justify-center items-center hover:bg-secondary transition-all duration-300">
-      {loading ? 'DELETING...' : 'CONFIRM'}
-    </button>
-  );
-};

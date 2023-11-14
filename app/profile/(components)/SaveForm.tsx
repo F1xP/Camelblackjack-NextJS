@@ -3,9 +3,10 @@ import { updateProfile } from './actions';
 import { useSession } from 'next-auth/react';
 import { useState } from 'react';
 import useAction from '@/app/customhooks/useAction';
+import { Submit } from './Submit';
 
 export function SaveForm() {
-  const { data: session } = useSession();
+  const { update, data: session } = useSession();
   const { loading, handleAction } = useAction(updateProfile);
   const [fields, setFields] = useState({ name: session?.user?.name || '', bio: session?.user?.bio || '' });
 
@@ -13,6 +14,7 @@ export function SaveForm() {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     await handleAction(formData);
+    update();
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -57,19 +59,12 @@ export function SaveForm() {
           onChange={handleChange}
           className="w-full max-w-md self-start font-mono p-1 mb-2 text-lg border border-text font-bold text-text rounded-sm bg-secondary transition-all duration-300"
         />
-        <Submit loading={loading} />
+        <Submit
+          loading={loading}
+          text="SAVE SETTINGS"
+          loadingText="SAVING..."
+        />
       </form>
     </>
   );
 }
-
-const Submit: React.FC<{ loading: boolean }> = ({ loading }) => {
-  return (
-    <button
-      disabled={loading}
-      type="submit"
-      className="w-56 disabled:opacity-25 disabled:cursor-not-allowed font-mono self-start py-2 px-10 text-lg border-2 border-secondary font-bold text-text rounded-md flex justify-center items-center hover:bg-secondary transition-all duration-300">
-      {loading ? 'SAVING...' : 'SAVE CHANGES'}
-    </button>
-  );
-};
