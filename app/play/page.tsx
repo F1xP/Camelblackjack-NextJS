@@ -1,36 +1,38 @@
 'use client';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useToast } from '../components/Toasts';
 
 export default function Play() {
+  const { addToast, removeToast, toasts } = useToast();
   const [betAmount, setBetAmount] = useState<number>(0);
   const [gameData, setGameData] = useState<any>(null);
   const [currentHand, setCurrentHand] = useState<number>(0);
 
-  const playerData = gameData?.data?.state?.player[currentHand];
+  const playerData = gameData?.state?.player[currentHand];
 
   const hit: boolean = playerData?.value[0] < 21;
   const stand: boolean = playerData?.value[0] < 21;
   const double: boolean = playerData?.actions[-1] === 'deal' || playerData?.actions[-1] === 'split';
   const split: boolean =
-    gameData?.data?.state?.player?.length === 1 &&
+    gameData?.state?.player?.length === 1 &&
     playerData?.cards?.length === 2 &&
     playerData?.cards[0].rank === playerData?.cards[1].rank;
 
   const handleNewBet = async () => {
     const response = await axios.post('/api/blackjack', { betAmount });
-    if (response.data) setGameData(response.data);
+    if (response.data?.data) setGameData(response.data?.data);
   };
 
   const handleAction = async (action: 'hit' | 'stand' | 'double' | 'split') => {
     const response = await axios.patch('/blackjack', { action });
-    if (response.data) setGameData(response.data);
+    if (response.data?.data) setGameData(response.data?.data);
   };
 
   useEffect(() => {
     const getGameData = async () => {
       const response = await axios.get('/api/blackjack');
-      if (response.data) setGameData(response.data);
+      if (response.data?.data) setGameData(response.data?.data);
     };
     getGameData();
   }, []);
@@ -43,13 +45,12 @@ export default function Play() {
   }, [gameData]);
 
   return (
-    <main className="flex min-h-screen flex-col items-center gap-10 justify-center py-10 px-4 sm:px-14 md:px-18 lg:px-44 xl:px-64">
+    <>
       <p className="text-text">
-        Player Value: {gameData?.data?.state?.player[currentHand]?.value[0]}{' '}
-        {gameData?.data?.state?.player[currentHand]?.value[1] &&
-          `,${gameData?.data?.state?.player[currentHand]?.value[1]}`}{' '}
+        Player Value: {gameData?.state?.player[currentHand]?.value[0]}{' '}
+        {gameData?.state?.player[currentHand]?.value[1] && `,${gameData?.state?.player[currentHand]?.value[1]}`}{' '}
       </p>
-      <p className="text-text">Dealer Value: {gameData?.data?.state?.dealer?.value[0]}</p>
+      <p className="text-text">Dealer Value: {gameData?.state?.dealer?.value[0]}</p>
 
       <div className="flex flex-row w-full rounded-lg border border-secondary bg-black/30 mt-10 flex-nowrap md:flex-wrap">
         <section className="h-[600px] w-full flex-1 flex flex-col">
@@ -104,7 +105,7 @@ export default function Play() {
             <div className="w-full flex justify-around flex-row-reverse absolute top-1">
               <div className="flex items-center justify-center flex-col relative">
                 <div className="flex relative item-start mt-1 min-h-[7.9rem] min-w-[5rem]">
-                  {gameData?.data?.state?.player[currentHand]?.cards?.map((card: any, index: number) => {
+                  {gameData?.state?.player[currentHand]?.cards?.map((card: any, index: number) => {
                     return (
                       <div
                         className="w-20 h-32 bg-white rounded-md shadow-sm shadow-black d-card-animation"
@@ -125,7 +126,7 @@ export default function Play() {
             <div className="w-full flex justify-around flex-row-reverse absolute bottom-1">
               <div className="flex items-center justify-center flex-col relative">
                 <div className="flex relative item-start mb-1 min-h-[7.9rem] min-w-[5rem]">
-                  {gameData?.data?.state?.player[currentHand]?.cards?.map((card: any, index: number) => {
+                  {gameData?.state?.dealer?.cards?.map((card: any, index: number) => {
                     return (
                       <div
                         className="w-20 h-32 bg-white rounded-md shadow-sm shadow-black p-card-animation"
@@ -146,6 +147,6 @@ export default function Play() {
           </div>
         </section>
       </div>
-    </main>
+    </>
   );
 }

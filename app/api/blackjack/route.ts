@@ -1,3 +1,5 @@
+import { authOptions, prisma } from '@/lib/authOptions';
+import { getServerSession } from 'next-auth';
 import { NextResponse } from 'next/server';
 
 const player: any[] = [];
@@ -69,7 +71,7 @@ const dealerTurn = () => {
   // if dealer doesn't get busted and cards are higher than 17 check game status
 };
 
-const dealCard = async (hand: any[]) => {
+const dealCard = async () => {
   // Deal a card for dealer or player
   const randomRankIndex = Math.floor(Math.random() * ranks.length);
   const randomSuitIndex = Math.floor(Math.random() * suits.length);
@@ -142,6 +144,13 @@ const checkGameStatus = async (playerHand: any, dealerHand: any) => {
 
 export async function GET(request: Request) {
   try {
+    const session = await getServerSession(authOptions);
+    if (!session) return NextResponse.json({ error: 'You must be signed in.' }, { status: 401 });
+
+    const userEmail = session.user?.email?.toString();
+    const data = await prisma.game.findFirst({
+      where: { active: true, user_email: userEmail ?? undefined },
+    });
     return NextResponse.json({ data }, { status: 200 });
   } catch (e) {
     console.log(e);
@@ -151,18 +160,41 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
+    const session = await getServerSession(authOptions);
+    if (!session) return NextResponse.json({ error: 'You must be signed in.' }, { status: 401 });
+
+    const userEmail = session.user?.email?.toString();
+    const isActive = await prisma.game.findFirst({
+      where: { active: true, user_email: userEmail ?? undefined },
+    });
+    if (isActive)
+      return NextResponse.json(
+        { error: 'You must finish your active game in order to start another.' },
+        { status: 409 }
+      );
     // Start the game by dealing two cards for the player and 2 cards for the dealer
-    const player_card1 = await dealCard(player);
-    const dealer_card1 = await dealCard(dealer);
-    const player_card2 = await dealCard(player);
-    const dealer_card2 = await dealCard(dealer);
-    data.state.player[0].cards.push(player_card1, player_card2);
-    data.state.player[0].actions.push('deal');
-    data.state.player[0].value = await calculateHandValue(data.state.player[0].cards);
-    data.state.dealer.cards.push(dealer_card1, dealer_card2);
-    data.state.dealer.actions.push('deal');
-    data.state.dealer.value = await calculateHandValue(data.state.dealer.cards);
-    return NextResponse.json({ data }, { status: 200 });
+    const player_card1 = await dealCard();
+    const player_card2 = await dealCard();
+    const dealer_card1 = await dealCard();
+    const dealer_card2 = await dealCard();
+    const playerValue = await calculateHandValue([player_card1, player_card2]);
+    const dealerValue = await calculateHandValue([dealer_card1]);
+    const data = await prisma.game.create({
+      data: {
+        active: true,
+        payoutMultiplier: 1,
+        amountMultiplier: 1,
+        amount: 100,
+        payout: 0,
+        state: {
+          player: [{ value: playerValue, actions: ['deal'], cards: [player_card1, player_card2] }],
+          dealer: { value: dealerValue, actions: ['deal'], cards: [dealer_card1, dealer_card2] },
+        },
+        user_email: userEmail ?? undefined,
+      },
+    });
+    data.state.dealer.cards = [data.state.dealer.cards[0]];
+    return NextResponse.json({ data }, { status: 201 });
   } catch (e) {
     console.log(e);
     return NextResponse.json({ error: e }, { status: 500 });
@@ -171,7 +203,7 @@ export async function POST(request: Request) {
 
 export async function PATCH(request: Request) {
   try {
-    const player_card1 = await dealCard(player);
+    const player_card1 = await dealCard();
     data.state.player[0].cards.push(player_card1);
     data.state.player[0].actions.push('hit');
     data.state.player[0].value = await calculateHandValue(data.state.player[0].cards);

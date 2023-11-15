@@ -69,8 +69,8 @@ model Game {
   amount           Float
   payout           Float
   state            GameState
-  user_email            String    
-  user             User      @relation(fields: [user_email], references: [email], onDelete: Cascade)
+  user_email       String?   
+  user             User?      @relation(fields: [user_email], references: [email], onDelete: Cascade)
   createdAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt
 }
@@ -81,7 +81,7 @@ type GameState {
 }
 
 type UserState {
-  value   Int
+  value   Int[]
   actions String[]
   cards   Json[]
 }
