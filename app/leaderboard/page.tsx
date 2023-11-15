@@ -1,4 +1,4 @@
-import { prisma } from '@/lib/authOptions';
+import { prisma } from '@/lib/prisma';
 import LeaderboardTable from './(components)/LeaderboardTable';
 import Navigation from './(components)/Navigation';
 import Header from '../components/Header';

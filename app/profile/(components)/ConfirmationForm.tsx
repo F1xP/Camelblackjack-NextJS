@@ -61,9 +61,8 @@ export default function ConfirmationForm({
                 <label
                   htmlFor="name"
                   className="self-start text-text font-bold text-xl select-none">
-                  Enter your current name <span className="text-accent">"</span>
-                  {`${session?.user?.name}`}
-                  <span className="text-accent">"</span> to confirm.
+                  Enter your current name
+                  <span className="text-accent">&quot;{`${session?.user?.name}`}&quot;</span> to confirm.
                 </label>
                 <input
                   name="name"

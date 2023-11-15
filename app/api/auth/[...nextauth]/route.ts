@@ -1,6 +1,57 @@
-import NextAuth from 'next-auth';
-import { authOptions } from '../../../../lib/authOptions';
+import { PrismaAdapter } from '@next-auth/prisma-adapter';
+import { PrismaClient } from '@prisma/client';
+import NextAuth, { AuthOptions } from 'next-auth';
+import { Adapter } from 'next-auth/adapters';
+import GoogleProvider from 'next-auth/providers/google';
+import type { User } from 'next-auth';
 
-export const handler = NextAuth(authOptions);
+declare module 'next-auth' {
+  interface Session {
+    user: User & {
+      bio: string;
+      coins: number;
+      games: number;
+      wins: number;
+      loses: number;
+      pushes: number;
+    };
+  }
+}
+
+export const prisma = new PrismaClient();
+
+export const nextAuthOptions = {
+  adapter: PrismaAdapter(prisma) as Adapter,
+  providers: [
+    GoogleProvider({
+      clientId: (process.env.GOOGLE_ID as string) ?? '',
+      clientSecret: (process.env.GOOGLE_SECRET as string) ?? '',
+    }),
+  ],
+  callbacks: {
+    session: async ({ session, user }) => {
+      try {
+        const dbUser: any = await prisma.user.findUnique({
+          where: { email: user.email },
+        });
+        if (!dbUser) return session;
+        session.user = {
+          ...session.user,
+          coins: dbUser.coins,
+          games: dbUser.games,
+          wins: dbUser.wins,
+          loses: dbUser.loses,
+          pushes: dbUser.pushes,
+        };
+      } catch (e) {
+        console.log(e);
+        return session;
+      }
+      return session;
+    },
+  },
+} satisfies AuthOptions;
+
+const handler = NextAuth(nextAuthOptions);
 
 export { handler as GET, handler as POST };

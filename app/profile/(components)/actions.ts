@@ -1,6 +1,6 @@
 'use server';
 
-import { prisma } from '@/lib/authOptions';
+import { prisma } from '@/lib/prisma';
 import { getCurrentUser } from '@/lib/session';
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';

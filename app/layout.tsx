@@ -3,9 +3,9 @@ import { GeistSans } from 'geist/font';
 import { getServerSession } from 'next-auth';
 import SessionProvider from './components/SessionProvider';
 import Navbar from './components/Navbar';
-import { authOptions } from '../lib/authOptions';
-import { NextUIProvider } from '../lib/nextui';
+import { NextUIProvider } from '@/lib/nextui';
 import { ToastsDisplay, ToastsProvider } from './components/Toasts';
+import { nextAuthOptions } from './api/auth/[...nextauth]/route';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const session = await getServerSession(authOptions);
+  const session = await getServerSession(nextAuthOptions);
 
   return (
     <html lang="en">

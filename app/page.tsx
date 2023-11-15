@@ -13,15 +13,15 @@ export default function Home() {
           Test your Blackjack skills and aim for the top of the leaderboard!
         </p>
         <Link
-          href={'/play'}
+          href="/play"
           className="bg-primary py-2 px-10 md:px-16 lg:px-20 text-lg md:text-xl lg:text-2xl font-bold text-accent rounded-md flex justify-center items-center hover:text-text transition-all duration-300">
-          <p> Play Now</p>
+          <p>Play Now</p>
         </Link>
       </div>
       <div className="flex-shrink flex-grow max-w-[300px]">
         <Image
-          src={'/CamelBlackjackLogo.png'}
-          alt={''}
+          src="/CamelBlackjackLogo.png"
+          alt=""
           width={1000}
           height={1000}
         />
