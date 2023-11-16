@@ -1,8 +1,8 @@
 'use client';
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure } from '@nextui-org/react';
-import useAction from '@/app/customhooks/useAction';
+import useAction from '@/app/hooks/useAction';
 import { signOut, useSession } from 'next-auth/react';
-import { Submit } from './Submit';
+import { Button } from '@/app/components/Button';
 
 type ConfirmationFormProps = {
   action: (formData: FormData) => Promise<{ message: string | null; error: string | null }>;
@@ -35,11 +35,16 @@ export default function ConfirmationForm({
 
   return (
     <>
-      <button
+      <Button
+        variant={'transparent'}
+        size={'lg'}
+        disabled={loading}
+        type="button"
         onClick={onOpen}
-        className="w-56 disabled:opacity-25 disabled:cursor-not-allowed font-mono self-start py-2 px-10 text-lg border-2 border-secondary font-bold text-red-500 rounded-md flex justify-center items-center hover:bg-secondary transition-all duration-300">
+        className="text-red-500 w-full">
         {text}
-      </button>
+      </Button>
+
       <Modal
         backdrop="opaque"
         isOpen={isOpen}
@@ -74,17 +79,22 @@ export default function ConfirmationForm({
               <ModalFooter>
                 <div className="flex flex-col w-full gap-2">
                   <div className="flex flex-row w-full gap-3">
-                    <Submit
-                      loading={loading}
-                      text={submitText}
-                      loadingText={submitLoadingText}
-                    />
-                    <button
+                    <Button
+                      variant={'transparent'}
+                      size={'lg'}
+                      disabled={loading}
+                      type="submit">
+                      {loading ? submitLoadingText : submitText}
+                    </Button>
+                    <Button
+                      variant={'transparent'}
+                      size={'lg'}
+                      disabled={loading}
                       type="button"
                       onClick={onClose}
-                      className="w-56 disabled:opacity-25 disabled:cursor-not-allowed font-mono self-start py-2 px-10 text-lg border-2 border-secondary font-bold text-red-500 rounded-md flex justify-center items-center hover:bg-secondary transition-all duration-300">
+                      className="text-red-500">
                       CANCEL
-                    </button>
+                    </Button>
                   </div>
                 </div>
               </ModalFooter>

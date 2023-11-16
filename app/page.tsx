@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import Link from 'next/link';
+import { Button } from './components/Button';
 
 export default function Home() {
   return (
@@ -12,11 +12,7 @@ export default function Home() {
         <p className="text-text text-lg md:text-xl lg:text-2xl font-semibold mb-5 text-center sm:text-left">
           Test your Blackjack skills and aim for the top of the leaderboard!
         </p>
-        <Link
-          href="/play"
-          className="bg-primary py-2 px-10 md:px-16 lg:px-20 text-lg md:text-xl lg:text-2xl font-bold text-accent rounded-md flex justify-center items-center hover:text-text transition-all duration-300">
-          <p>Play Now</p>
-        </Link>
+        <Button href="/play">PLAY NOW</Button>
       </div>
       <div className="flex-shrink flex-grow max-w-[300px]">
         <Image

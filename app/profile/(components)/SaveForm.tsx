@@ -2,8 +2,8 @@
 import { updateProfile } from './actions';
 import { useSession } from 'next-auth/react';
 import { useState } from 'react';
-import useAction from '@/app/customhooks/useAction';
-import { Submit } from './Submit';
+import useAction from '@/app/hooks/useAction';
+import { Button } from '@/app/components/Button';
 
 export function SaveForm() {
   const { update, data: session } = useSession();
@@ -27,7 +27,7 @@ export function SaveForm() {
     <>
       <form
         onSubmit={handleSubmit}
-        className="flex flex-col self-start w-full max-w-md">
+        className="flex flex-col self-start w-full">
         <div className="flex flex-row">
           <label
             htmlFor="name"
@@ -57,13 +57,16 @@ export function SaveForm() {
           name="bio"
           type="text"
           onChange={handleChange}
-          className="w-full max-w-md self-start font-mono p-1 mb-2 text-lg border border-text font-bold text-text rounded-sm bg-secondary transition-all duration-300"
+          className="w-full self-start font-mono p-1 mb-2 text-lg border border-text font-bold text-text rounded-sm bg-secondary transition-all duration-300"
         />
-        <Submit
-          loading={loading}
-          text="SAVE SETTINGS"
-          loadingText="SAVING..."
-        />
+        <Button
+          variant={'transparent'}
+          size={'lg'}
+          disabled={loading}
+          type="submit"
+          className="mb-2">
+          {loading ? 'SAVING...' : 'SAVE SETTINGS'}
+        </Button>
       </form>
     </>
   );

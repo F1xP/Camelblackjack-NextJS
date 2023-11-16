@@ -1,5 +1,3 @@
-import { AxiosError, AxiosResponse } from 'axios';
-
 export type LeaderboardDataProps = {
   id: string;
   name: string | null;
@@ -16,11 +14,26 @@ export type LeaderboardDataProps = {
   updatedAt: Date;
 }[];
 
-export interface CustomAxiosError extends AxiosError {
-  response?: AxiosResponse<unknown, any> & {
-    data?: {
-      error?: string;
-      message?: string;
-    };
-  };
-}
+export type Game = {
+  id: string;
+  active: boolean;
+  payoutMultiplier: number;
+  amountMultiplier: number;
+  amount: number;
+  payout: number;
+  state: GameState;
+  user_email?: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+} | null;
+
+type GameState = {
+  player: UserState[];
+  dealer: UserState;
+};
+
+type UserState = {
+  value: number[];
+  actions: string[];
+  cards: any[];
+};

@@ -174,12 +174,14 @@ export async function POST(request: Request) {
 
 export async function PATCH(request: Request) {
   try {
-    const user = await getCurrentUser();
-    if (!user || !user.email) return NextResponse.json({ error: 'You must be signed in.' }, { status: 401 });
-
+    console.log('request');
     const { action } = await request.json();
+    console.log(action.action);
     if (!['hit', 'stand', 'double', 'split'].includes(action))
       return NextResponse.json({ error: 'Unsupported action type.' }, { status: 406 });
+
+    const user = await getCurrentUser();
+    if (!user || !user.email) return NextResponse.json({ error: 'You must be signed in.' }, { status: 401 });
 
     switch (action) {
       case 'hit':

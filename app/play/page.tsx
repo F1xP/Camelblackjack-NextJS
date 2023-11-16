@@ -2,17 +2,19 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useToast } from '../components/Toasts';
+import { Button } from '../components/Button';
+import { Game } from '@/types/types';
 
 export default function Play() {
   const { addToast, removeToast, toasts } = useToast();
   const [betAmount, setBetAmount] = useState<number>(0);
-  const [gameData, setGameData] = useState<any>(null);
+  const [gameData, setGameData] = useState<Game>(null);
   const [currentHand, setCurrentHand] = useState<number>(0);
 
   const playerData = gameData?.state?.player[currentHand];
 
-  const hit: boolean = playerData?.value[0] < 21;
-  const stand: boolean = playerData?.value[0] < 21;
+  const hit: boolean = playerData?.value?.[0] !== undefined ? playerData.value[0] < 21 : false;
+  const stand: boolean = playerData?.value?.[0] !== undefined ? playerData.value[0] < 21 : false;
   const double: boolean = playerData?.actions[-1] === 'deal' || playerData?.actions[-1] === 'split';
   const split: boolean =
     gameData?.state?.player?.length === 1 &&
@@ -62,41 +64,50 @@ export default function Play() {
               onChange={(e) => setBetAmount(Number(e.target.value))}
               className="bg-transparent text-text border rounded-md border-text text-xl px-2 py-1 outline-none focus:border-accent transition-all duration-300 mb-2"
             />
-            <button
-              disabled={false}
-              onClick={() => handleNewBet()}
-              className="font-mono flex-1 py-2 text-lg bg-secondary border border-secondary font-bold text-text rounded-md flex justify-center items-center hover:border-text transition-all duration-300">
+            <Button
+              variant={'outlined'}
+              size={'xl'}
+              disabled={gameData?.active || true}
+              onClick={() => handleNewBet()}>
               BET
-            </button>
+            </Button>
           </div>
-          <div className="flex flex-col p-2 gap-2 mt-auto">
-            <div className="flex flex-row gap-2">
-              <button
+          <div className="flex flex-col p-1 gap-1 mt-auto">
+            <div className="flex flex-row gap-1">
+              <Button
+                variant={'outlined'}
+                size={'md'}
                 disabled={!hit}
                 onClick={() => handleAction('hit')}
-                className="disabled:opacity-25 disabled:cursor-not-allowed font-mono flex-1 py-2 text-lg bg-secondary border border-secondary font-bold text-text rounded-md flex justify-center items-center hover:border-text transition-all duration-300">
+                className="flex-1">
                 HIT
-              </button>
-              <button
+              </Button>
+              <Button
+                variant={'outlined'}
+                size={'md'}
                 disabled={!stand}
                 onClick={() => handleAction('stand')}
-                className="disabled:opacity-25 disabled:cursor-not-allowed font-mono flex-1 py-2 text-lg bg-secondary border border-secondary font-bold text-text rounded-md flex justify-center items-center hover:border-text transition-all duration-300">
+                className="flex-1">
                 STAND
-              </button>
+              </Button>
             </div>
-            <div className="flex flex-row gap-2">
-              <button
+            <div className="flex flex-row gap-1">
+              <Button
+                variant={'outlined'}
+                size={'md'}
                 disabled={!split}
                 onClick={() => handleAction('split')}
-                className="disabled:opacity-25 disabled:cursor-not-allowed font-mono flex-1 py-2 text-lg bg-secondary border border-secondary font-bold text-text rounded-md flex justify-center items-center hover:border-text transition-all duration-300">
+                className="flex-1">
                 SPLIT
-              </button>
-              <button
+              </Button>
+              <Button
+                variant={'outlined'}
+                size={'md'}
                 disabled={!double}
                 onClick={() => handleAction('double')}
-                className="disabled:opacity-25 disabled:cursor-not-allowed font-mono flex-1 py-2 text-lg bg-secondary border border-secondary font-bold text-text rounded-md flex justify-center items-center hover:border-text transition-all duration-300">
+                className="flex-1">
                 DOUBLE
-              </button>
+              </Button>
             </div>
           </div>
         </section>

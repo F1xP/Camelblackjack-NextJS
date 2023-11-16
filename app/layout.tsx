@@ -19,12 +19,12 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html lang="en">
       <body className={`${GeistSans.className} font-sans`}>
-        <ToastsProvider>
-          <NextUIProvider>
-            <SessionProvider
-              session={session}
-              refetchInterval={5 * 60}
-              refetchOnWindowFocus={true}>
+        <SessionProvider
+          session={session}
+          refetchInterval={5 * 60}
+          refetchOnWindowFocus={true}>
+          <ToastsProvider>
+            <NextUIProvider>
               <div id="portal-root"></div>
               <ToastsDisplay />
               <Navbar />
@@ -32,9 +32,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                 <span className="mt-2"></span>
                 {children}
               </main>
-            </SessionProvider>
-          </NextUIProvider>
-        </ToastsProvider>
+            </NextUIProvider>
+          </ToastsProvider>
+        </SessionProvider>
       </body>
     </html>
   );
