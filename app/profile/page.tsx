@@ -7,7 +7,7 @@ export default function Settings() {
   return (
     <>
       <div className="self-start w-full max-w-xl">
-        <Header>Profile Settings</Header>
+        <Header className="mb-4">Profile Settings</Header>
         <SaveForm />
         <div className="flex-start flex flex-row gap-2">
           <ConfirmationForm

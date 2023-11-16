@@ -4,6 +4,7 @@ import axios from 'axios';
 import { useToast } from '../components/Toasts';
 import { Button } from '../components/Button';
 import { Game } from '@/types/types';
+import { Input } from '../components/Input';
 
 export default function Play() {
   const { addToast, removeToast, toasts } = useToast();
@@ -58,12 +59,13 @@ export default function Play() {
         <section className="h-[600px] w-full flex-1 flex flex-col">
           <div className="flex flex-col p-2">
             <p className="text-text text-xl font-mono small-caps">Bet Amount</p>
-            <input
+            <Input
               type="number"
               value={betAmount}
               onChange={(e) => setBetAmount(Number(e.target.value))}
-              className="bg-transparent text-text border rounded-md border-text text-xl px-2 py-1 outline-none focus:border-accent transition-all duration-300 mb-2"
+              variant={'transparent'}
             />
+            <span className="mb-2"></span>
             <Button
               variant={'outlined'}
               size={'xl'}

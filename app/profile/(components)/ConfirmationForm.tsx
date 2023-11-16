@@ -1,8 +1,9 @@
 'use client';
-import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure } from '@nextui-org/react';
+import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure, modal } from '@nextui-org/react';
 import useAction from '@/app/hooks/useAction';
 import { signOut, useSession } from 'next-auth/react';
 import { Button } from '@/app/components/Button';
+import { Input } from '@/app/components/Input';
 
 type ConfirmationFormProps = {
   action: (formData: FormData) => Promise<{ message: string | null; error: string | null }>;
@@ -61,41 +62,41 @@ export default function ConfirmationForm({
         <ModalContent>
           <>
             <form onSubmit={handleSubmit}>
-              <ModalHeader className="flex flex-col gap-1">{modalTitle}</ModalHeader>
+              <ModalHeader>
+                <h1 className="font-bold text-2xl">{modalTitle}</h1>
+              </ModalHeader>
               <ModalBody>
                 <label
                   htmlFor="name"
-                  className="self-start text-text font-bold text-xl select-none">
-                  Enter your current name
-                  <span className="text-accent">&quot;{`${session?.user?.name}`}&quot;</span> to confirm.
+                  className="self-start text-text font-bold text-lg select-none">
+                  Enter your current name <span className="text-accent">&quot;{`${session?.user?.name}`}&quot;</span> to
+                  confirm.
                 </label>
-                <input
-                  name="name"
+                <Input
                   type="text"
+                  name="name"
                   placeholder="Type here"
-                  className="w-full max-w-md self-start font-mono p-1 text-lg border border-text font-bold text-text rounded-sm bg-secondary transition-all duration-300"
                 />
               </ModalBody>
               <ModalFooter>
-                <div className="flex flex-col w-full gap-2">
-                  <div className="flex flex-row w-full gap-3">
-                    <Button
-                      variant={'transparent'}
-                      size={'lg'}
-                      disabled={loading}
-                      type="submit">
-                      {loading ? submitLoadingText : submitText}
-                    </Button>
-                    <Button
-                      variant={'transparent'}
-                      size={'lg'}
-                      disabled={loading}
-                      type="button"
-                      onClick={onClose}
-                      className="text-red-500">
-                      CANCEL
-                    </Button>
-                  </div>
+                <div className="flex flex-row gap-2 w-full">
+                  <Button
+                    variant={'transparent'}
+                    size={'lg'}
+                    disabled={loading}
+                    type="submit"
+                    className="flex-1">
+                    {loading ? submitLoadingText : submitText}
+                  </Button>
+                  <Button
+                    variant={'transparent'}
+                    size={'lg'}
+                    disabled={loading}
+                    type="button"
+                    onClick={onClose}
+                    className="text-red-500 flex-1">
+                    CANCEL
+                  </Button>
                 </div>
               </ModalFooter>
             </form>

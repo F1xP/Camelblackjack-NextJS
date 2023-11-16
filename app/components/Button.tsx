@@ -20,7 +20,7 @@ export const buttonVariants = cva(
         lg: 'py-2 px-10 text-lg rounded-md',
         xl: 'py-2 px-12 text-xl rounded-md',
         default:
-          'py-1 px-4 text-xs sm:py-2 sm:px-6 text-sm md:py-2 md:px-8 text-md lg:py-2 lg:px-10 text-lg xl:py-2 xl:px-12 text-xl rounded-sm md:rounded-md',
+          'py-1 px-4 text-xs sm:py-2 sm:px-6 text-sm md:py-2 md:px-8 text-md lg:py-2 lg:px-10 text-lg xl:py-2 xl:px-12 text-xl rounded-md',
       },
     },
     defaultVariants: {

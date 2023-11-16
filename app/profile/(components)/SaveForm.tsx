@@ -4,6 +4,7 @@ import { useSession } from 'next-auth/react';
 import { useState } from 'react';
 import useAction from '@/app/hooks/useAction';
 import { Button } from '@/app/components/Button';
+import { Input } from '@/app/components/Input';
 
 export function SaveForm() {
   const { update, data: session } = useSession();
@@ -27,7 +28,7 @@ export function SaveForm() {
     <>
       <form
         onSubmit={handleSubmit}
-        className="flex flex-col self-start w-full">
+        className="flex flex-col self-start w-full gap-1">
         <div className="flex flex-row">
           <label
             htmlFor="name"
@@ -36,14 +37,13 @@ export function SaveForm() {
           </label>
           <p className="text-text font-bold text-lg ml-auto">{fields.name.length}/39</p>
         </div>
-        <input
-          value={fields.name}
-          name="name"
+        <Input
           type="text"
+          name="name"
+          placeholder="Type here"
+          value={fields.name}
           onChange={handleChange}
-          className="w-full self-start font-mono p-1 mb-2 text-lg border border-text font-bold text-text rounded-sm bg-secondary transition-all duration-300"
         />
-
         <div className="flex flex-row">
           <label
             htmlFor="bio"
@@ -52,19 +52,19 @@ export function SaveForm() {
           </label>
           <p className="text-text font-bold text-lg ml-auto">0/128</p>
         </div>
-        <input
-          value={fields.bio}
-          name="bio"
+        <Input
           type="text"
+          name="bio"
+          placeholder="Type here"
+          value={fields.bio}
           onChange={handleChange}
-          className="w-full self-start font-mono p-1 mb-2 text-lg border border-text font-bold text-text rounded-sm bg-secondary transition-all duration-300"
         />
         <Button
           variant={'transparent'}
           size={'lg'}
           disabled={loading}
           type="submit"
-          className="mb-2">
+          className="mb-2 mt-2">
           {loading ? 'SAVING...' : 'SAVE SETTINGS'}
         </Button>
       </form>

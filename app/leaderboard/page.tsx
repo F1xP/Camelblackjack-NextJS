@@ -8,7 +8,7 @@ export default async function Leaderboard() {
 
   return (
     <>
-      <Header>Leaderboard</Header>
+      <Header className="mb-4 self-start">Leaderboard</Header>
       <LeaderboardTable leaderboardData={leaderboardData} />
       <Navigation leaderboardData={leaderboardData} />
     </>

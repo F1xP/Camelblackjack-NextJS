@@ -61,7 +61,7 @@ const LeaderboardTable: React.FC<{ leaderboardData: LeaderboardDataProps }> = ({
             </tr>
           ))}
         </tbody>
-      </table>{' '}
+      </table>
     </div>
   );
 };
