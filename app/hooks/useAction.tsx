@@ -19,6 +19,7 @@ const useAction = (action: ActionFunction) => {
       }
     } catch (e) {
       console.log(e);
+      throw new Error('An error occurred while processing the action.');
     } finally {
       setLoading(false);
     }

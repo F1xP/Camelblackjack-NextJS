@@ -13,9 +13,13 @@ export function SaveForm() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    await handleAction(formData);
-    update();
+    try {
+      const formData = new FormData(e.currentTarget);
+      await handleAction(formData);
+      update();
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

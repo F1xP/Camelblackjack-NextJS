@@ -28,10 +28,14 @@ export default function ConfirmationForm({
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    await handleAction(formData);
-    onClose();
-    if (withSignOut) signOut({ callbackUrl: '/' });
+    try {
+      const formData = new FormData(e.currentTarget);
+      await handleAction(formData);
+      onClose();
+      if (withSignOut) signOut({ callbackUrl: '/' });
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   return (

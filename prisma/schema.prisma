@@ -83,6 +83,10 @@ type GameState {
 type UserState {
   value   Int[]
   actions String[]
-  cards   Json[]
+  cards   Card[]
 }
 
+type Card {
+  rank   String
+  suit String
+}

@@ -13,27 +13,3 @@ export type LeaderboardDataProps = {
   createdAt: Date;
   updatedAt: Date;
 }[];
-
-export type Game = {
-  id: string;
-  active: boolean;
-  payoutMultiplier: number;
-  amountMultiplier: number;
-  amount: number;
-  payout: number;
-  state: GameState;
-  user_email?: string | null;
-  createdAt: Date;
-  updatedAt: Date;
-} | null;
-
-type GameState = {
-  player: UserState[];
-  dealer: UserState;
-};
-
-type UserState = {
-  value: number[];
-  actions: string[];
-  cards: any[];
-};
