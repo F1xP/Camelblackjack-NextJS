@@ -24,7 +24,7 @@ export default function Navbar() {
   ];
 
   return (
-    <nav className="fixed w-full h-12 bg-secondary_bg flex px-4 sm:px-14 md:px-18 lg:px-44 xl:px-64 flex-row items-center">
+    <nav className="fixed w-full h-12 bg-secondary_bg flex px-4 sm:px-14 md:px-18 lg:px-44 xl:px-64 flex-row items-center z-20">
       <Link
         className="flex flex-row gap-2 h-full justify-center items-center"
         href={'/'}>
@@ -34,7 +34,7 @@ export default function Navbar() {
           width={33}
           height={33}
         />
-        <p className="text-accent text-[1.3rem] font-bold font-serif small-caps text-3xl hidden sm:block whitespace-nowrap">
+        <p className="text-accent text-[1.3rem] font-black small-caps text-3xl hidden sm:block whitespace-nowrap">
           <span className="text-text">C</span>amel <span className="text-text">B</span>lackjack
         </p>
       </Link>
@@ -44,7 +44,7 @@ export default function Navbar() {
             <Link
               key={link.name}
               href={link.href}
-              className={`text-accent small-caps text-[1.2rem] font-bold hover:text-text hover:bg-text/20 px-4 h-full flex justify-center items-center ${
+              className={`text-accent small-caps text-[1.2rem] font-bold hover:text-text hover:bg-text/20 px-4 h-full flex justify-center items-center transition-all duration-300 ${
                 link.href === location ? 'border-b border-text text-text' : ''
               }`}>
               {link.name}
@@ -83,7 +83,7 @@ export default function Navbar() {
                 className="rounded-full"
               />
             </div>
-            <p className="font-bold p-1 px-3 small-caps whitespace-nowrap overflow-hidden text-ellipsis max-w-[100px] lg:max-w-xs">
+            <p className="font-bold p-1 px-3 small-caps whitespace-nowrap overflow-hidden text-ellipsis max-w-[100px] lg:max-w-xs mb-0.5">
               {session?.user?.name || ''}
             </p>
           </button>

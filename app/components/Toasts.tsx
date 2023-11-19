@@ -23,28 +23,28 @@ const ToastsContext = createContext<ToastsContextType>({
 export const ToastsProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [toasts, setToasts] = useState<ToastProps[]>([]);
 
+  const removeToast = (id: string): void => setToasts((prevToasts) => prevToasts.filter((toast) => toast.id !== id));
+
   const addToast = (message: string, type = 'Info'): void => {
+    const timeoutId = setTimeout(() => {
+      removeToast(newToast.id);
+    }, 10000);
+
     const newToast: ToastProps = {
       id: Math.random().toString(36).substring(2, 12),
       message,
       type,
-      timeoutId: setTimeout(() => {
-        removeToast(newToast.id);
-      }, 10000),
+      timeoutId,
     };
 
     setToasts((prevToasts) => [...prevToasts, newToast]);
   };
 
-  const removeToast = (id: string): void => setToasts((prevToasts) => prevToasts.filter((toast) => toast.id !== id));
-
   useEffect(() => {
     return () => {
-      toasts.forEach((toast) => {
-        clearTimeout(toast.timeoutId);
-      });
+      for (const toast of toasts) clearTimeout(toast.timeoutId);
     };
-  }, [toasts]);
+  }, []);
 
   return <ToastsContext.Provider value={{ addToast, removeToast, toasts }}>{children}</ToastsContext.Provider>;
 };
@@ -59,7 +59,7 @@ export const ToastsDisplay = () => {
   const { addToast, removeToast, toasts } = useToast();
 
   return (
-    <section className="fixed top-12 right-0 p-4 w-full md:w-[340px] flex flex-col-reverse gap-1 h-[calc(100%-3rem)] overflow-auto noti pointer-events-none">
+    <section className="fixed top-12 right-0 p-4 w-full md:w-[340px] flex flex-col-reverse gap-1 h-[calc(100%-3rem)] overflow-auto noti pointer-events-none z-30">
       {toasts.map((item) => (
         <Toast
           item={item}

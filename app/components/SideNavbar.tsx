@@ -52,7 +52,7 @@ const SideNavbar: React.FC = () => {
 
       {isSideNavbarOpen &&
         ReactDOM.createPortal(
-          <div className="fixed h-full w-full bg-black/70 z-10">
+          <div className="fixed h-full w-full bg-black/70 z-40">
             <aside
               ref={navbarRef}
               className={`fixed z-50 bg-background p-6 shadow-lg inset-y-0 right-0 h-full border-l border-secondary sm:max-w-sm w-[300px] sm:w-[540px] flex flex-col ${

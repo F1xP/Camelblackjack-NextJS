@@ -9,7 +9,8 @@ export const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: 'font-mono bg-primary font-bold text-accent hover:text-text',
+        default:
+          'bg-white text-secondary_bg hover:text-background hover:-translate-y-1 hover:bg-text font-extrabold font-sans duration-1000',
         transparent: 'font-mono border-2 border-secondary font-bold text-text hover:bg-secondary',
         outlined: 'font-mono text-lg bg-secondary border border-secondary font-bold text-text hover:border-text',
       },

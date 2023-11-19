@@ -81,7 +81,7 @@ type GameState {
 }
 
 type UserState {
-  value   Int[]
+  value   Int[] 
   actions String[]
   cards   Card[]
 }

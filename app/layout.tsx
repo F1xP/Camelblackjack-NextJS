@@ -7,6 +7,7 @@ import { NextUIProvider } from '@/lib/nextui';
 import { ToastsDisplay, ToastsProvider } from './components/Toasts';
 import { nextAuthOptions } from './api/auth/[...nextauth]/route';
 import './globals.css';
+import Footer from './components/Footer';
 
 export const metadata: Metadata = {
   title: 'Camel Blackjack',
@@ -18,7 +19,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
   return (
     <html lang="en">
-      <body className={`${GeistSans.className} font-sans`}>
+      <body className={`${GeistSans.className} font-sans bg-background`}>
         <SessionProvider
           session={session}
           refetchInterval={5 * 60}
@@ -28,10 +29,11 @@ export default async function RootLayout({ children }: { children: React.ReactNo
               <div id="portal-root"></div>
               <ToastsDisplay />
               <Navbar />
-              <main className="bg-background flex min-h-screen gap-2 flex-col items-center justify-center py-10 px-4 sm:px-14 md:px-18 lg:px-44 xl:px-64">
+              <main className="flex min-h-screen gap-2 flex-col items-center justify-center py-10 px-4 sm:px-14 md:px-18 lg:px-44 xl:px-64">
                 <span className="mt-2"></span>
                 {children}
               </main>
+              <Footer />
             </NextUIProvider>
           </ToastsProvider>
         </SessionProvider>

@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Button } from '../../components/Button';
 import { Input } from '../../components/Input';
 import { GameState } from '@prisma/client';
+import { hitAction } from './actions';
 
 export const GameButtons: React.FC<{ gameState: GameState | undefined; isGameActive: boolean }> = ({
   gameState,
@@ -18,9 +19,7 @@ export const GameButtons: React.FC<{ gameState: GameState | undefined; isGameAct
     throw new Error('Function not implemented.');
   }
 
-  function handleAction(action: string): void {
-    throw new Error('Function not implemented.');
-  }
+  const handleAction = async (action: string) => await hitAction(action);
 
   return (
     <section className="h-[600px] w-full flex-1 flex flex-col">
