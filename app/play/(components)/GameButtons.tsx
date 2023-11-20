@@ -3,23 +3,42 @@ import { useState } from 'react';
 import { Button } from '../../components/Button';
 import { Input } from '../../components/Input';
 import { GameState } from '@prisma/client';
-import { hitAction } from './actions';
+import { hitAction, betAction, splitAction, doubleAction, standAction } from './actions';
+import useAction from '@/app/hooks/useAction';
 
 export const GameButtons: React.FC<{ gameState: GameState | undefined; isGameActive: boolean }> = ({
   gameState,
   isGameActive,
 }) => {
+  const { loading, handleAction } = useAction();
   const [betAmount, setBetAmount] = useState<number>(0);
 
   const didStandOrBust = (hand: number) =>
     gameState?.player[hand].actions.includes('stand') || gameState?.player[hand].actions.includes('bust');
   const didDouble = (hand: number) => gameState?.player[hand].actions.includes('double');
 
-  function handleNewBet(): void {
-    throw new Error('Function not implemented.');
-  }
-
-  const handleAction = async (action: string) => await hitAction(action);
+  const handleActions = async (action: string) => {
+    const formData = new FormData();
+    switch (action) {
+      case 'bet':
+        formData.append('betAmount', betAmount.toString());
+        await handleAction(betAction, formData);
+        break;
+      case 'hit':
+        await handleAction(hitAction, formData);
+        break;
+      case 'stand':
+        await handleAction(standAction, formData);
+        break;
+      case 'split':
+        await handleAction(splitAction, formData);
+        break;
+      case 'double':
+        await handleAction(doubleAction, formData);
+        break;
+      default:
+    }
+  };
 
   return (
     <section className="h-[600px] w-full flex-1 flex flex-col">
@@ -36,8 +55,8 @@ export const GameButtons: React.FC<{ gameState: GameState | undefined; isGameAct
         <Button
           variant={'outlined'}
           size={'xl'}
-          disabled={isGameActive}
-          onClick={() => handleNewBet()}>
+          disabled={loading || isGameActive}
+          onClick={() => handleActions('bet')}>
           BET
         </Button>
       </div>
@@ -47,12 +66,12 @@ export const GameButtons: React.FC<{ gameState: GameState | undefined; isGameAct
             {
               name: 'HIT',
               action: 'hit',
-              disabled: didStandOrBust(0),
+              disabled: loading || didStandOrBust(0),
             },
             {
               name: 'STAND',
               action: 'stand',
-              disabled: didStandOrBust(0),
+              disabled: loading || didStandOrBust(0),
             },
           ].map((item, index) => (
             <Button
@@ -60,7 +79,7 @@ export const GameButtons: React.FC<{ gameState: GameState | undefined; isGameAct
               variant="outlined"
               size="md"
               disabled={item.disabled}
-              onClick={() => handleAction(item.action)}
+              onClick={() => handleActions(item.action)}
               className="flex-1">
               {item.name}
             </Button>
@@ -72,6 +91,7 @@ export const GameButtons: React.FC<{ gameState: GameState | undefined; isGameAct
               name: 'SPLIT',
               action: 'split',
               disabled:
+                loading ||
                 didStandOrBust(0) ||
                 gameState?.player.length !== 1 ||
                 gameState?.player[0].cards.length !== 2 ||
@@ -80,7 +100,7 @@ export const GameButtons: React.FC<{ gameState: GameState | undefined; isGameAct
             {
               name: 'DOUBLE',
               action: 'double',
-              disabled: didStandOrBust(0) || didDouble(0),
+              disabled: loading || didStandOrBust(0) || didDouble(0),
             },
           ].map((item, index) => (
             <Button
@@ -88,7 +108,7 @@ export const GameButtons: React.FC<{ gameState: GameState | undefined; isGameAct
               variant="outlined"
               size="md"
               disabled={item.disabled}
-              onClick={() => handleAction(item.action)}
+              onClick={() => handleActions(item.action)}
               className="flex-1">
               {item.name}
             </Button>

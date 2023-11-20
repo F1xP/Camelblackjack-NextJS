@@ -23,14 +23,14 @@ export default function ConfirmationForm({
   withSignOut,
 }: ConfirmationFormProps) {
   const { isOpen, onOpen, onClose, onOpenChange } = useDisclosure();
-  const { loading, handleAction } = useAction(action);
+  const { loading, handleAction } = useAction();
   const { data: session } = useSession();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       const formData = new FormData(e.currentTarget);
-      await handleAction(formData);
+      await handleAction(action, formData);
       onClose();
       if (withSignOut) signOut({ callbackUrl: '/' });
     } catch (e) {

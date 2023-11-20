@@ -8,14 +8,14 @@ import { Input } from '@/app/components/Input';
 
 export function SaveForm() {
   const { update, data: session } = useSession();
-  const { loading, handleAction } = useAction(updateProfile);
+  const { loading, handleAction } = useAction();
   const [fields, setFields] = useState({ name: session?.user?.name || '', bio: session?.user?.bio || '' });
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       const formData = new FormData(e.currentTarget);
-      await handleAction(formData);
+      await handleAction(updateProfile, formData);
       update();
     } catch (e) {
       console.log(e);

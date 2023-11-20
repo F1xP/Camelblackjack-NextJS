@@ -4,11 +4,11 @@ import { useToast } from '../components/Toasts';
 
 type ActionFunction = (formData: FormData) => Promise<{ message: string | null; error: string | null }>;
 
-const useAction = (action: ActionFunction) => {
+const useAction = () => {
   const { addToast, removeToast, toasts } = useToast();
   const [loading, setLoading] = useState(false);
 
-  const handleAction = async (formData: FormData) => {
+  const handleAction = async (action: ActionFunction, formData: FormData) => {
     setLoading(true);
     try {
       const actionResponse = await action(formData);

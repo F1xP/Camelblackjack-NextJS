@@ -8,18 +8,18 @@ generator client {
 }
 
 model Account {
-  id                 String    @id @default(auto()) @map("_id") @db.ObjectId
-  userId             String @db.ObjectId
-  type               String
-  provider           String
-  providerAccountId  String
-  refresh_token      String?  @db.String
-  access_token       String?  @db.String
-  expires_at         Int?
-  token_type         String?
-  scope              String?
-  id_token           String?  @db.String
-  session_state      String?
+  id                String  @id @default(auto()) @map("_id") @db.ObjectId
+  userId            String  @db.ObjectId
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.String
+  access_token      String? @db.String
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.String
+  session_state     String?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -27,9 +27,9 @@ model Account {
 }
 
 model Session {
-  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
   sessionToken String   @unique
-  userId       String @db.ObjectId
+  userId       String   @db.ObjectId
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
@@ -69,8 +69,8 @@ model Game {
   amount           Float
   payout           Float
   state            GameState
-  user_email       String?   
-  user             User?      @relation(fields: [user_email], references: [email], onDelete: Cascade)
+  user_email       String?
+  user             User?     @relation(fields: [user_email], references: [email], onDelete: Cascade)
   createdAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt
 }
@@ -81,12 +81,12 @@ type GameState {
 }
 
 type UserState {
-  value   Int[] 
+  value   Int[]
   actions String[]
   cards   Card[]
 }
 
 type Card {
-  rank   String
+  rank String
   suit String
 }
