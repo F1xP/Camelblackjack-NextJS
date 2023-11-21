@@ -2,7 +2,8 @@
 
 import { prisma } from '@/lib/prisma';
 import { getCurrentUser } from '@/lib/session';
-import { calculateHandValue, dealCard } from '@/lib/utils';
+import { calculateDealerHandValue, calculateHandValue, dealCard } from '@/lib/utils';
+import { Game } from '@prisma/client';
 import { revalidatePath } from 'next/cache';
 
 export const betAction = async (formData: FormData) => {
@@ -34,7 +35,7 @@ export const betAction = async (formData: FormData) => {
   const dealer_card1 = await dealCard();
   const dealer_card2 = await dealCard();
   const playerValue = await calculateHandValue([player_card1, player_card2]);
-  const dealerValue = await calculateHandValue([dealer_card1]);
+  const dealerValue = await calculateDealerHandValue([dealer_card1]);
   await prisma.game.create({
     data: {
       active: true,
@@ -64,18 +65,29 @@ export const hitAction = async (formData: FormData) => {
 
     if (!game) return { message: null, error: 'No active game found.' };
 
-    const newPlayerCard = await dealCard();
-    const updatePlayerCards = [...game.state.player[0].cards, newPlayerCard];
-    const updatePlayerActions = [...game.state.player[0].actions, 'hit'];
-    const updatedPlayerValue = await calculateHandValue(game.state.player[0].cards);
+    const playerState = game.state.player[0];
 
-    game.state.player[0].cards = updatePlayerCards;
-    game.state.player[0].actions = updatePlayerActions;
-    game.state.player[0].value = updatedPlayerValue;
+    const lastPlayerAction = playerState.actions.pop();
+    if (lastPlayerAction === 'double' || lastPlayerAction === 'stand' || lastPlayerAction === 'bust')
+      return { message: null, error: 'User is blocked from hitting.' };
+
+    const newPlayerCard = await dealCard();
+    const updatedPlayerCards = [...playerState.cards, newPlayerCard];
+    const updatedPlayerValue = await calculateHandValue(updatedPlayerCards);
+
+    const isUserBusted = updatedPlayerValue[0] > 21;
+    const updatedPlayerActions = isUserBusted
+      ? [...playerState.actions, 'hit', 'bust']
+      : [...playerState.actions, 'hit'];
+
+    playerState.cards = updatedPlayerCards;
+    playerState.value = updatedPlayerValue;
+    playerState.actions = updatedPlayerActions;
 
     await prisma.game.update({
       where: { id: game.id },
       data: {
+        active: isUserBusted,
         state: {
           player: game.state.player,
           dealer: game.state.dealer,
@@ -102,23 +114,29 @@ export const standAction = async (formData: FormData) => {
 
     if (!game) return { message: null, error: 'No active game found.' };
 
-    while (game.state.dealer.value[0] < 17) {
+    const dealerTurn = async () => {
+      if (game.state.dealer.value[0] >= 17) return;
+      console.log(game.state.dealer.cards, game.state.dealer.value);
       const newDealerCard = await dealCard();
       const updateDealerCards = [...game.state.dealer.cards, newDealerCard];
       const updateDealerActions = [...game.state.dealer.actions, 'hit'];
-      const updateDealerValue = await calculateHandValue(game.state.dealer.cards);
+      const updateDealerValue = await calculateDealerHandValue(updateDealerCards);
 
       game.state.dealer.cards = updateDealerCards;
       game.state.dealer.actions = updateDealerActions;
       game.state.dealer.value = updateDealerValue;
-    }
+      await dealerTurn();
+    };
+    await dealerTurn();
 
     if (game.state.dealer.value[0] > 21) game.state.dealer.actions = [...game.state.dealer.actions, 'bust'];
     else game.state.dealer.actions = [...game.state.dealer.actions, 'stand'];
 
+    game.state.player[0].actions = [...game.state.player[0].actions, 'stand'];
     await prisma.game.update({
       where: { id: game.id },
       data: {
+        active: false,
         state: {
           player: game.state.player,
           dealer: game.state.dealer,
@@ -133,6 +151,7 @@ export const standAction = async (formData: FormData) => {
     return { message: null, error: 'An error occurred while processing your hit action.' };
   }
 };
+
 export const splitAction = async (formData: FormData) => {
   return { message: 'Split action finished.', error: null };
 };
@@ -141,16 +160,20 @@ export const doubleAction = async (formData: FormData) => {
 };
 
 export const getCurretGame = async () => {
-  try {
-    const user = await getCurrentUser();
-    if (!user || !user.email) return { message: null, error: 'You must be signed in.' };
+  const user = await getCurrentUser();
+  if (!user || !user.email) return { message: null, error: 'You must be signed in.' };
 
-    const data = await prisma.game.findFirst({
-      where: { active: true, user_email: user.email },
-    });
-    if (data && data.state.dealer.cards.length === 2) data.state.dealer.cards = [data.state.dealer.cards[0]];
-    return { data: data, error: null };
-  } catch (e) {
-    return { data: null, error: 'An error occurred while trying to save your profile settings. Please try again.' };
+  const data: Game | null = await prisma.game.findFirst({
+    where: {
+      OR: [{ user_email: user?.email, active: true }, { user_email: user?.email }],
+    },
+    orderBy: { updatedAt: 'desc' },
+  });
+  /* if (data && data.state.dealer.cards.length === 2) {
+    console.log(data.state.dealer.cards);
+    data.state.dealer.cards = [data.state.dealer.cards[0]];
+    data.state.dealer.value = await calculateHandValue(data.state.dealer.cards);
   }
+  */
+  return data;
 };

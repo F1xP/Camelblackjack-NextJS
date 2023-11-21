@@ -66,12 +66,12 @@ export const GameButtons: React.FC<{ gameState: GameState | undefined; isGameAct
             {
               name: 'HIT',
               action: 'hit',
-              disabled: loading || didStandOrBust(0),
+              disabled: loading || !isGameActive || didStandOrBust(0),
             },
             {
               name: 'STAND',
               action: 'stand',
-              disabled: loading || didStandOrBust(0),
+              disabled: loading || !isGameActive || didStandOrBust(0),
             },
           ].map((item, index) => (
             <Button
@@ -92,6 +92,7 @@ export const GameButtons: React.FC<{ gameState: GameState | undefined; isGameAct
               action: 'split',
               disabled:
                 loading ||
+                !isGameActive ||
                 didStandOrBust(0) ||
                 gameState?.player.length !== 1 ||
                 gameState?.player[0].cards.length !== 2 ||
@@ -100,7 +101,7 @@ export const GameButtons: React.FC<{ gameState: GameState | undefined; isGameAct
             {
               name: 'DOUBLE',
               action: 'double',
-              disabled: loading || didStandOrBust(0) || didDouble(0),
+              disabled: loading || !isGameActive || didStandOrBust(0) || didDouble(0),
             },
           ].map((item, index) => (
             <Button

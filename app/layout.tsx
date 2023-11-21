@@ -22,8 +22,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <body className={`${GeistSans.className} font-sans bg-background`}>
         <SessionProvider
           session={session}
-          refetchInterval={5 * 60}
-          refetchOnWindowFocus={true}>
+          refetchInterval={5 * 60}>
           <ToastsProvider>
             <NextUIProvider>
               <div id="portal-root"></div>

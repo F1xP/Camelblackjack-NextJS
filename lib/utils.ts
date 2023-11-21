@@ -43,6 +43,39 @@ export const calculateHandValue = async (hand: any) => {
   return possibleValues;
 };
 
+export const calculateDealerHandValue = async (hand: any) => {
+  const possibleValues = [0];
+  let aceCount = 0;
+
+  for (const card of hand) {
+    const cardValue = card.rank === 'A' ? 11 : isNaN(Number(card.rank)) ? 10 : Number(card.rank);
+
+    if (card.rank === 'A') {
+      aceCount++;
+      const newPossibleValues = [];
+      for (const value of possibleValues) {
+        newPossibleValues.push(value + 1);
+        newPossibleValues.push(value + 11);
+      }
+      possibleValues.length = 0;
+      possibleValues.push(...newPossibleValues);
+    } else for (let i = 0; i < possibleValues.length; i++) possibleValues[i] += cardValue;
+  }
+
+  while (aceCount > 0) {
+    aceCount--;
+    const newPossibleValues = [];
+    for (const value of possibleValues) {
+      if (value > 21 && aceCount === 0) newPossibleValues.push(value - 10);
+      else newPossibleValues.push(value);
+    }
+    possibleValues.length = 0;
+    possibleValues.push(...newPossibleValues);
+  }
+
+  return possibleValues;
+};
+
 export const canSplit = async (player: string | any[]) => {
   // Check if split is possible
   return player.length === 2 && player[0].rank === player[1].rank;

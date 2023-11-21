@@ -1,6 +1,7 @@
 import { prisma } from '@/lib/prisma';
 import { NextResponse } from 'next/server';
 import { getCurrentUser } from '@/lib/session';
+import { calculateDealerHandValue } from '@/lib/utils';
 
 const player: any[] = [];
 const dealer: any[] = [];
@@ -149,7 +150,7 @@ export async function POST(request: Request) {
     const dealer_card1 = await dealCard();
     const dealer_card2 = await dealCard();
     const playerValue = await calculateHandValue([player_card1, player_card2]);
-    const dealerValue = await calculateHandValue([dealer_card1]);
+    const dealerValue = await calculateDealerHandValue([dealer_card1]);
     const data = await prisma.game.create({
       data: {
         active: true,
