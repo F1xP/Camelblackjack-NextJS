@@ -2,20 +2,17 @@
 import { useState } from 'react';
 import { Button } from '../../components/Button';
 import { Input } from '../../components/Input';
-import { GameState } from '@prisma/client';
 import { hitAction, betAction, splitAction, doubleAction, standAction } from './actions';
 import useAction from '@/app/hooks/useAction';
+import { GameState } from '@/types/types';
 
-export const GameButtons: React.FC<{ gameState: GameState | undefined; isGameActive: boolean }> = ({
-  gameState,
-  isGameActive,
-}) => {
+export const GameButtons: React.FC<{ gameState: GameState; isGameActive: boolean }> = ({ gameState, isGameActive }) => {
   const { loading, handleAction } = useAction();
   const [betAmount, setBetAmount] = useState<number>(0);
 
   const didStandOrBust = (hand: number) =>
-    gameState?.player[hand].actions.includes('stand') || gameState?.player[hand].actions.includes('bust');
-  const didDouble = (hand: number) => gameState?.player[hand].actions.includes('double');
+    gameState.player[hand].actions.includes('stand') || gameState.player[hand].actions.includes('bust');
+  const didDouble = (hand: number) => gameState.player[hand].actions.includes('double');
 
   const handleActions = async (action: string) => {
     const formData = new FormData();
@@ -94,9 +91,9 @@ export const GameButtons: React.FC<{ gameState: GameState | undefined; isGameAct
                 loading ||
                 !isGameActive ||
                 didStandOrBust(0) ||
-                gameState?.player.length !== 1 ||
-                gameState?.player[0].cards.length !== 2 ||
-                gameState?.player[0].cards[0].rank !== gameState?.player[0].cards[1].rank,
+                gameState.player.length !== 1 ||
+                gameState.player[0].cards.length !== 2 ||
+                gameState.player[0].cards[0].rank !== gameState.player[0].cards[1].rank,
             },
             {
               name: 'DOUBLE',

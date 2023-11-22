@@ -1,28 +1,32 @@
-import { Game, GameState } from '@prisma/client';
 import { GameButtons } from './(components)/GameButtons';
 import { GameDisplay } from './(components)/GaneDisplay';
-import { getCurretGame } from './(components)/actions';
+import { checkGameStatus, getCurrentGame } from './(components)/actions';
+import { Game, GameState } from '@/types/types';
+import { notFound } from 'next/navigation';
 
 export default async function Play() {
-  const gameData: any = await getCurretGame();
+  const gameData: Game | null = await getCurrentGame();
+  if (!gameData) return notFound();
+  const gameStatus = await checkGameStatus(gameData);
 
-  const gameState: GameState | undefined = gameData?.state;
-  const isGameActive: boolean = gameData?.active || false;
+  const gameState: GameState | undefined = gameData.state;
+  const isGameActive = gameData.active;
   const currentHand = 0;
 
-  const dealerLastAction: string | undefined = gameState?.dealer?.actions?.pop();
-  const playerLastAction: string | undefined = gameState?.player[0]?.actions?.pop();
+  const dealerLastAction = gameState.dealer.actions.slice(-1)[0];
+  const playerLastAction = gameState.player[currentHand].actions.slice(-1)[0];
 
-  const isDealerBusted: boolean = dealerLastAction === 'bust';
-  const isPlayerBusted: boolean = playerLastAction === 'bust';
+  const isDealerBusted = dealerLastAction === 'bust';
+  const isPlayerBusted = playerLastAction === 'bust';
 
   return (
     <>
+      <p className="text-text text-5xl">Winner: {gameStatus}</p>
       <p className="text-text">
-        Player Value: {gameState?.player[currentHand]?.value[0]}{' '}
-        {gameState?.player[currentHand]?.value[1] && `,${gameState?.player[currentHand]?.value[1]}`}{' '}
+        Player Value: {gameState.player[currentHand].value[0]}{' '}
+        {gameState.player[currentHand].value[1] && `,${gameState.player[currentHand].value[1]}`}{' '}
       </p>
-      <p className="text-text">Dealer Value: {gameState?.dealer?.value[0]}</p>
+      <p className="text-text">Dealer Value: {gameState.dealer.value[0]}</p>
 
       <p className="text-text">
         Player Status: {isPlayerBusted ? 'Busted' : 'Not yet busted'}

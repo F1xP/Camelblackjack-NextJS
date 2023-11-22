@@ -1,3 +1,4 @@
+import { Game } from '@/types/types';
 import { ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
@@ -76,9 +77,20 @@ export const calculateDealerHandValue = async (hand: any) => {
   return possibleValues;
 };
 
-export const canSplit = async (player: string | any[]) => {
-  // Check if split is possible
-  return player.length === 2 && player[0].rank === player[1].rank;
+export const canSplit = async (game: Game) => {
+  // Check if the user can split based on hands length
+  const playerHands = game.state.player.length;
+  if (playerHands > 1) false;
+
+  const playerState = game.state.player[0];
+  const lastPlayerAction = playerState.actions.slice(-1)[0];
+
+  // Check if the user can split based on the last action
+  if (['double', 'stand', 'bust'].includes(lastPlayerAction)) return false;
+  // Check if the user can split (only when the player has exactly 2 cards of the same rank)
+  if (playerState.cards.length !== 2 || playerState.cards[0].rank !== playerState.cards[1].rank) return false;
+
+  return true;
 };
 
 export const doubleDown = async (player: string | any[]) => {
@@ -129,4 +141,13 @@ export const checkGameStatus = async (playerHand: any, dealerHand: any) => {
     if (playerValue < dealerValue) return 'win_dealer';
   }
   return 'continue';
+};
+
+export const getErrorMessage = (error: unknown): string => {
+  let message: string;
+  if (error instanceof Error) message = error.message;
+  else if (error && typeof error === 'object' && 'message' in error) message = String(error.message);
+  else if (typeof error === 'string') message = error;
+  else message = 'An unexpected error occured';
+  return message;
 };

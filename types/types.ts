@@ -1,3 +1,5 @@
+import { User } from '@prisma/client';
+
 export type LeaderboardDataProps = {
   id: string;
   name: string | null;
@@ -13,3 +15,33 @@ export type LeaderboardDataProps = {
   createdAt: Date;
   updatedAt: Date;
 }[];
+
+export type Game = {
+  id: string;
+  active: boolean;
+  payoutMultiplier: number;
+  amountMultiplier: number;
+  amount: number;
+  payout: number;
+  state: GameState;
+  user_email?: string | null;
+  user?: User | null;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+export type GameState = {
+  player: UserState[];
+  dealer: UserState;
+};
+
+export type UserState = {
+  value: number[];
+  actions: string[];
+  cards: Card[];
+};
+
+export type Card = {
+  rank: string;
+  suit: string;
+};

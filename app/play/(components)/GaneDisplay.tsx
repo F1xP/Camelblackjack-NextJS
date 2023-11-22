@@ -1,6 +1,6 @@
 'use client';
+import { suitIcons } from '@/app/components/Suits';
 import { GameState } from '@prisma/client';
-import { BsFillSuitClubFill, BsFillSuitHeartFill, BsFillSuitDiamondFill, BsFillSuitSpadeFill } from 'react-icons/bs';
 
 export const GameDisplay: React.FC<{ gameState: GameState | undefined }> = ({ gameState }) => {
   const currentHand = 0;
@@ -45,27 +45,8 @@ export const GameDisplay: React.FC<{ gameState: GameState | undefined }> = ({ ga
   );
 };
 
-const suitIcons = {
-  Clubs: {
-    icon: <BsFillSuitClubFill size={32} />,
-    color: '#000000',
-  },
-  Spades: {
-    icon: <BsFillSuitSpadeFill size={32} />,
-    color: '#000000',
-  },
-  Diamonds: {
-    icon: <BsFillSuitDiamondFill size={32} />,
-    color: '#FF0000',
-  },
-  Hearts: {
-    icon: <BsFillSuitHeartFill size={32} />,
-    color: '#FF0000',
-  },
-};
-
 const Card: React.FC<{ index: number; rank: string; suit: string }> = ({ index, rank, suit }) => {
-  const { icon, color } = suitIcons[suit as keyof typeof suitIcons] || {};
+  const { icon, color } = suitIcons(32)[suit as keyof typeof suitIcons] || {};
 
   return (
     <div
