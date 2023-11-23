@@ -64,10 +64,10 @@ model VerificationToken {
 model Game {
   id               String    @id @default(auto()) @map("_id") @db.ObjectId
   active           Boolean
-  payoutMultiplier Float
-  amountMultiplier Float
-  amount           Float
-  payout           Float
+  payoutMultiplier Int
+  amountMultiplier Int
+  amount           Int
+  payout           Int
   state            GameState
   user_email       String?
   user             User?     @relation(fields: [user_email], references: [email], onDelete: Cascade)

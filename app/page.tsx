@@ -5,19 +5,22 @@ import { BsFillSuitClubFill, BsFillSuitHeartFill, BsFillSuitDiamondFill, BsFillS
 export default function Home() {
   const icons = [
     <BsFillSuitClubFill
+      key={1}
       size={32}
-      a
       color={'#000000'}
     />,
     <BsFillSuitSpadeFill
+      key={2}
       size={32}
       color={'#000000'}
     />,
     <BsFillSuitDiamondFill
+      key={3}
       size={32}
       color={'#FF0000'}
     />,
     <BsFillSuitHeartFill
+      key={4}
       size={32}
       color={'#FF0000'}
     />,

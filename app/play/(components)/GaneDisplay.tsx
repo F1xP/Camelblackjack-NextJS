@@ -2,9 +2,10 @@
 import { suitIcons } from '@/app/components/Suits';
 import { GameState } from '@prisma/client';
 
-export const GameDisplay: React.FC<{ gameState: GameState | undefined }> = ({ gameState }) => {
-  const currentHand = 0;
-
+export const GameDisplay: React.FC<{ gameState: GameState | null; currentHand: number }> = ({
+  gameState,
+  currentHand,
+}) => {
   return (
     <section className="bg-black/30 h-[600px] w-full flex-[2] rounded-r-lg text-text overflow-hidden relative">
       <div className="flex flex-col justify-between h-full p-2">

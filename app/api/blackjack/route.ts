@@ -82,24 +82,6 @@ const dealCard = async () => {
   return { rank: randomRank, suit: randomSuit };
 };
 
-const checkGameStatus = async (playerHand: any, dealerHand: any) => {
-  const playerValue: any = await calculateHandValue(playerHand);
-  const dealerValue: any = await calculateHandValue(dealerHand);
-
-  if (playerValue === 21 && [1, 2].length === 2) return 'blackjack_player';
-  if (dealerValue === 21 && [1, 2].length === 2) return 'blackjack_dealer';
-
-  if (playerValue > 21) return 'bust_player';
-  if (dealerValue > 21) return 'bust_dealer';
-
-  if (dealerValue > 16 && playerValue <= 21) {
-    if (playerValue === dealerValue) return 'push';
-    if (playerValue > dealerValue) return 'win_player';
-    if (playerValue < dealerValue) return 'win_dealer';
-  }
-  return 'continue';
-};
-
 export async function GET(request: Request) {
   try {
     const user = await getCurrentUser();

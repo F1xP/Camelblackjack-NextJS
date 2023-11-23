@@ -36,3 +36,5 @@ export const Header = React.forwardRef<HTMLHeadingElement, HeaderProps>(
     );
   }
 );
+
+Header.displayName = 'Header';

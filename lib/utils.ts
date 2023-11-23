@@ -1,4 +1,4 @@
-import { Game } from '@/types/types';
+import { Game, GameState } from '@/types/types';
 import { ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
@@ -77,6 +77,15 @@ export const calculateDealerHandValue = async (hand: any) => {
   return possibleValues;
 };
 
+export const getCurrentHand = async (gameState: GameState | null) => {
+  if (!gameState) return 0;
+  const playerHands = gameState.player.length;
+  const currentHand =
+    playerHands > 1 && ['stand', 'bust', 'double'].includes(gameState.player[0].actions.slice(-1)[0]) ? 1 : 0;
+
+  return currentHand;
+};
+
 export const canSplit = async (game: Game) => {
   // Check if the user can split based on hands length
   const playerHands = game.state.player.length;
@@ -125,22 +134,33 @@ export const dealCard = async () => {
   return { rank: randomRank, suit: randomSuit };
 };
 
-export const checkGameStatus = async (playerHand: any, dealerHand: any) => {
-  const playerValue: any = await calculateHandValue(playerHand);
-  const dealerValue: any = await calculateHandValue(dealerHand);
+export const checkGameStatus = async (gameState: GameState | null) => {
+  if (!gameState) return 'No Active Game';
 
-  if (playerValue === 21 && [1, 2].length === 2) return 'blackjack_player';
-  if (dealerValue === 21 && [1, 2].length === 2) return 'blackjack_dealer';
+  const playerCards = gameState.player[0].cards;
+  const dealerCards = gameState.dealer.cards;
 
-  if (playerValue > 21) return 'bust_player';
-  if (dealerValue > 21) return 'bust_dealer';
+  const playerValue = Number(gameState.player[0].value[0]);
+  const dealerValue = Number(gameState.dealer.value[0]);
+
+  const playerLastAction = gameState.player[0].actions.slice(-1)[0];
+  const dealerLastAction = gameState.dealer.actions.slice(-1)[0];
+
+  const isPlayerBusted = playerLastAction === 'bust';
+  const isDealerBusted = dealerLastAction === 'bust';
+
+  if (playerValue === 21 && playerCards.length === 2) return 'Player';
+  if (dealerValue === 21 && dealerCards.length === 2) return 'Dealer';
+
+  if (isPlayerBusted) return 'Dealer';
+  if (!isPlayerBusted && isDealerBusted) return 'Player';
 
   if (dealerValue > 16 && playerValue <= 21) {
-    if (playerValue === dealerValue) return 'push';
-    if (playerValue > dealerValue) return 'win_player';
-    if (playerValue < dealerValue) return 'win_dealer';
+    if (playerValue === dealerValue) return 'Push';
+    if (playerValue > dealerValue) return 'Player';
+    if (playerValue < dealerValue) return 'Dealer';
   }
-  return 'continue';
+  return 'No Result Yet';
 };
 
 export const getErrorMessage = (error: unknown): string => {
