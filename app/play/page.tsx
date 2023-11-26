@@ -10,20 +10,23 @@ export default async function Play() {
 
   const gameState = gameData?.state || null;
   const isGameActive = gameData?.active || false;
-  const gameStatus = await checkGameStatus(gameState);
+  const gameStatus1 = await checkGameStatus(gameState, 0);
+  const gameStatus2 = await checkGameStatus(gameState, 1);
   const currentHand = await getCurrentHand(gameState);
 
   return (
     <>
       <GameActions
         gameState={gameState}
-        gameStatus={gameStatus}
+        gameStatus1={gameStatus1}
+        gameStatus2={gameStatus2}
         currentHand={currentHand}
       />
       <div className="flex flex-row w-full rounded-lg border border-secondary bg-black/30 mt-10 flex-nowrap md:flex-wrap">
         <GameButtons
           gameState={gameState}
           isGameActive={isGameActive}
+          currentHand={currentHand}
         />
         <GameDisplay
           gameState={gameState}
@@ -34,11 +37,12 @@ export default async function Play() {
   );
 }
 
-const GameActions: React.FC<{ gameState: GameState | null; gameStatus: string; currentHand: number }> = ({
-  gameState,
-  gameStatus,
-  currentHand,
-}) => {
+const GameActions: React.FC<{
+  gameState: GameState | null;
+  gameStatus1: string;
+  gameStatus2: string;
+  currentHand: number;
+}> = ({ gameState, gameStatus1, gameStatus2, currentHand }) => {
   console.log(gameState?.dealer.actions, 'Dealer Actions Client');
   console.log(gameState?.player[currentHand].actions, 'Player Actions Client');
   const dealerLastAction = gameState?.dealer.actions[gameState?.dealer.actions.length - 1];
@@ -47,7 +51,8 @@ const GameActions: React.FC<{ gameState: GameState | null; gameStatus: string; c
   return (
     <div>
       <p className="text-red-500">{JSON.stringify(gameState?.player[0].actions)}</p>
-      <p className="text-text text-5xl">Winner: {gameStatus}</p>
+      <p className="text-text text-5xl">Winner hand 1: {gameStatus1}</p>
+      <p className="text-text text-5xl">Winner hand 2: {gameStatus2}</p>
       <p className="text-text">
         Player Value: {gameState?.player[currentHand].value[0]}{' '}
         {gameState?.player[currentHand].value[1] && `,${gameState?.player[currentHand].value[1]}`}{' '}

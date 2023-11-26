@@ -6,9 +6,10 @@ import { hitAction, betAction, splitAction, doubleAction, standAction } from './
 import useAction from '@/app/hooks/useAction';
 import { GameState } from '@/types/types';
 
-export const GameButtons: React.FC<{ gameState: GameState | null; isGameActive: boolean }> = ({
+export const GameButtons: React.FC<{ gameState: GameState | null; isGameActive: boolean; currentHand: number }> = ({
   gameState,
   isGameActive,
+  currentHand,
 }) => {
   const { loading, handleAction } = useAction();
   const [betAmount, setBetAmount] = useState<number>(0);
@@ -66,12 +67,12 @@ export const GameButtons: React.FC<{ gameState: GameState | null; isGameActive: 
             {
               name: 'HIT',
               action: 'hit',
-              disabled: loading || !isGameActive || didStandOrBust(0),
+              disabled: loading || !isGameActive || didStandOrBust(currentHand),
             },
             {
               name: 'STAND',
               action: 'stand',
-              disabled: loading || !isGameActive || didStandOrBust(0),
+              disabled: loading || !isGameActive || didStandOrBust(currentHand),
             },
           ].map((item, index) => (
             <Button
@@ -93,15 +94,15 @@ export const GameButtons: React.FC<{ gameState: GameState | null; isGameActive: 
               disabled:
                 loading ||
                 !isGameActive ||
-                didStandOrBust(0) ||
+                didStandOrBust(currentHand) ||
                 gameState?.player.length !== 1 ||
-                gameState?.player[0].cards.length !== 2 ||
-                gameState?.player[0].cards[0].rank !== gameState?.player[0].cards[1].rank,
+                gameState?.player[currentHand].cards.length !== 2 ||
+                gameState?.player[currentHand].cards[0].rank !== gameState?.player[currentHand].cards[1].rank,
             },
             {
               name: 'DOUBLE',
               action: 'double',
-              disabled: loading || !isGameActive || didStandOrBust(0) || didDouble(0),
+              disabled: loading || !isGameActive || didStandOrBust(currentHand) || didDouble(currentHand),
             },
           ].map((item, index) => (
             <Button

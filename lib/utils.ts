@@ -8,73 +8,41 @@ export const ranks = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K
 export const suits = ['Hearts', 'Diamonds', 'Clubs', 'Spades'];
 
 export const calculateHandValue = async (hand: any) => {
-  const possibleValues = [0];
+  let values = [0];
   let aceCount = 0;
 
   for (const card of hand) {
     const cardValue = card.rank === 'A' ? 11 : isNaN(Number(card.rank)) ? 10 : Number(card.rank);
-
-    if (card.rank === 'A') {
-      aceCount++;
-      // Duplicate possible values for each Ace (1 and 11)
-      const newPossibleValues = [];
-      for (const value of possibleValues) {
-        newPossibleValues.push(value + 1);
-        newPossibleValues.push(value + 11);
-      }
-      possibleValues.length = 0;
-      possibleValues.push(...newPossibleValues);
-    }
-    // Add the card value to all possible values
-    else for (let i = 0; i < possibleValues.length; i++) possibleValues[i] += cardValue;
+    if (card.rank === 'A') aceCount++;
+    else values[0] += cardValue;
   }
 
-  while (aceCount > 0) {
-    aceCount--;
-    const newPossibleValues = [];
-    for (const value of possibleValues) {
-      // If an Ace's value is 11 and it causes the hand to bust, consider it as 1
-      if (value > 21) newPossibleValues.push(value - 10);
-      else newPossibleValues.push(value);
+  for (let i = 0; i < aceCount; i++) {
+    if (values[0] >= 11) values[0] += 1;
+    else {
+      values[1] = values[0] + 11;
+      values[0] += 1;
     }
-    possibleValues.length = 0;
-    possibleValues.push(...newPossibleValues);
   }
-
-  return possibleValues;
+  return values;
 };
 
 export const calculateDealerHandValue = async (hand: any) => {
-  const possibleValues = [0];
+  let values = [0];
   let aceCount = 0;
 
   for (const card of hand) {
     const cardValue = card.rank === 'A' ? 11 : isNaN(Number(card.rank)) ? 10 : Number(card.rank);
-
-    if (card.rank === 'A') {
-      aceCount++;
-      const newPossibleValues = [];
-      for (const value of possibleValues) {
-        newPossibleValues.push(value + 1);
-        newPossibleValues.push(value + 11);
-      }
-      possibleValues.length = 0;
-      possibleValues.push(...newPossibleValues);
-    } else for (let i = 0; i < possibleValues.length; i++) possibleValues[i] += cardValue;
+    if (card.rank === 'A') aceCount++;
+    else values[0] += cardValue;
   }
 
-  while (aceCount > 0) {
-    aceCount--;
-    const newPossibleValues = [];
-    for (const value of possibleValues) {
-      if (value > 21 && aceCount === 0) newPossibleValues.push(value - 10);
-      else newPossibleValues.push(value);
-    }
-    possibleValues.length = 0;
-    possibleValues.push(...newPossibleValues);
+  for (let i = 0; i < aceCount; i++) {
+    if (values[0] >= 11) values[0] += 1;
+    else values[0] += 11;
   }
 
-  return possibleValues;
+  return values;
 };
 
 export const getCurrentHand = async (gameState: GameState | null) => {
@@ -126,7 +94,7 @@ export const dealerTurn = () => {
 
 export const dealCard = async () => {
   // Deal a card for dealer or player
-  const randomRankIndex = Math.floor(Math.random() * ranks.length);
+  const randomRankIndex = 2;
   const randomSuitIndex = Math.floor(Math.random() * suits.length);
   const randomRank = ranks[randomRankIndex];
   const randomSuit = suits[randomSuitIndex];
@@ -134,16 +102,16 @@ export const dealCard = async () => {
   return { rank: randomRank, suit: randomSuit };
 };
 
-export const checkGameStatus = async (gameState: GameState | null) => {
-  if (!gameState) return 'No Active Game';
+export const checkGameStatus = async (gameState: GameState | null, hand: number) => {
+  if (!gameState || !gameState.player[hand]) return 'No Active Game';
 
-  const playerCards = gameState.player[0].cards;
+  const playerCards = gameState.player[hand].cards;
   const dealerCards = gameState.dealer.cards;
 
-  const playerValue = Number(gameState.player[0].value[0]);
+  const playerValue = Number(gameState.player[hand].value[0]);
   const dealerValue = Number(gameState.dealer.value[0]);
 
-  const playerLastAction = gameState.player[0].actions.slice(-1)[0];
+  const playerLastAction = gameState.player[hand].actions.slice(-1)[0];
   const dealerLastAction = gameState.dealer.actions.slice(-1)[0];
 
   const isPlayerBusted = playerLastAction === 'bust';

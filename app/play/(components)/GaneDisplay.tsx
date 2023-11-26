@@ -12,13 +12,31 @@ export const GameDisplay: React.FC<{ gameState: GameState | null; currentHand: n
         <div className="w-full flex justify-around flex-row-reverse absolute top-1">
           <div className="flex items-center justify-center flex-col relative">
             <div className="flex relative item-start mt-1 min-h-[7.9rem] min-w-[5rem]">
-              {gameState?.player[currentHand]?.cards?.map((card: any, index: number) => {
+              {gameState?.player[0]?.cards?.map((card: any, index: number) => {
+                return (
+                  <Card
+                    isCurrent={currentHand === 0}
+                    key={index}
+                    index={index}
+                    rank={card?.rank}
+                    suit={card?.suit}
+                  />
+                );
+              })}
+            </div>
+          </div>
+        </div>
+        <div className="w-full flex justify-around flex-row-reverse absolute top-1 left-[200px]">
+          <div className="flex items-center justify-center flex-col relative">
+            <div className="flex relative item-start mt-1 min-h-[7.9rem] min-w-[5rem]">
+              {gameState?.player[1]?.cards?.map((card: any, index: number) => {
                 return (
                   <Card
                     key={index}
                     index={index}
                     rank={card?.rank}
                     suit={card?.suit}
+                    isCurrent={currentHand === 1}
                   />
                 );
               })}
@@ -35,6 +53,7 @@ export const GameDisplay: React.FC<{ gameState: GameState | null; currentHand: n
                     index={index}
                     rank={card?.rank}
                     suit={card?.suit}
+                    isCurrent={currentHand === 3}
                   />
                 );
               })}
@@ -46,12 +65,19 @@ export const GameDisplay: React.FC<{ gameState: GameState | null; currentHand: n
   );
 };
 
-const Card: React.FC<{ index: number; rank: string; suit: string }> = ({ index, rank, suit }) => {
+const Card: React.FC<{ index: number; rank: string; suit: string; isCurrent: boolean }> = ({
+  index,
+  rank,
+  suit,
+  isCurrent,
+}) => {
   const { icon, color } = suitIcons(32)[suit as keyof typeof suitIcons] || {};
 
   return (
     <div
-      className="w-20 h-32 bg-white rounded-md shadow-sm shadow-black p-card-animation"
+      className={`w-20 h-32 bg-white rounded-md shadow-sm shadow-black p-card-animation ${
+        isCurrent && 'border-red-700 border-2'
+      }`}
       style={{
         animationDelay: `${index * 100}ms`,
         marginTop: `${index}rem`,

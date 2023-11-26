@@ -101,11 +101,15 @@ export const hitAction = async (formData: FormData) => {
     const isUserBusted = playerState.value[0] > 21;
     playerState.actions = isUserBusted ? [...playerState.actions, 'hit', 'bust'] : [...playerState.actions, 'hit'];
 
-    // Update the game in the database
+    const isSplitted = playerState.actions.includes('split');
+
     await prisma.game.update({
       where: { id: game.id },
       data: {
-        active: !isUserBusted,
+        active:
+          !(isSplitted && isUserBusted && currentHand === 1) &&
+          !(isSplitted && isUserBusted && currentHand === 0) &&
+          !(!isSplitted && isUserBusted),
         state: {
           player: game.state.player,
           dealer: game.state.dealer,
@@ -159,20 +163,20 @@ export const standAction = async (formData: FormData) => {
       await dealerTurn();
     };
 
-    // Initiate the dealer's turn
-    await dealerTurn();
+    const isSplitted = playerState.actions.includes('split');
 
-    // Determine if the dealer busted or stood
-    if (dealerState.value[0] > 21) dealerState.actions = [...dealerState.actions, 'bust'];
-    else dealerState.actions = [...dealerState.actions, 'stand'];
-
+    if (!isSplitted || (isSplitted && currentHand === 1)) {
+      await dealerTurn();
+      if (dealerState.value[0] > 21) dealerState.actions = [...dealerState.actions, 'bust'];
+      else dealerState.actions = [...dealerState.actions, 'stand'];
+    }
     // Update player and dealer actions
     playerState.actions = [...playerState.actions, 'stand'];
 
     await prisma.game.update({
       where: { id: game.id },
       data: {
-        active: false,
+        active: !isSplitted ? false : isSplitted && currentHand === 0,
         state: {
           player: game.state.player,
           dealer: game.state.dealer,
@@ -265,7 +269,6 @@ export const getCurrentGame = async () => {
       },
       orderBy: { updatedAt: 'desc' },
     });
-    console.log('This is server Side', game?.state.player[0].actions);
     /*
     if (data && data.state.dealer.cards.length === 2) {
       console.log(data.state.dealer.cards);
