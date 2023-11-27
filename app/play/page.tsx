@@ -13,6 +13,7 @@ export default async function Play() {
   const gameStatus1 = await checkGameStatus(gameState, 0);
   const gameStatus2 = await checkGameStatus(gameState, 1);
   const currentHand = await getCurrentHand(gameState);
+  const splitted = gameState?.player.length === 2;
 
   return (
     <>
@@ -31,6 +32,9 @@ export default async function Play() {
         <GameDisplay
           gameState={gameState}
           currentHand={currentHand}
+          gameStatus1={gameStatus1}
+          gameStatus2={gameStatus2}
+          splitted={splitted}
         />
       </div>
     </>

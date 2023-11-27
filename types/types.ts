@@ -36,6 +36,7 @@ export type GameState = {
 };
 
 export type UserState = {
+  [x: string]: any;
   value: number[];
   actions: string[];
   cards: Card[];

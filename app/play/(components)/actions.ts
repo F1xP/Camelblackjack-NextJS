@@ -70,91 +70,38 @@ export const betAction = async (formData: FormData) => {
 
 export const hitAction = async (formData: FormData) => {
   try {
-    // Ensure user is signed in
     const user = await getCurrentUser();
     if (!user || !user.email) return { message: null, error: 'You must be signed in.' };
 
-    // Retrieve the active game for the user
     const game: Game | null = await prisma.game.findFirst({
       where: { active: true, user_email: user.email },
     });
 
     if (!game) return { message: null, error: 'No active game found.' };
 
-    // Determine the current hand of the player
     const currentHand = await getCurrentHand(game.state);
 
-    // Extract player and dealer states from the game
     const playerState = game.state.player[currentHand];
+    const dealerState = game.state.dealer;
 
-    // Check if the user is blocked from hitting
     const lastPlayerAction = playerState.actions.slice(-1)[0];
     if (['double', 'stand', 'bust'].includes(lastPlayerAction))
       return { message: null, error: 'Hitting is not available at this point. Please check your current game status.' };
 
-    // Deal a new card to the player
     const newPlayerCard = await dealCard();
     playerState.cards = [...playerState.cards, newPlayerCard];
     playerState.value = await calculateHandValue(playerState.cards);
 
-    // Check if the player has busted
-    const isUserBusted = playerState.value[0] > 21;
-    playerState.actions = isUserBusted ? [...playerState.actions, 'hit', 'bust'] : [...playerState.actions, 'hit'];
+    const busted = playerState.value[0] > 21;
+    playerState.actions = busted ? [...playerState.actions, 'hit', 'bust'] : [...playerState.actions, 'hit'];
 
-    const isSplitted = playerState.actions.includes('split');
+    const splitted = playerState.actions.includes('split');
 
-    await prisma.game.update({
-      where: { id: game.id },
-      data: {
-        active:
-          !(isSplitted && isUserBusted && currentHand === 1) &&
-          !(isSplitted && isUserBusted && currentHand === 0) &&
-          !(!isSplitted && isUserBusted),
-        state: {
-          player: game.state.player,
-          dealer: game.state.dealer,
-        },
-      },
-    });
+    // Dealer to play when split is active and only one hand busted
 
-    // Revalidate the path after hitting
-    revalidatePath('/play');
-
-    return { message: 'Hit action finished.', error: null };
-  } catch (e) {
-    // Handle and log errors
-    console.log(e);
-    return { message: null, error: 'An error occurred while processing your hit action.' };
-  }
-};
-
-export const standAction = async (formData: FormData) => {
-  try {
-    // Ensure user is signed in
-    const user = await getCurrentUser();
-    if (!user || !user.email) return { message: null, error: 'You must be signed in.' };
-
-    // Retrieve the active game for the user
-    const game: Game | null = await prisma.game.findFirst({
-      where: { active: true, user_email: user.email },
-    });
-
-    if (!game) return { message: null, error: 'No active game found.' };
-
-    // Determine the current hand of the player
-    const playerHands = game.state.player.length;
-    const currentHand =
-      playerHands > 1 && ['stand', 'bust', 'double'].includes(game.state.player[0].actions.slice(-1)[0]) ? 1 : 0;
-
-    // Extract player and dealer states from the game
-    const playerState = game.state.player[currentHand];
-    const dealerState = game.state.dealer;
-
-    // Define a recursive dealer turn function
     const dealerTurn = async () => {
       if (dealerState.value[0] >= 17) return;
 
-      // Deal a new card to the dealer
       const newDealerCard = await dealCard();
       dealerState.cards = [...dealerState.cards, newDealerCard];
       dealerState.actions = [...dealerState.actions, 'hit'];
@@ -163,20 +110,16 @@ export const standAction = async (formData: FormData) => {
       await dealerTurn();
     };
 
-    const isSplitted = playerState.actions.includes('split');
-
-    if (!isSplitted || (isSplitted && currentHand === 1)) {
+    if (splitted && currentHand === 1 && playerState.value[1] > 21) {
       await dealerTurn();
       if (dealerState.value[0] > 21) dealerState.actions = [...dealerState.actions, 'bust'];
       else dealerState.actions = [...dealerState.actions, 'stand'];
     }
-    // Update player and dealer actions
-    playerState.actions = [...playerState.actions, 'stand'];
 
     await prisma.game.update({
       where: { id: game.id },
       data: {
-        active: !isSplitted ? false : isSplitted && currentHand === 0,
+        active: (!splitted && busted) || (splitted && currentHand === 1 && busted) ? false : true,
         state: {
           player: game.state.player,
           dealer: game.state.dealer,
@@ -184,12 +127,68 @@ export const standAction = async (formData: FormData) => {
       },
     });
 
-    // Revalidate the path after standing
+    revalidatePath('/play');
+
+    return { message: 'Hit action finished.', error: null };
+  } catch (e) {
+    console.log(e);
+    return { message: null, error: 'An error occurred while processing your hit action.' };
+  }
+};
+
+export const standAction = async (formData: FormData) => {
+  try {
+    const user = await getCurrentUser();
+    if (!user || !user.email) return { message: null, error: 'You must be signed in.' };
+
+    const game: Game | null = await prisma.game.findFirst({
+      where: { active: true, user_email: user.email },
+    });
+
+    if (!game) return { message: null, error: 'No active game found.' };
+
+    const playerHands = game.state.player.length;
+    const currentHand =
+      playerHands > 1 && ['stand', 'bust', 'double'].includes(game.state.player[0].actions.slice(-1)[0]) ? 1 : 0;
+
+    const playerState = game.state.player[currentHand];
+    const dealerState = game.state.dealer;
+
+    const dealerTurn = async () => {
+      if (dealerState.value[0] >= 17) return;
+
+      const newDealerCard = await dealCard();
+      dealerState.cards = [...dealerState.cards, newDealerCard];
+      dealerState.actions = [...dealerState.actions, 'hit'];
+      dealerState.value = await calculateDealerHandValue(dealerState.cards);
+
+      await dealerTurn();
+    };
+
+    const splitted = playerState.actions.includes('split');
+
+    if (!splitted || currentHand === 1) {
+      await dealerTurn();
+      if (dealerState.value[0] > 21) dealerState.actions = [...dealerState.actions, 'bust'];
+      else dealerState.actions = [...dealerState.actions, 'stand'];
+    }
+    playerState.actions = [...playerState.actions, 'stand'];
+
+    await prisma.game.update({
+      where: { id: game.id },
+      data: {
+        active: !splitted ? false : currentHand === 1 ? false : true,
+        state: {
+          player: game.state.player,
+          dealer: game.state.dealer,
+        },
+      },
+    });
+
     revalidatePath('/play');
 
     return { message: 'Stand action finished.', error: null };
   } catch (e) {
-    // Handle and log errors
     console.log(e);
     return { message: null, error: 'An error occurred while processing your stand action.' };
   }
@@ -197,11 +196,9 @@ export const standAction = async (formData: FormData) => {
 
 export const splitAction = async (formData: FormData) => {
   try {
-    // Ensure user is signed in
     const user = await getCurrentUser();
     if (!user || !user.email) return { message: null, error: 'You must be signed in.' };
 
-    // Retrieve the active game for the user
     const game: Game | null = await prisma.game.findFirst({
       where: { active: true, user_email: user.email },
     });
@@ -217,14 +214,12 @@ export const splitAction = async (formData: FormData) => {
 
     const playerState = game.state.player[0];
 
-    // Perform the split action
     playerState.cards.pop();
     playerState.actions = [...playerState.actions, 'split'];
 
-    // Calculate the updated player value after splitting
     const updatedPlayerValue = await calculateHandValue(playerState.cards);
+    playerState.value = updatedPlayerValue;
 
-    // Update game state with the new player hand after splitting
     game.state.player = [
       ...game.state.player,
       { value: updatedPlayerValue, actions: playerState.actions, cards: playerState.cards },
@@ -232,7 +227,6 @@ export const splitAction = async (formData: FormData) => {
 
     game.state.player[0] = playerState;
 
-    // Update the game in the database
     await prisma.game.update({
       where: { id: game.id },
       data: {
@@ -243,12 +237,10 @@ export const splitAction = async (formData: FormData) => {
       },
     });
 
-    // Revalidate the path after splitting
     revalidatePath('/play');
 
     return { message: 'Split action finished.', error: null };
   } catch (e) {
-    // Handle and log errors
     console.log(e);
     return { message: null, error: 'An error occurred while processing your split action.' };
   }

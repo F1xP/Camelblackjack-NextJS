@@ -24,7 +24,7 @@ export const calculateHandValue = async (hand: any) => {
       values[0] += 1;
     }
   }
-  return values;
+  return values.reverse();
 };
 
 export const calculateDealerHandValue = async (hand: any) => {
@@ -42,7 +42,7 @@ export const calculateDealerHandValue = async (hand: any) => {
     else values[0] += 11;
   }
 
-  return values;
+  return values.reverse();
 };
 
 export const getCurrentHand = async (gameState: GameState | null) => {
@@ -94,7 +94,7 @@ export const dealerTurn = () => {
 
 export const dealCard = async () => {
   // Deal a card for dealer or player
-  const randomRankIndex = 2;
+  const randomRankIndex = Math.floor(Math.random() * ranks.length);
   const randomSuitIndex = Math.floor(Math.random() * suits.length);
   const randomRank = ranks[randomRankIndex];
   const randomSuit = suits[randomSuitIndex];
