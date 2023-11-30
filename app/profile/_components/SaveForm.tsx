@@ -1,10 +1,10 @@
 'use client';
-import { updateProfile } from './actions';
+import { updateProfile } from '../_actions/actions';
 import { useSession } from 'next-auth/react';
 import { useState } from 'react';
 import useAction from '@/app/hooks/useAction';
-import { Button } from '@/app/components/Button';
-import { Input } from '@/app/components/Input';
+import { Button } from '@/app/_components/Button';
+import { Input } from '@/app/_components/Input';
 
 export function SaveForm() {
   const { update, data: session } = useSession();

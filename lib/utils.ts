@@ -2,10 +2,43 @@ import { Game, GameState } from '@/types/types';
 import { ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
-export const cn = (...inputs: ClassValue[]) => twMerge(clsx(inputs));
+export const hasPlayerSplitted = async (gameState: GameState | null) => {
+  return gameState?.player[0].actions.includes('split');
+};
 
-export const ranks = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
-export const suits = ['Hearts', 'Diamonds', 'Clubs', 'Spades'];
+export const getCurrentHand = async (gameState: GameState | null) => {
+  if (!gameState) return 0;
+  const playerHands = gameState.player.length;
+  const currentHand =
+    playerHands > 1 && ['stand', 'bust', 'double'].includes(gameState.player[0].actions.slice(-1)[0]) ? 1 : 0;
+
+  return currentHand;
+};
+
+export const isAllowedToSplit = async (gameState: GameState | null) => {
+  if (!gameState) return false;
+
+  const playerHands = gameState.player.length;
+  if (playerHands > 1) false;
+
+  const playerState = gameState.player[0];
+  const lastPlayerAction = playerState.actions.slice(-1)[0];
+
+  if (['double', 'stand', 'bust'].includes(lastPlayerAction)) return false;
+  if (playerState.cards.length !== 2 || playerState.cards[0].rank !== playerState.cards[1].rank) return false;
+
+  return true;
+};
+
+export const isAllowedToDouble = async (gameState: GameState | null, hand: number) => {
+  if (!gameState) return false;
+
+  const playerState = gameState.player[hand];
+  const lastPlayerAction = playerState.actions.slice(-1)[0];
+
+  if (['double', 'stand', 'bust'].includes(lastPlayerAction)) return false;
+  return true;
+};
 
 export const calculateHandValue = async (hand: any) => {
   let values = [0];
@@ -45,38 +78,6 @@ export const calculateDealerHandValue = async (hand: any) => {
   return values.reverse();
 };
 
-export const getCurrentHand = async (gameState: GameState | null) => {
-  if (!gameState) return 0;
-  const playerHands = gameState.player.length;
-  const currentHand =
-    playerHands > 1 && ['stand', 'bust', 'double'].includes(gameState.player[0].actions.slice(-1)[0]) ? 1 : 0;
-
-  return currentHand;
-};
-
-export const canSplit = async (game: Game) => {
-  // Check if the user can split based on hands length
-  const playerHands = game.state.player.length;
-  if (playerHands > 1) false;
-
-  const playerState = game.state.player[0];
-  const lastPlayerAction = playerState.actions.slice(-1)[0];
-
-  // Check if the user can split based on the last action
-  if (['double', 'stand', 'bust'].includes(lastPlayerAction)) return false;
-  // Check if the user can split (only when the player has exactly 2 cards of the same rank)
-  if (playerState.cards.length !== 2 || playerState.cards[0].rank !== playerState.cards[1].rank) return false;
-
-  return true;
-};
-
-export const doubleDown = async (player: string | any[]) => {
-  if (player.length === 2) {
-    // Deal card
-    // Dealer turn
-  }
-};
-
 export const takeInsurance = (dealer: { rank: string }[]) => {
   if (dealer[0] && dealer[0].rank === 'A') {
     // Insurance Accepted
@@ -85,15 +86,10 @@ export const takeInsurance = (dealer: { rank: string }[]) => {
   }
 };
 
-export const dealerTurn = () => {
-  // Dealer reveals their hand
-  // Dealer hand is lower than 17 keep playing
-  // If dealer hand is higher than 21 bust
-  // if dealer doesn't get busted and cards are higher than 17 check game status
-};
+export const ranks = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
+export const suits = ['Hearts', 'Diamonds', 'Clubs', 'Spades'];
 
-export const dealCard = async () => {
-  // Deal a card for dealer or player
+export const getCard = async () => {
   const randomRankIndex = Math.floor(Math.random() * ranks.length);
   const randomSuitIndex = Math.floor(Math.random() * suits.length);
   const randomRank = ranks[randomRankIndex];
@@ -102,7 +98,7 @@ export const dealCard = async () => {
   return { rank: randomRank, suit: randomSuit };
 };
 
-export const checkGameStatus = async (gameState: GameState | null, hand: number) => {
+export const getGameStatus = async (gameState: GameState | null, hand: number) => {
   if (!gameState || !gameState.player[hand]) return null;
 
   const playerCards = gameState.player[hand].cards;
@@ -139,3 +135,5 @@ export const getErrorMessage = (error: unknown): string => {
   else message = 'An unexpected error occured';
   return message;
 };
+
+export const cn = (...inputs: ClassValue[]) => twMerge(clsx(inputs));

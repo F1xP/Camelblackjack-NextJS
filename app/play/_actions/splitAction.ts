@@ -1,0 +1,71 @@
+'use server';
+
+import { prisma } from '@/lib/prisma';
+import { getCurrentUser } from '@/lib/session';
+import { calculateHandValue, getErrorMessage, isAllowedToSplit } from '@/lib/utils';
+import { Game } from '@/types/types';
+import { revalidatePath } from 'next/cache';
+
+export const splitAction = async (formData: FormData) => {
+  try {
+    const user = await getCurrentUser();
+    if (!user || !user.email) return { message: null, error: 'You must be signed in.' };
+
+    const game: Game | null = await prisma.game.findFirst({
+      where: { active: true, user_email: user.email },
+    });
+
+    if (!game) return { message: null, error: 'No active game found.' };
+
+    const canSplit = await isAllowedToSplit(game.state);
+    if (!canSplit)
+      return {
+        message: null,
+        error: 'Splitting is not available at this point. Please check your current game status.',
+      };
+
+    const playerState = game.state.player[0];
+
+    playerState.cards.pop();
+    playerState.actions = [...playerState.actions, 'split'];
+
+    const updatedPlayerValue = await calculateHandValue(playerState.cards);
+    playerState.value = updatedPlayerValue;
+
+    game.state.player = [
+      ...game.state.player,
+      { value: updatedPlayerValue, actions: playerState.actions, cards: playerState.cards },
+    ];
+
+    game.state.player[0] = playerState;
+
+    await prisma.$transaction(async (tx) => {
+      const deducted = await tx.user.update({
+        where: { email: user.email as string },
+        data: {
+          coins: {
+            decrement: game.amount,
+          },
+        },
+      });
+      if (deducted.coins < 0) throw new Error('Insufficient coins.');
+
+      await tx.game.update({
+        where: { id: game.id },
+        data: {
+          amountMultiplier: 2,
+          state: {
+            player: game.state.player,
+            dealer: game.state.dealer,
+          },
+        },
+      });
+      revalidatePath('/play');
+    });
+
+    return { message: 'Split action finished.', error: null };
+  } catch (e: unknown) {
+    console.log(e);
+    return { message: null, error: getErrorMessage(e) };
+  }
+};

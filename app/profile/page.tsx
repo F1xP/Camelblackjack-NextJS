@@ -1,7 +1,7 @@
-import { Header } from '../components/Header';
-import ConfirmationForm from './(components)/ConfirmationForm';
-import { SaveForm } from './(components)/SaveForm';
-import { deleteProfile, resetProfile } from './(components)/actions';
+import { Header } from '../_components/Header';
+import ConfirmationForm from './_components/ConfirmationForm';
+import { SaveForm } from './_components/SaveForm';
+import { deleteProfile, resetProfile } from './_actions/actions';
 
 export default function Settings() {
   return (

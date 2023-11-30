@@ -1,17 +1,17 @@
-import { checkGameStatus, getCurrentHand } from '@/lib/utils';
-import { GameButtons } from './(components)/GameButtons';
-import { GameDisplay } from './(components)/GaneDisplay';
-import { getCurrentGame } from './(components)/actions';
+import { getCurrentHand, getGameStatus } from '@/lib/utils';
+import { GameButtons } from './_components/GameButtons';
+import { GameDisplay } from './_components/GaneDisplay';
 import { Game } from '@/types/types';
 import { GameState } from '@prisma/client';
+import { getCurrentGame } from './_actions/actions';
 
 export default async function Play() {
   const gameData: Game | null = await getCurrentGame();
 
   const gameState = gameData?.state || null;
   const isGameActive = gameData?.active || false;
-  const gameStatus1 = await checkGameStatus(gameState, 0);
-  const gameStatus2 = await checkGameStatus(gameState, 1);
+  const gameStatus1 = await getGameStatus(gameState, 0);
+  const gameStatus2 = await getGameStatus(gameState, 1);
   const currentHand = await getCurrentHand(gameState);
 
   return (

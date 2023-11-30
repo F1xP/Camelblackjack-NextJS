@@ -109,7 +109,7 @@ let playerBalance = 1000;
 let playerBet = 0;
 let insuranceBet = 0;
 
-const dealCard = (hand) => {
+const getCard = (hand) => {
   const card = deck.pop();
   hand.push(card);
 };
@@ -120,8 +120,8 @@ const canSplit = () => {
 
 const splitHand = () => {
   const secondHand = [player.pop()];
-  dealCard(player);
-  dealCard(secondHand);
+  getCard(player);
+  getCard(secondHand);
   console.log('Player splits the hand.');
 
   console.log('Playing the first hand:');
@@ -164,10 +164,10 @@ const askForBet = () => {
 };
 
 const startGame = () => {
-  dealCard(player);
-  dealCard(dealer);
-  dealCard(player);
-  dealCard(dealer);
+  getCard(player);
+  getCard(dealer);
+  getCard(player);
+  getCard(dealer);
 
   console.log(
     'Player was dealt: ' + player[0].rank + ' of ' + player[0].suit + ' and ' + player[1].rank + ' of ' + player[1].suit
@@ -211,7 +211,7 @@ const startGame = () => {
 const playerAction = () => {
   rl.question('Do you want to hit or stand? (h/s): ', (choice) => {
     if (choice.toLowerCase() === 'h') {
-      dealCard(player);
+      getCard(player);
       const playerValue = calculateHandValue(player);
       console.log(`Player was dealt: ${player[player.length - 1].rank} of ${player[player.length - 1].suit}`);
       console.log(`Player's hand value: ${playerValue}`);
@@ -235,7 +235,7 @@ const doubleDown = () => {
   if (player.length === 2 && playerBalance >= playerBet) {
     playerBet *= 2;
     playerBalance -= playerBet / 2;
-    dealCard(player);
+    getCard(player);
     dealerTurn();
   } else {
     console.log("Double down is not allowed. Please choose 'h' to hit or 's' to stand.");
@@ -269,7 +269,7 @@ const dealerTurn = () => {
   console.log(`Dealer has: ${dealer[0].rank} of ${dealer[0].suit} and ${dealer[1].rank} of ${dealer[1].suit}`);
   console.log(`Dealer's hand value: ${dealerValue}`);
   while (calculateHandValue(dealer) < 17) {
-    dealCard(dealer);
+    getCard(dealer);
     console.log(`Dealer got: ${dealer[-1].rank} of ${dealer[-1].suit}`);
     console.log(`Dealer's hand value: ${dealerValue}`);
   }

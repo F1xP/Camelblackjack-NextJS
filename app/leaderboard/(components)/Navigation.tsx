@@ -1,5 +1,5 @@
 'use client';
-import Dropdown from '@/app/components/Dropdown';
+import Dropdown from '@/app/_components/Dropdown';
 import { LeaderboardDataProps } from '@/types/types';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { MdOutlineKeyboardDoubleArrowRight, MdOutlineKeyboardArrowRight } from 'react-icons/md';

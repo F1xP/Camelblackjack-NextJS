@@ -1,5 +1,5 @@
 'use client';
-import { suitIcons } from '@/app/components/Suits';
+import { suitIcons } from '@/app/_components/Suits';
 import { cn } from '@/lib/utils';
 import { Card } from '@/types/types';
 import { GameState } from '@prisma/client';
@@ -54,8 +54,8 @@ export const GameDisplay: React.FC<GameDisplayProps> = ({
           cards={gameState?.dealer.cards}
           handValues={<>{gameState?.dealer.value}</>}
           gameStatus={null}
-          isCurrent={currentHand === 1}
-          isSplitted={isSplitted}
+          isCurrent={false}
+          isSplitted={false}
         />
       </div>
     </div>

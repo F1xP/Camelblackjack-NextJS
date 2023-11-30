@@ -2,8 +2,8 @@
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure, modal } from '@nextui-org/react';
 import useAction from '@/app/hooks/useAction';
 import { signOut, useSession } from 'next-auth/react';
-import { Button } from '@/app/components/Button';
-import { Input } from '@/app/components/Input';
+import { Button } from '@/app/_components/Button';
+import { Input } from '@/app/_components/Input';
 
 type ConfirmationFormProps = {
   action: (formData: FormData) => Promise<{ message: string | null; error: string | null }>;

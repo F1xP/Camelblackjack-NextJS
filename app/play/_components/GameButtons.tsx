@@ -1,10 +1,15 @@
 'use client';
 import { useState } from 'react';
-import { Button } from '../../components/Button';
-import { Input } from '../../components/Input';
-import { hitAction, betAction, splitAction, doubleAction, standAction } from './actions';
+import { Button } from '../../_components/Button';
+import { Input } from '../../_components/Input';
 import useAction from '@/app/hooks/useAction';
 import { GameState } from '@/types/types';
+import { useSession } from 'next-auth/react';
+import { betAction } from '../_actions/betAction';
+import { hitAction } from '../_actions/hitAction';
+import { standAction } from '../_actions/standAction';
+import { splitAction } from '../_actions/splitAction';
+import { doubleAction } from '../_actions/doubleAction';
 
 type GameButtonsProps = {
   gameState: GameState | null;
@@ -13,6 +18,7 @@ type GameButtonsProps = {
 };
 
 export const GameButtons: React.FC<GameButtonsProps> = ({ gameState, isGameActive, currentHand }) => {
+  const { update, data: session } = useSession();
   const { loading, handleAction } = useAction();
   const [betAmount, setBetAmount] = useState<number>(0);
 
@@ -26,6 +32,7 @@ export const GameButtons: React.FC<GameButtonsProps> = ({ gameState, isGameActiv
       case 'bet':
         formData.append('betAmount', betAmount.toString());
         await handleAction(betAction, formData);
+        update();
         break;
       case 'hit':
         await handleAction(hitAction, formData);
@@ -46,7 +53,10 @@ export const GameButtons: React.FC<GameButtonsProps> = ({ gameState, isGameActiv
   return (
     <section className="h-[600px] w-full flex-1 flex flex-col">
       <div className="flex flex-col p-2">
-        <p className="text-text text-xl font-mono small-caps">Bet Amount</p>
+        <div className="flex flex-row items-center">
+          <p className="text-text text-xl font-mono small-caps">Bet Amount</p>
+          <p className="text-text text-md font-mono small-caps ml-auto">Coins:{session?.user.coins}</p>
+        </div>
         <Input
           type="number"
           inputMode="numeric"

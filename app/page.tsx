@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import { Button } from './components/Button';
+import { Button } from './_components/Button';
 import { BsFillSuitClubFill, BsFillSuitHeartFill, BsFillSuitDiamondFill, BsFillSuitSpadeFill } from 'react-icons/bs';
 
 export default function Home() {

@@ -1,13 +1,13 @@
 import type { Metadata } from 'next';
 import { GeistSans } from 'geist/font';
 import { getServerSession } from 'next-auth';
-import SessionProvider from './components/SessionProvider';
-import Navbar from './components/Navbar';
+import SessionProvider from './_components/SessionProvider';
+import Navbar from './_components/Navbar';
 import { NextUIProvider } from '@/lib/nextui';
-import { ToastsDisplay, ToastsProvider } from './components/Toasts';
+import { ToastsDisplay, ToastsProvider } from './_components/Toasts';
 import { nextAuthOptions } from './api/auth/[...nextauth]/route';
 import './globals.css';
-import Footer from './components/Footer';
+import Footer from './_components/Footer';
 
 export const metadata: Metadata = {
   title: 'Camel Blackjack',

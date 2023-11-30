@@ -72,7 +72,7 @@ const dealerTurn = () => {
   // if dealer doesn't get busted and cards are higher than 17 check game status
 };
 
-const dealCard = async () => {
+const getCard = async () => {
   // Deal a card for dealer or player
   const randomRankIndex = Math.floor(Math.random() * ranks.length);
   const randomSuitIndex = Math.floor(Math.random() * suits.length);
@@ -127,10 +127,10 @@ export async function POST(request: Request) {
     if (!deducted) return NextResponse.json({ error: 'Insufficient coins.' }, { status: 403 });
 
     // Start the game by dealing two cards for the player and 2 cards for the dealer
-    const player_card1 = await dealCard();
-    const player_card2 = await dealCard();
-    const dealer_card1 = await dealCard();
-    const dealer_card2 = await dealCard();
+    const player_card1 = await getCard();
+    const player_card2 = await getCard();
+    const dealer_card1 = await getCard();
+    const dealer_card2 = await getCard();
     const playerValue = await calculateHandValue([player_card1, player_card2]);
     const dealerValue = await calculateDealerHandValue([dealer_card1]);
     const data = await prisma.game.create({
