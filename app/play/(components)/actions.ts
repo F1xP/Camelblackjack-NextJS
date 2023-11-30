@@ -20,6 +20,7 @@ export const betAction = async (formData: FormData) => {
 
     const betAmount: number = Number(formData.get('betAmount'));
     if (isNaN(betAmount)) return { message: null, error: 'Bet amount must be a valid number.' };
+    if (betAmount < 10) return { message: null, error: 'Minimum bet amount is 10.' };
 
     await prisma.$transaction(async (tx) => {
       const isActive = await tx.game.findFirst({
@@ -44,9 +45,10 @@ export const betAction = async (formData: FormData) => {
       const playerValue = await calculateHandValue([playerCard1, playerCard2]);
       const dealerValue = await calculateDealerHandValue([dealerCard1, dealerCard2]);
 
-      const game = await tx.game.create({
+      // Stop the game if user got blackjack
+      await tx.game.create({
         data: {
-          active: true,
+          active: playerValue[0] === 21 ? false : true,
           payoutMultiplier: 1,
           amountMultiplier: 1,
           amount: betAmount,
@@ -58,7 +60,6 @@ export const betAction = async (formData: FormData) => {
           user_email: user.email,
         },
       });
-      console.log('This is server Side', game.state.player[0].actions);
       revalidatePath('/play');
     });
     return { message: 'Bet action finished.', error: null };
@@ -110,7 +111,7 @@ export const hitAction = async (formData: FormData) => {
       await dealerTurn();
     };
 
-    if (splitted && currentHand === 1 && playerState.value[1] > 21) {
+    if (splitted && currentHand === 1 && playerState.value[1] > 21 && game.state.player[0].value[1] < 21) {
       await dealerTurn();
       if (dealerState.value[0] > 21) dealerState.actions = [...dealerState.actions, 'bust'];
       else dealerState.actions = [...dealerState.actions, 'stand'];
@@ -227,22 +228,34 @@ export const splitAction = async (formData: FormData) => {
 
     game.state.player[0] = playerState;
 
-    await prisma.game.update({
-      where: { id: game.id },
-      data: {
-        state: {
-          player: game.state.player,
-          dealer: game.state.dealer,
+    await prisma.$transaction(async (tx) => {
+      const deducted = await tx.user.update({
+        where: { email: user.email as string },
+        data: {
+          coins: {
+            decrement: game.amount,
+          },
         },
-      },
+      });
+      if (deducted.coins < 0) throw new Error('Insufficient coins.');
+
+      await tx.game.update({
+        where: { id: game.id },
+        data: {
+          amountMultiplier: 2,
+          state: {
+            player: game.state.player,
+            dealer: game.state.dealer,
+          },
+        },
+      });
+      revalidatePath('/play');
     });
 
-    revalidatePath('/play');
-
     return { message: 'Split action finished.', error: null };
-  } catch (e) {
+  } catch (e: unknown) {
     console.log(e);
-    return { message: null, error: 'An error occurred while processing your split action.' };
+    return { message: null, error: getErrorMessage(e) };
   }
 };
 

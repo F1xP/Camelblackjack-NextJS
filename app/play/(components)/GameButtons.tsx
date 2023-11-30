@@ -6,11 +6,13 @@ import { hitAction, betAction, splitAction, doubleAction, standAction } from './
 import useAction from '@/app/hooks/useAction';
 import { GameState } from '@/types/types';
 
-export const GameButtons: React.FC<{ gameState: GameState | null; isGameActive: boolean; currentHand: number }> = ({
-  gameState,
-  isGameActive,
-  currentHand,
-}) => {
+type GameButtonsProps = {
+  gameState: GameState | null;
+  isGameActive: boolean;
+  currentHand: number;
+};
+
+export const GameButtons: React.FC<GameButtonsProps> = ({ gameState, isGameActive, currentHand }) => {
   const { loading, handleAction } = useAction();
   const [betAmount, setBetAmount] = useState<number>(0);
 

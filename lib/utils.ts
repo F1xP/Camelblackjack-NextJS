@@ -103,7 +103,7 @@ export const dealCard = async () => {
 };
 
 export const checkGameStatus = async (gameState: GameState | null, hand: number) => {
-  if (!gameState || !gameState.player[hand]) return 'No Active Game';
+  if (!gameState || !gameState.player[hand]) return null;
 
   const playerCards = gameState.player[hand].cards;
   const dealerCards = gameState.dealer.cards;
@@ -117,18 +117,18 @@ export const checkGameStatus = async (gameState: GameState | null, hand: number)
   const isPlayerBusted = playerLastAction === 'bust';
   const isDealerBusted = dealerLastAction === 'bust';
 
-  if (playerValue === 21 && playerCards.length === 2) return 'Player';
-  if (dealerValue === 21 && dealerCards.length === 2) return 'Dealer';
+  if (playerValue === 21 && playerCards.length === 2) return 'Win';
+  if (dealerValue === 21 && dealerCards.length === 2) return 'Lose';
 
-  if (isPlayerBusted) return 'Dealer';
-  if (!isPlayerBusted && isDealerBusted) return 'Player';
+  if (isPlayerBusted) return 'Lose';
+  if (!isPlayerBusted && isDealerBusted) return 'Win';
 
   if (dealerValue > 16 && playerValue <= 21) {
     if (playerValue === dealerValue) return 'Push';
-    if (playerValue > dealerValue) return 'Player';
-    if (playerValue < dealerValue) return 'Dealer';
+    if (playerValue > dealerValue) return 'Win';
+    if (playerValue < dealerValue) return 'Lose';
   }
-  return 'No Result Yet';
+  return null;
 };
 
 export const getErrorMessage = (error: unknown): string => {

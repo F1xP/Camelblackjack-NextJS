@@ -13,7 +13,6 @@ export default async function Play() {
   const gameStatus1 = await checkGameStatus(gameState, 0);
   const gameStatus2 = await checkGameStatus(gameState, 1);
   const currentHand = await getCurrentHand(gameState);
-  const splitted = gameState?.player.length === 2;
 
   return (
     <>
@@ -34,7 +33,7 @@ export default async function Play() {
           currentHand={currentHand}
           gameStatus1={gameStatus1}
           gameStatus2={gameStatus2}
-          splitted={splitted}
+          isSplitted={gameState?.player.length === 2}
         />
       </div>
     </>
@@ -43,8 +42,8 @@ export default async function Play() {
 
 const GameActions: React.FC<{
   gameState: GameState | null;
-  gameStatus1: string;
-  gameStatus2: string;
+  gameStatus1: string | null;
+  gameStatus2: string | null;
   currentHand: number;
 }> = ({ gameState, gameStatus1, gameStatus2, currentHand }) => {
   console.log(gameState?.dealer.actions, 'Dealer Actions Client');
