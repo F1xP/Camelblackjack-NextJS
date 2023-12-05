@@ -2,7 +2,15 @@
 
 import { prisma } from '@/lib/prisma';
 import { getCurrentUser } from '@/lib/session';
-import { calculateDealerHandValue, getCard, getCurrentHand, hasPlayerSplitted, isAllowedToDouble } from '@/lib/utils';
+import {
+  dealerTurn,
+  deductCoins,
+  getCurrentHand,
+  getGameStatus,
+  hasPlayerSplitted,
+  isAllowedToDouble,
+  shouldGameEnd,
+} from '@/lib/helpers';
 import { Game } from '@/types/types';
 import { revalidatePath } from 'next/cache';
 
@@ -25,41 +33,39 @@ export const doubleAction = async (formData: FormData) => {
       const playerState = game.state.player[currentHand];
       const dealerState = game.state.dealer;
 
-      const dealerTurn = async () => {
-        if (dealerState.value[0] >= 17) return;
+      await deductCoins(tx, user.email as string, game.amount);
 
-        const newDealerCard = await getCard();
-        dealerState.cards = [...dealerState.cards, newDealerCard];
-        dealerState.actions = [...dealerState.actions, 'hit'];
-        dealerState.value = await calculateDealerHandValue(dealerState.cards);
+      if (!hasSplitted || currentHand === 1) await dealerTurn(dealerState);
 
-        await dealerTurn();
-      };
-
-      if (!hasSplitted || currentHand === 1) {
-        await dealerTurn();
-        if (dealerState.value[0] > 21) dealerState.actions = [...dealerState.actions, 'bust'];
-        else dealerState.actions = [...dealerState.actions, 'stand'];
-      }
       playerState.actions = [...playerState.actions, 'double'];
 
-      const deducted = await tx.user.update({
+      const handResultOne = await getGameStatus(game.state, 0);
+      await tx.user.update({
         where: { email: user.email as string },
         data: {
           coins: {
-            decrement: game.amount,
+            increment: game.amount * (handResultOne === 'Win' ? 2 : handResultOne === 'Push' ? 1 : 0),
           },
         },
       });
-      if (deducted.coins < 0) throw new Error('Insufficient coins.');
+      // MAke an helper function to end game with results and increment
 
-      await prisma.game.update({
+      await tx.user.update({
+        where: { email: user.email as string },
+        data: {
+          coins: {
+            increment: game.amount,
+          },
+        },
+      });
+
+      await tx.game.update({
         where: { id: game.id },
         data: {
           amount: {
             increment: game.amount,
           },
-          active: !hasSplitted ? false : currentHand === 1 ? false : true,
+          active: !(await shouldGameEnd(game.state, true)),
           state: {
             player: game.state.player,
             dealer: game.state.dealer,

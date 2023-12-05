@@ -2,7 +2,7 @@
 
 import { prisma } from '@/lib/prisma';
 import { getCurrentUser } from '@/lib/session';
-import { calculateDealerHandValue, getCard, getCurrentHand, hasPlayerSplitted } from '@/lib/utils';
+import { dealerTurn, getCurrentHand, hasPlayerSplitted, shouldGameEnd } from '@/lib/helpers';
 import { Game } from '@/types/types';
 import { revalidatePath } from 'next/cache';
 
@@ -23,28 +23,14 @@ export const standAction = async (formData: FormData) => {
     const playerState = game.state.player[currentHand];
     const dealerState = game.state.dealer;
 
-    const dealerTurn = async () => {
-      if (dealerState.value[0] >= 17) return;
+    if (!hasSplitted || currentHand === 1) await dealerTurn(dealerState);
 
-      const newDealerCard = await getCard();
-      dealerState.cards = [...dealerState.cards, newDealerCard];
-      dealerState.actions = [...dealerState.actions, 'hit'];
-      dealerState.value = await calculateDealerHandValue(dealerState.cards);
-
-      await dealerTurn();
-    };
-
-    if (!hasSplitted || currentHand === 1) {
-      await dealerTurn();
-      if (dealerState.value[0] > 21) dealerState.actions = [...dealerState.actions, 'bust'];
-      else dealerState.actions = [...dealerState.actions, 'stand'];
-    }
     playerState.actions = [...playerState.actions, 'stand'];
 
     await prisma.game.update({
       where: { id: game.id },
       data: {
-        active: !hasSplitted ? false : currentHand === 1 ? false : true,
+        active: !(await shouldGameEnd(game.state, true)),
         state: {
           player: game.state.player,
           dealer: game.state.dealer,

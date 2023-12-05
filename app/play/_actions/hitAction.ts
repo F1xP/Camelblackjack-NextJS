@@ -2,7 +2,14 @@
 
 import { prisma } from '@/lib/prisma';
 import { getCurrentUser } from '@/lib/session';
-import { calculateDealerHandValue, calculateHandValue, getCard, getCurrentHand, hasPlayerSplitted } from '@/lib/utils';
+import {
+  calculateHandValue,
+  dealerTurn,
+  getCard,
+  getCurrentHand,
+  hasPlayerSplitted,
+  shouldGameEnd,
+} from '@/lib/helpers';
 import { Game } from '@/types/types';
 import { revalidatePath } from 'next/cache';
 
@@ -31,32 +38,18 @@ export const hitAction = async (formData: FormData) => {
     playerState.cards = [...playerState.cards, newPlayerCard];
     playerState.value = await calculateHandValue(playerState.cards);
 
-    const busted = playerState.value[0] > 21;
-    playerState.actions = busted ? [...playerState.actions, 'hit', 'bust'] : [...playerState.actions, 'hit'];
+    const hasBusted = playerState.value[0] > 21;
+    playerState.actions = hasBusted ? [...playerState.actions, 'hit', 'bust'] : [...playerState.actions, 'hit'];
 
     // Dealer to play when split is active and only one hand busted
 
-    const dealerTurn = async () => {
-      if (dealerState.value[0] >= 17) return;
-
-      const newDealerCard = await getCard();
-      dealerState.cards = [...dealerState.cards, newDealerCard];
-      dealerState.actions = [...dealerState.actions, 'hit'];
-      dealerState.value = await calculateDealerHandValue(dealerState.cards);
-
-      await dealerTurn();
-    };
-
-    if (hasSplitted && currentHand === 1 && playerState.value[1] > 21 && game.state.player[0].value[1] < 21) {
-      await dealerTurn();
-      if (dealerState.value[0] > 21) dealerState.actions = [...dealerState.actions, 'bust'];
-      else dealerState.actions = [...dealerState.actions, 'stand'];
-    }
+    if (hasSplitted && currentHand === 1 && playerState.value[1] > 21 && game.state.player[0].value[1] < 21)
+      await dealerTurn(dealerState);
 
     await prisma.game.update({
       where: { id: game.id },
       data: {
-        active: (!hasSplitted && busted) || (hasSplitted && currentHand === 1 && busted) ? false : true,
+        active: !(await shouldGameEnd(game.state, false)),
         state: {
           player: game.state.player,
           dealer: game.state.dealer,

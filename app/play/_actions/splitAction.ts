@@ -2,9 +2,10 @@
 
 import { prisma } from '@/lib/prisma';
 import { getCurrentUser } from '@/lib/session';
-import { calculateHandValue, getErrorMessage, isAllowedToSplit } from '@/lib/utils';
+import { calculateHandValue, deductCoins, isAllowedToSplit } from '@/lib/helpers';
 import { Game } from '@/types/types';
 import { revalidatePath } from 'next/cache';
+import { getErrorMessage } from '@/lib/utils';
 
 export const splitAction = async (formData: FormData) => {
   try {
@@ -40,15 +41,7 @@ export const splitAction = async (formData: FormData) => {
     game.state.player[0] = playerState;
 
     await prisma.$transaction(async (tx) => {
-      const deducted = await tx.user.update({
-        where: { email: user.email as string },
-        data: {
-          coins: {
-            decrement: game.amount,
-          },
-        },
-      });
-      if (deducted.coins < 0) throw new Error('Insufficient coins.');
+      await deductCoins(tx, user.email as string, game.amount);
 
       await tx.game.update({
         where: { id: game.id },

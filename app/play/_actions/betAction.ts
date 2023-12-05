@@ -2,8 +2,9 @@
 
 import { prisma } from '@/lib/prisma';
 import { getCurrentUser } from '@/lib/session';
-import { calculateDealerHandValue, calculateHandValue, getCard, getErrorMessage } from '@/lib/utils';
+import { calculateDealerHandValue, calculateHandValue, deductCoins, getCard } from '@/lib/helpers';
 import { revalidatePath } from 'next/cache';
+import { getErrorMessage } from '@/lib/utils';
 
 // Smth is wrong with the bet action it's setting game active to false on inital cards
 export const betAction = async (formData: FormData) => {
@@ -21,27 +22,24 @@ export const betAction = async (formData: FormData) => {
       });
       if (isActive) throw new Error('You must finish your active game in order to start another.');
 
-      const deducted = await tx.user.update({
-        where: { email: user.email as string },
-        data: {
-          coins: {
-            decrement: betAmount,
-          },
-        },
-      });
-      if (deducted.coins < 0) throw new Error('Insufficient coins.');
+      await deductCoins(tx, user.email as string, betAmount);
 
-      const playerCard1 = await getCard();
-      const playerCard2 = await getCard();
-      const dealerCard1 = await getCard();
-      const dealerCard2 = await getCard();
-      const playerValue = await calculateHandValue([playerCard1, playerCard2]);
-      const dealerValue = await calculateDealerHandValue([dealerCard1, dealerCard2]);
-      const blackjack = playerValue[0] === 21;
+      const [playerCard1, playerCard2, dealerCard1, dealerCard2] = await Promise.all([
+        getCard(),
+        getCard(),
+        getCard(),
+        getCard(),
+      ]);
+
+      const [playerValue, dealerValue] = await Promise.all([
+        calculateHandValue([playerCard1, playerCard2]),
+        calculateDealerHandValue([dealerCard1, dealerCard2]),
+      ]);
+      const hasBlackjack = playerValue[0] === 21;
 
       await tx.game.create({
         data: {
-          active: blackjack ? false : true,
+          active: hasBlackjack ? false : true,
           payoutMultiplier: 1,
           amountMultiplier: 1,
           amount: betAmount,
@@ -53,7 +51,7 @@ export const betAction = async (formData: FormData) => {
           user_email: user.email,
         },
       });
-      if (blackjack)
+      if (hasBlackjack)
         await tx.user.update({
           where: { email: user.email as string },
           data: {
