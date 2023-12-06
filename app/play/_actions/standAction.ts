@@ -2,7 +2,7 @@
 
 import { prisma } from '@/lib/prisma';
 import { getCurrentUser } from '@/lib/session';
-import { dealerTurn, getCurrentHand, hasPlayerSplitted, shouldGameEnd } from '@/lib/helpers';
+import { dealerTurn, gameEnded, getCurrentHand, hasPlayerSplitted, shouldGameEnd } from '@/lib/helpers';
 import { Game } from '@/types/types';
 import { revalidatePath } from 'next/cache';
 
@@ -27,19 +27,22 @@ export const standAction = async (formData: FormData) => {
 
     playerState.actions = [...playerState.actions, 'stand'];
 
-    await prisma.game.update({
-      where: { id: game.id },
-      data: {
-        active: !(await shouldGameEnd(game.state, true)),
-        state: {
-          player: game.state.player,
-          dealer: game.state.dealer,
+    await prisma.$transaction(async (tx) => {
+      const hasGameEnded = await shouldGameEnd(game.state, true);
+      if (hasGameEnded) await gameEnded(tx, game);
+
+      await tx.game.update({
+        where: { id: game.id },
+        data: {
+          active: !hasGameEnded,
+          state: {
+            player: game.state.player,
+            dealer: game.state.dealer,
+          },
         },
-      },
+      });
+      revalidatePath('/play');
     });
-
-    revalidatePath('/play');
-
     return { message: 'Stand action finished.', error: null };
   } catch (e) {
     console.log(e);

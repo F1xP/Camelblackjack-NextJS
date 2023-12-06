@@ -2,7 +2,14 @@
 
 import { prisma } from '@/lib/prisma';
 import { getCurrentUser } from '@/lib/session';
-import { calculateDealerHandValue, calculateHandValue, deductCoins, getCard } from '@/lib/helpers';
+import {
+  calculateDealerHandValue,
+  calculateHandValue,
+  deductCoins,
+  gameEnded,
+  getCard,
+  shouldGameEnd,
+} from '@/lib/helpers';
 import { revalidatePath } from 'next/cache';
 import { getErrorMessage } from '@/lib/utils';
 
@@ -22,9 +29,8 @@ export const betAction = async (formData: FormData) => {
       });
       if (isActive) throw new Error('You must finish your active game in order to start another.');
 
-      await deductCoins(tx, user.email as string, betAmount);
-
-      const [playerCard1, playerCard2, dealerCard1, dealerCard2] = await Promise.all([
+      const [coinsDeducted, playerCard1, playerCard2, dealerCard1, dealerCard2] = await Promise.all([
+        deductCoins(tx, user.email as string, betAmount),
         getCard(),
         getCard(),
         getCard(),
@@ -35,29 +41,26 @@ export const betAction = async (formData: FormData) => {
         calculateHandValue([playerCard1, playerCard2]),
         calculateDealerHandValue([dealerCard1, dealerCard2]),
       ]);
-      const hasBlackjack = playerValue[0] === 21;
 
-      await tx.game.create({
+      const game = await tx.game.create({
         data: {
-          active: hasBlackjack ? false : true,
-          payoutMultiplier: 1,
-          amountMultiplier: 1,
-          amount: betAmount,
-          payout: 0,
+          active: true,
           state: {
-            player: [{ value: playerValue, actions: ['deal'], cards: [playerCard1, playerCard2] }],
+            player: [{ value: playerValue, actions: ['deal'], cards: [playerCard1, playerCard2], amount: betAmount }],
             dealer: { value: dealerValue, actions: ['deal'], cards: [dealerCard1, dealerCard2] },
           },
           user_email: user.email,
         },
       });
-      if (hasBlackjack)
-        await tx.user.update({
-          where: { email: user.email as string },
+
+      const hasGameEnded = await shouldGameEnd(game.state, false);
+      if (hasGameEnded) await gameEnded(tx, game);
+
+      if (hasGameEnded)
+        await tx.game.update({
+          where: { id: game.id },
           data: {
-            coins: {
-              increment: betAmount * 2.5,
-            },
+            active: false,
           },
         });
       revalidatePath('/play');

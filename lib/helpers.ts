@@ -1,4 +1,4 @@
-import { GameState, UserState } from '@/types/types';
+import { Game, GameState, UserState } from '@/types/types';
 import { Prisma } from '@prisma/client';
 
 export const hasPlayerSplitted = async (gameState: GameState | null) => {
@@ -56,7 +56,7 @@ export const calculateHandValue = async (hand: any) => {
       values[0] += 1;
     }
   }
-  return values.reverse();
+  return values;
 };
 
 export const calculateDealerHandValue = async (hand: any) => {
@@ -103,7 +103,7 @@ export const getGameStatus = async (gameState: GameState | null, hand: number) =
   const playerCards = gameState.player[hand].cards;
   const dealerCards = gameState.dealer.cards;
 
-  const playerValue = Number(gameState.player[hand].value[0]);
+  const playerValue = await getHandValue(gameState.player[hand]);
   const dealerValue = Number(gameState.dealer.value[0]);
 
   const playerLastAction = gameState.player[hand].actions.slice(-1)[0];
@@ -112,8 +112,8 @@ export const getGameStatus = async (gameState: GameState | null, hand: number) =
   const isPlayerBusted = playerLastAction === 'bust';
   const isDealerBusted = dealerLastAction === 'bust';
 
-  if (playerValue === 21 && playerCards.length === 2) return 'Win';
-  if (dealerValue === 21 && dealerCards.length === 2) return 'Lose';
+  if (playerValue === 21 && playerCards.length === 2 && dealerLastAction === 'deal') return 'Blackjack Player';
+  if (dealerValue === 21 && dealerCards.length === 2 && playerLastAction === 'deal') return 'Blackjack Dealer';
 
   if (isPlayerBusted) return 'Lose';
   if (!isPlayerBusted && isDealerBusted) return 'Win';
@@ -131,7 +131,7 @@ export const shouldGameEnd = async (gameState: GameState | null, end: boolean) =
 
   const hasSplitted = await hasPlayerSplitted(gameState);
   const currentHand = await getCurrentHand(gameState);
-  const playerValue = gameState.player[currentHand].value[0];
+  const playerValue = await getHandValue(gameState.player[currentHand]);
   const hasBusted = playerValue > 21;
 
   if (hasSplitted) return currentHand === 1 ? hasBusted : false;
@@ -164,4 +164,37 @@ export const dealerTurn = async (dealerState: UserState) => {
   dealerState.value = await calculateDealerHandValue(dealerState.cards);
 
   await dealerTurn(dealerState);
+};
+
+export const gameEnded = async (tx: Prisma.TransactionClient, game: Game) => {
+  const updateCoins = async (index: number) => {
+    const amount = game.state.player[index].amount;
+    const handResult = await getGameStatus(game.state, index);
+    if (!handResult) return;
+    const resultMultiplier =
+      handResult === 'Blackjack Player' ? 2.5 : handResult === 'Win' ? 2 : handResult === 'Push' ? 1 : 0;
+    const incrementAmount = amount * resultMultiplier;
+
+    await tx.user.update({
+      where: { email: game.user_email as string },
+      data: {
+        coins: { increment: incrementAmount },
+      },
+    });
+  };
+
+  const hasSplitted = await hasPlayerSplitted(game.state);
+
+  if (hasSplitted) {
+    await updateCoins(0);
+    await updateCoins(1);
+  } else {
+    await updateCoins(0);
+  }
+};
+
+export const getHandValue = async (playerState: UserState) => {
+  return playerState.value.length > 1 && playerState.value[0] > 21
+    ? Number(playerState.value[1])
+    : Number(playerState.value[0]);
 };

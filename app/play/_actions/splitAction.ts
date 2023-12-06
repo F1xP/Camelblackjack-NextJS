@@ -35,18 +35,23 @@ export const splitAction = async (formData: FormData) => {
 
     game.state.player = [
       ...game.state.player,
-      { value: updatedPlayerValue, actions: playerState.actions, cards: playerState.cards },
+      {
+        value: updatedPlayerValue,
+        actions: playerState.actions,
+        cards: playerState.cards,
+        amount: playerState.amount,
+        payout: 0,
+      },
     ];
 
     game.state.player[0] = playerState;
 
     await prisma.$transaction(async (tx) => {
-      await deductCoins(tx, user.email as string, game.amount);
+      await deductCoins(tx, user.email as string, playerState.amount);
 
       await tx.game.update({
         where: { id: game.id },
         data: {
-          amountMultiplier: 2,
           state: {
             player: game.state.player,
             dealer: game.state.dealer,
@@ -55,7 +60,6 @@ export const splitAction = async (formData: FormData) => {
       });
       revalidatePath('/play');
     });
-
     return { message: 'Split action finished.', error: null };
   } catch (e: unknown) {
     console.log(e);

@@ -62,17 +62,13 @@ model VerificationToken {
 }
 
 model Game {
-  id               String    @id @default(auto()) @map("_id") @db.ObjectId
-  active           Boolean
-  payoutMultiplier Int
-  amountMultiplier Int
-  amount           Int
-  payout           Int
-  state            GameState
-  user_email       String?
-  user             User?     @relation(fields: [user_email], references: [email], onDelete: Cascade)
-  createdAt        DateTime  @default(now())
-  updatedAt        DateTime  @updatedAt
+  id         String    @id @default(auto()) @map("_id") @db.ObjectId
+  active     Boolean
+  state      GameState
+  user_email String?
+  user       User?     @relation(fields: [user_email], references: [email], onDelete: Cascade)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
 }
 
 type GameState {
@@ -84,6 +80,8 @@ type UserState {
   value   Int[]
   actions String[]
   cards   Card[]
+  amount  Int      @default(0)
+  payout  Int      @default(0)
 }
 
 type Card {

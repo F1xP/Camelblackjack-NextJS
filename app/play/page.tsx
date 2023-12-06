@@ -40,14 +40,13 @@ export default async function Play() {
   );
 }
 
+// GameStatus isn't working properly
 const GameActions: React.FC<{
   gameState: GameState | null;
   gameStatus1: string | null;
   gameStatus2: string | null;
   currentHand: number;
 }> = ({ gameState, gameStatus1, gameStatus2, currentHand }) => {
-  console.log(gameState?.dealer.actions, 'Dealer Actions Client');
-  console.log(gameState?.player[currentHand].actions, 'Player Actions Client');
   const dealerLastAction = gameState?.dealer.actions[gameState?.dealer.actions.length - 1];
   const playerLastAction = gameState?.player[currentHand].actions[gameState?.player[currentHand].actions.length - 1];
 

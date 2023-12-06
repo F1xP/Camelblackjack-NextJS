@@ -1,5 +1,6 @@
 'use server';
 
+import { calculateDealerHandValue } from '@/lib/helpers';
 import { prisma } from '@/lib/prisma';
 import { getCurrentUser } from '@/lib/session';
 import { Game } from '@/types/types';
@@ -15,13 +16,11 @@ export const getCurrentGame = async () => {
       },
       orderBy: { updatedAt: 'desc' },
     });
-    /*
-      if (data && data.state.dealer.cards.length === 2) {
-        console.log(data.state.dealer.cards);
-        data.state.dealer.cards = [data.state.dealer.cards[0]];
-        data.state.dealer.value = await calculateHandValue(data.state.dealer.cards);
-      }
-      */
+
+    if (game && game.state.dealer.cards.length === 2 && game.state.dealer.value[0] !== 21) {
+      game.state.dealer.cards = [game.state.dealer.cards[0]];
+      game.state.dealer.value = await calculateDealerHandValue(game.state.dealer.cards);
+    }
 
     return game;
   } catch (e) {

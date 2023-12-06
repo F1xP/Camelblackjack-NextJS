@@ -5,6 +5,7 @@ import { getCurrentUser } from '@/lib/session';
 import {
   calculateHandValue,
   dealerTurn,
+  gameEnded,
   getCard,
   getCurrentHand,
   hasPlayerSplitted,
@@ -41,24 +42,25 @@ export const hitAction = async (formData: FormData) => {
     const hasBusted = playerState.value[0] > 21;
     playerState.actions = hasBusted ? [...playerState.actions, 'hit', 'bust'] : [...playerState.actions, 'hit'];
 
-    // Dealer to play when split is active and only one hand busted
-
-    if (hasSplitted && currentHand === 1 && playerState.value[1] > 21 && game.state.player[0].value[1] < 21)
+    if (hasSplitted && currentHand === 1 && playerState.value[0] > 21 && game.state.player[0].value[1] < 21)
       await dealerTurn(dealerState);
 
-    await prisma.game.update({
-      where: { id: game.id },
-      data: {
-        active: !(await shouldGameEnd(game.state, false)),
-        state: {
-          player: game.state.player,
-          dealer: game.state.dealer,
+    await prisma.$transaction(async (tx) => {
+      const hasGameEnded = await shouldGameEnd(game.state, false);
+      if (hasGameEnded) await gameEnded(tx, game);
+
+      await tx.game.update({
+        where: { id: game.id },
+        data: {
+          active: !hasGameEnded,
+          state: {
+            player: game.state.player,
+            dealer: game.state.dealer,
+          },
         },
-      },
+      });
+      revalidatePath('/play');
     });
-
-    revalidatePath('/play');
-
     return { message: 'Hit action finished.', error: null };
   } catch (e) {
     console.log(e);
