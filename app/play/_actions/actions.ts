@@ -1,6 +1,6 @@
 'use server';
 
-import { calculateDealerHandValue } from '@/lib/helpers';
+import { calculateHandValue } from '@/lib/helpers';
 import { prisma } from '@/lib/prisma';
 import { getCurrentUser } from '@/lib/session';
 import { Game } from '@/types/types';
@@ -19,7 +19,7 @@ export const getCurrentGame = async () => {
 
     if (game && game.active && game.state.dealer.cards.length === 2 && game.state.dealer.value[0] !== 21) {
       game.state.dealer.cards = [game.state.dealer.cards[0]];
-      game.state.dealer.value = await calculateDealerHandValue(game.state.dealer.cards);
+      game.state.dealer.value = await calculateHandValue(game.state.dealer.cards, 'D');
     }
 
     return game;

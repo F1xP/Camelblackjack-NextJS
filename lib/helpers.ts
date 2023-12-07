@@ -39,7 +39,7 @@ export const isAllowedToDouble = async (gameState: GameState | null, hand: numbe
   return true;
 };
 
-export const calculateHandValue = async (hand: any) => {
+export const calculateHandValue = async (hand: any, type: 'P' | 'D') => {
   let values = [0];
   let aceCount = 0;
 
@@ -50,28 +50,17 @@ export const calculateHandValue = async (hand: any) => {
   }
 
   for (let i = 0; i < aceCount; i++) {
-    if (values[0] >= 11) values[0] += 1;
-    else {
-      values[1] = values[0] + 11;
-      values[0] += 1;
+    if (type === 'P') {
+      if (values[0] >= 11) values[0] += 1;
+      else {
+        values[1] = values[0] + 11;
+        values[0] += 1;
+      }
     }
-  }
-  return values;
-};
-
-export const calculateDealerHandValue = async (hand: any) => {
-  let values = [0];
-  let aceCount = 0;
-
-  for (const card of hand) {
-    const cardValue = card.rank === 'A' ? 11 : isNaN(Number(card.rank)) ? 10 : Number(card.rank);
-    if (card.rank === 'A') aceCount++;
-    else values[0] += cardValue;
-  }
-
-  for (let i = 0; i < aceCount; i++) {
-    if (values[0] >= 11) values[0] += 1;
-    else values[0] += 11;
+    if (type === 'D') {
+      if (values[0] >= 11) values[0] += 1;
+      else values[0] += 11;
+    }
   }
 
   return values;
@@ -163,7 +152,7 @@ export const dealerTurn = async (dealerState: UserState) => {
   const newDealerCard = await getCard();
   dealerState.cards = [...cards, newDealerCard];
   dealerState.actions = [...actions, 'hit'];
-  dealerState.value = await calculateDealerHandValue(dealerState.cards);
+  dealerState.value = await calculateHandValue(dealerState.cards, 'D');
 
   await dealerTurn(dealerState);
 };
@@ -172,9 +161,10 @@ export const gameEnded = async (tx: Prisma.TransactionClient, game: Game) => {
   const updateCoins = async (index: number) => {
     const amount = game.state.player[index].amount;
     const handResult = await getGameStatus(game.state, index);
-    if (!handResult) return;
     const resultMultiplier =
       handResult === 'Blackjack Player' ? 2.5 : handResult === 'Win' ? 2 : handResult === 'Push' ? 1 : 0;
+
+    if (resultMultiplier === 0) return;
     const incrementAmount = amount * resultMultiplier;
 
     await tx.user.update({

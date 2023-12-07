@@ -2,14 +2,7 @@
 
 import { prisma } from '@/lib/prisma';
 import { getCurrentUser } from '@/lib/session';
-import {
-  calculateDealerHandValue,
-  calculateHandValue,
-  deductCoins,
-  gameEnded,
-  getCard,
-  shouldGameEnd,
-} from '@/lib/helpers';
+import { calculateHandValue, deductCoins, gameEnded, getCard, shouldGameEnd } from '@/lib/helpers';
 import { revalidatePath } from 'next/cache';
 import { getErrorMessage } from '@/lib/utils';
 
@@ -38,8 +31,8 @@ export const betAction = async (formData: FormData) => {
       ]);
 
       const [playerValue, dealerValue] = await Promise.all([
-        calculateHandValue([playerCard1, playerCard2]),
-        calculateDealerHandValue([dealerCard1, dealerCard2]),
+        calculateHandValue([playerCard1, playerCard2], 'P'),
+        calculateHandValue([dealerCard1, dealerCard2], 'D'),
       ]);
 
       const game = await tx.game.create({
