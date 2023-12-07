@@ -17,7 +17,7 @@ export const getCurrentGame = async () => {
       orderBy: { updatedAt: 'desc' },
     });
 
-    if (game && game.state.dealer.cards.length === 2 && game.state.dealer.value[0] !== 21) {
+    if (game && game.active && game.state.dealer.cards.length === 2 && game.state.dealer.value[0] !== 21) {
       game.state.dealer.cards = [game.state.dealer.cards[0]];
       game.state.dealer.value = await calculateDealerHandValue(game.state.dealer.cards);
     }

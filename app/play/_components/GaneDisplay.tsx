@@ -121,7 +121,7 @@ const Card: React.FC<{
           : 'border-transparent'
       )}
       style={{
-        animationDelay: `${index * 100}ms`,
+        animationDelay: `${index * 300}ms`,
         marginTop: `${index}rem`,
         marginLeft: index > 0 ? '-2.5rem' : '0',
         transform: `translate(0px, 1000px)`,

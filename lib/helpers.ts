@@ -74,7 +74,7 @@ export const calculateDealerHandValue = async (hand: any) => {
     else values[0] += 11;
   }
 
-  return values.reverse();
+  return values;
 };
 
 export const takeInsurance = (dealer: { rank: string }[]) => {
@@ -131,9 +131,11 @@ export const shouldGameEnd = async (gameState: GameState | null, end: boolean) =
 
   const hasSplitted = await hasPlayerSplitted(gameState);
   const currentHand = await getCurrentHand(gameState);
-  const playerValue = await getHandValue(gameState.player[currentHand]);
+  const playerState = gameState.player[currentHand];
+  const playerValue = await getHandValue(playerState);
   const hasBusted = playerValue > 21;
 
+  if (!hasSplitted && playerState.cards.length === 2 && playerValue === 21) return true; // Blackjack for player
   if (hasSplitted) return currentHand === 1 ? hasBusted : false;
   else return hasBusted || end;
 };
@@ -194,7 +196,9 @@ export const gameEnded = async (tx: Prisma.TransactionClient, game: Game) => {
 };
 
 export const getHandValue = async (playerState: UserState) => {
-  return playerState.value.length > 1 && playerState.value[0] > 21
-    ? Number(playerState.value[1])
+  return playerState.value.length > 1
+    ? playerState.value[1] > 21
+      ? Number(playerState.value[0])
+      : Number(playerState.value[1])
     : Number(playerState.value[0]);
 };
