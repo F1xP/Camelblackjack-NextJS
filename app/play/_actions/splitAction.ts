@@ -30,7 +30,7 @@ export const splitAction = async (formData: FormData) => {
     playerState.cards.pop();
     playerState.actions = [...playerState.actions, 'split'];
 
-    const updatedPlayerValue = await calculateHandValue(playerState.cards);
+    const updatedPlayerValue = await calculateHandValue(playerState.cards, 'P');
     playerState.value = updatedPlayerValue;
 
     game.state.player = [

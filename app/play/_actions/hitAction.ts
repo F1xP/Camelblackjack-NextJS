@@ -37,7 +37,7 @@ export const hitAction = async (formData: FormData) => {
 
     const newPlayerCard = await getCard();
     playerState.cards = [...playerState.cards, newPlayerCard];
-    playerState.value = await calculateHandValue(playerState.cards);
+    playerState.value = await calculateHandValue(playerState.cards, 'P');
 
     const hasBusted = playerState.value[0] > 21;
     playerState.actions = hasBusted ? [...playerState.actions, 'hit', 'bust'] : [...playerState.actions, 'hit'];

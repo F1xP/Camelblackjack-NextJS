@@ -83,7 +83,7 @@ const Hand: React.FC<HandProps> = ({ cards, handValues, gameStatus, isCurrent, i
       <div className="flex relative item-start mt-1 min-h-[7.9rem] min-w-[5rem]">
         {cards?.map((card: any, index: number) => (
           <Card
-            key={index}
+            key={`${card?.rank}${card?.suit}${index}`}
             index={index}
             rank={card?.rank}
             suit={card?.suit}
@@ -121,7 +121,7 @@ const Card: React.FC<{
           : 'border-transparent'
       )}
       style={{
-        animationDelay: `${index * 300}ms`,
+        animationDelay: `${index * 250}ms`,
         marginTop: `${index}rem`,
         marginLeft: index > 0 ? '-2.5rem' : '0',
         transform: `translate(0px, 1000px)`,
