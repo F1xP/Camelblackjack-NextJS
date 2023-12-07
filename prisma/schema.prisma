@@ -78,13 +78,23 @@ type GameState {
 
 type UserState {
   value   Int[]
-  actions String[]
+  actions ActionName[]
   cards   Card[]
-  amount  Int      @default(0)
-  payout  Int      @default(0)
+  amount  Int          @default(0)
+  payout  Int          @default(0)
 }
 
 type Card {
   rank String
   suit String
+}
+
+enum ActionName {
+  DEAL
+  HIT
+  SPLIT
+  STAND
+  PUSH
+  BUST
+  DOUBLE
 }

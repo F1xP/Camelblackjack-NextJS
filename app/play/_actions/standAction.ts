@@ -22,10 +22,9 @@ export const standAction = async (formData: FormData) => {
 
     const playerState = game.state.player[currentHand];
     const dealerState = game.state.dealer;
-
     if (!hasSplitted || currentHand === 1) await dealerTurn(dealerState);
 
-    playerState.actions = [...playerState.actions, 'stand'];
+    playerState.actions = [...playerState.actions, 'STAND'];
 
     await prisma.$transaction(async (tx) => {
       const hasGameEnded = await shouldGameEnd(game.state, true);

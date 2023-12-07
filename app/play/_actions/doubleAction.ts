@@ -3,10 +3,13 @@
 import { prisma } from '@/lib/prisma';
 import { getCurrentUser } from '@/lib/session';
 import {
+  calculateHandValue,
   dealerTurn,
   deductCoins,
   gameEnded,
+  getCard,
   getCurrentHand,
+  getHandValue,
   hasPlayerSplitted,
   isAllowedToDouble,
   shouldGameEnd,
@@ -35,9 +38,15 @@ export const doubleAction = async (formData: FormData) => {
       await deductCoins(tx, user.email as string, playerState.amount);
       playerState.amount = playerState.amount * 2;
 
-      if (!hasSplitted || currentHand === 1) await dealerTurn(dealerState);
+      const newPlayerCard = await getCard();
+      playerState.cards = [...playerState.cards, newPlayerCard];
+      playerState.value = await calculateHandValue(playerState.cards, 'P');
+      playerState.actions = [...playerState.actions, 'DOUBLE'];
+      const playerValue1 = await getHandValue(game.state.player[0]);
+      const playerValue2 = await getHandValue(game.state.player[1]);
 
-      playerState.actions = [...playerState.actions, 'double'];
+      if ((!hasSplitted && playerValue1 < 21) || (currentHand === 1 && (playerValue1 < 21 || playerValue2 < 21)))
+        await dealerTurn(dealerState);
 
       const hasGameEnded = await shouldGameEnd(game.state, true);
       if (hasGameEnded) await gameEnded(tx, game);

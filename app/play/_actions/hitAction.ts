@@ -32,7 +32,7 @@ export const hitAction = async (formData: FormData) => {
     const dealerState = game.state.dealer;
 
     const lastPlayerAction = playerState.actions.slice(-1)[0];
-    if (['double', 'stand', 'bust'].includes(lastPlayerAction))
+    if (['DOUBLE', 'STAND', 'BUST'].includes(lastPlayerAction))
       return { message: null, error: 'Hitting is not available at this point. Please check your current game status.' };
 
     const newPlayerCard = await getCard();
@@ -40,7 +40,7 @@ export const hitAction = async (formData: FormData) => {
     playerState.value = await calculateHandValue(playerState.cards, 'P');
 
     const hasBusted = playerState.value[0] > 21;
-    playerState.actions = hasBusted ? [...playerState.actions, 'hit', 'bust'] : [...playerState.actions, 'hit'];
+    playerState.actions = hasBusted ? [...playerState.actions, 'HIT', 'BUST'] : [...playerState.actions, 'HIT'];
 
     if (hasSplitted && currentHand === 1 && playerState.value[0] > 21 && game.state.player[0].value[1] < 21)
       await dealerTurn(dealerState);

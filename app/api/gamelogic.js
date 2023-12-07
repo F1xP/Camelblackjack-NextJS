@@ -16,7 +16,7 @@ const data = {
     player: [
       {
         value: 11,
-        actions: ['deal', 'split'],
+        actions: ['DEAL', 'SPLIT'],
         cards: [
           {
             rank: '7',
@@ -30,7 +30,7 @@ const data = {
       },
       {
         value: 12,
-        actions: ['deal', 'split'],
+        actions: ['DEAL', 'SPLIT'],
         cards: [
           {
             rank: '7',
@@ -46,7 +46,7 @@ const data = {
     dealer: [
       {
         value: 10,
-        actions: ['deal'],
+        actions: ['DEAL'],
         cards: [
           {
             rank: 'K',

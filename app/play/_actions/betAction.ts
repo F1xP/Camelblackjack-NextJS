@@ -39,8 +39,8 @@ export const betAction = async (formData: FormData) => {
         data: {
           active: true,
           state: {
-            player: [{ value: playerValue, actions: ['deal'], cards: [playerCard1, playerCard2], amount: betAmount }],
-            dealer: { value: dealerValue, actions: ['deal'], cards: [dealerCard1, dealerCard2] },
+            player: [{ value: playerValue, actions: ['DEAL'], cards: [playerCard1, playerCard2], amount: betAmount }],
+            dealer: { value: dealerValue, actions: ['DEAL'], cards: [dealerCard1, dealerCard2] },
           },
           user_email: user.email,
         },

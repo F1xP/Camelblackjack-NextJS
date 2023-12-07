@@ -109,10 +109,10 @@ const Card: React.FC<{
   return (
     <div
       className={cn(
-        'w-20 h-32 bg-white rounded-md shadow-sm shadow-black p-card-animation border-3',
+        'flip-card w-20 h-32 bg-transparent rounded-md shadow-sm shadow-black p-card-animation border-3',
         isCurrent && !gameStatus && isSplitted
           ? 'border-accentBlue'
-          : gameStatus === 'Push'
+          : gameStatus === 'PUSH'
           ? 'border-accent'
           : gameStatus === 'Lose' || gameStatus === 'Blackjack Dealer'
           ? 'border-accentRed'
@@ -126,15 +126,24 @@ const Card: React.FC<{
         marginLeft: index > 0 ? '-2.5rem' : '0',
         transform: `translate(0px, 1000px)`,
       }}>
-      <p
-        className={`font-mono text-5xl font-bold ml-2`}
-        style={{ color: suitColor }}>
-        {rank}
-      </p>
       <div
-        className="ml-1 mt-1"
-        style={{ color: suitColor }}>
-        {icon}
+        className="flip-card-inner card-flip-animation"
+        style={{
+          animationDelay: `${index * 250}ms`,
+        }}>
+        <div className="flip-card-back bg-white">
+          <p
+            className={`font-mono text-5xl font-bold ml-2`}
+            style={{ color: suitColor }}>
+            {rank}
+          </p>
+          <div
+            className="ml-1 mt-1"
+            style={{ color: suitColor }}>
+            {icon}
+          </div>
+        </div>
+        <div className="flip-card-front bg-red-200"></div>
       </div>
     </div>
   );
@@ -154,7 +163,7 @@ const Result: React.FC<{
           'px-2 text-black font-bold font-mono rounded-sm text-center',
           isCurrent && !gameStatus && isSplitted
             ? 'bg-accentBlue'
-            : gameStatus === 'Push'
+            : gameStatus === 'PUSH'
             ? 'bg-accent'
             : gameStatus === 'Lose' || gameStatus === 'Blackjack Dealer'
             ? 'bg-accentRed'
@@ -170,7 +179,7 @@ const Result: React.FC<{
         'px-2 text-black font-bold font-mono rounded-sm text-center',
         isCurrent && !gameStatus && isSplitted
           ? 'bg-accentBlue'
-          : gameStatus === 'Push'
+          : gameStatus === 'PUSH'
           ? 'bg-accent'
           : gameStatus === 'Lose' || gameStatus === 'Blackjack Dealer'
           ? 'bg-accentRed'

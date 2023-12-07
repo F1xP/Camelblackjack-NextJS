@@ -23,27 +23,27 @@ export const GameButtons: React.FC<GameButtonsProps> = ({ gameState, isGameActiv
   const [betAmount, setBetAmount] = useState<number>(0);
 
   const didStandOrBust = (hand: number) =>
-    gameState?.player[hand].actions.includes('stand') || gameState?.player[hand].actions.includes('bust');
-  const didDouble = (hand: number) => gameState?.player[hand].actions.includes('double');
+    gameState?.player[hand].actions.includes('STAND') || gameState?.player[hand].actions.includes('BUST');
+  const didDouble = (hand: number) => gameState?.player[hand].actions.includes('DOUBLE');
 
   const handleActions = async (action: string) => {
     const formData = new FormData();
     switch (action) {
-      case 'bet':
+      case 'BET':
         formData.append('betAmount', betAmount.toString());
         await handleAction(betAction, formData);
         update();
         break;
-      case 'hit':
+      case 'HIT':
         await handleAction(hitAction, formData);
         break;
-      case 'stand':
+      case 'STAND':
         await handleAction(standAction, formData);
         break;
-      case 'split':
+      case 'SPLIT':
         await handleAction(splitAction, formData);
         break;
-      case 'double':
+      case 'DOUBLE':
         await handleAction(doubleAction, formData);
         break;
       default:
@@ -69,7 +69,7 @@ export const GameButtons: React.FC<GameButtonsProps> = ({ gameState, isGameActiv
           variant={'outlined'}
           size={'xl'}
           disabled={loading || isGameActive}
-          onClick={() => handleActions('bet')}>
+          onClick={() => handleActions('BET')}>
           BET
         </Button>
       </div>
@@ -78,12 +78,12 @@ export const GameButtons: React.FC<GameButtonsProps> = ({ gameState, isGameActiv
           {[
             {
               name: 'HIT',
-              action: 'hit',
+              action: 'HIT',
               disabled: loading || !isGameActive || didStandOrBust(currentHand),
             },
             {
               name: 'STAND',
-              action: 'stand',
+              action: 'STAND',
               disabled: loading || !isGameActive || didStandOrBust(currentHand),
             },
           ].map((item, index) => (
@@ -102,7 +102,7 @@ export const GameButtons: React.FC<GameButtonsProps> = ({ gameState, isGameActiv
           {[
             {
               name: 'SPLIT',
-              action: 'split',
+              action: 'SPLIT',
               disabled:
                 loading ||
                 !isGameActive ||
@@ -113,7 +113,7 @@ export const GameButtons: React.FC<GameButtonsProps> = ({ gameState, isGameActiv
             },
             {
               name: 'DOUBLE',
-              action: 'double',
+              action: 'DOUBLE',
               disabled: loading || !isGameActive || didStandOrBust(currentHand) || didDouble(currentHand),
             },
           ].map((item, index) => (

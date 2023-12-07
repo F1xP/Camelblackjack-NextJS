@@ -33,7 +33,7 @@ export type GameState = {
 
 export type UserState = {
   value: number[];
-  actions: string[];
+  actions: Actions[];
   cards: Card[];
   amount: number;
   payout: number;
@@ -43,3 +43,5 @@ export type Card = {
   rank: string;
   suit: string;
 };
+
+export type Actions = 'DEAL' | 'HIT' | 'SPLIT' | 'STAND' | 'PUSH' | 'BUST' | 'DOUBLE';
