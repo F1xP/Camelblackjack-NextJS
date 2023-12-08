@@ -80,7 +80,7 @@ export const suits = ['Hearts', 'Diamonds', 'Clubs', 'Spades'];
 export const getCard = async () => {
   const randomRankIndex = Math.floor(Math.random() * ranks.length);
   const randomSuitIndex = Math.floor(Math.random() * suits.length);
-  const randomRank = ranks[1];
+  const randomRank = ranks[randomRankIndex];
   const randomSuit = suits[randomSuitIndex];
 
   return { rank: randomRank, suit: randomSuit };
@@ -118,13 +118,17 @@ export const getGameStatus = async (gameState: GameState | null, hand: number) =
 export const shouldGameEnd = async (gameState: GameState | null, end: boolean) => {
   if (!gameState) return true;
 
-  // Add a dealer blackjack check
+  const dealerState = gameState.dealer;
+  const dealerValue = await getHandValue(dealerState);
   const hasSplitted = await hasPlayerSplitted(gameState);
   const currentHand = await getCurrentHand(gameState);
   const playerState = gameState.player[currentHand];
   const playerValue = await getHandValue(playerState);
   const hasBusted = playerValue > 21;
   const lastPlayerAction = playerState.actions.slice(-1)[0];
+  const lastDealerAction = playerState.actions.slice(-1)[0];
+
+  if (lastDealerAction === 'DEAL' && lastPlayerAction === 'DEAL' && dealerValue === 21) return true;
 
   if (!hasSplitted && playerState.cards.length === 2 && playerValue === 21) return true; // Blackjack for player
   if (hasSplitted && currentHand === 1 && lastPlayerAction !== 'SPLIT') return hasBusted || end;

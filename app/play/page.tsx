@@ -34,6 +34,7 @@ export default async function Play() {
           gameStatus1={gameStatus1}
           gameStatus2={gameStatus2}
           isSplitted={gameState?.player.length === 2}
+          gameId={gameData?.id}
         />
       </div>
     </>
