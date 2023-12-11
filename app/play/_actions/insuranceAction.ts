@@ -20,13 +20,14 @@ export const insuranceAcceptAction = async (formData: FormData) => {
       const playerState = game.state.player[0];
 
       await deductCoins(tx, user.email as string, playerState.amount / 2);
-      playerState.amount = playerState.amount * 2;
 
       playerState.actions = [...playerState.actions, 'INS_ACCEPTED'];
 
       const hasGameEnded = await shouldGameEnd(game.state, true);
-      if (hasGameEnded) await gameEnded(tx, game);
-
+      if (hasGameEnded) {
+        playerState.amount += playerState.amount / 2;
+        await gameEnded(tx, game);
+      }
       await tx.game.update({
         where: { id: game.id },
         data: {
