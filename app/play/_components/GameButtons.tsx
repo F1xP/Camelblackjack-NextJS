@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Button } from '../../_components/Button';
 import { Input } from '../../_components/Input';
 import useAction from '@/app/hooks/useAction';
+import useAnimatedNumber from '@/app/hooks/useAnimatedNumber';
 import { GameState } from '@/types/types';
 import { useSession } from 'next-auth/react';
 import { betAction } from '../_actions/betAction';
@@ -34,13 +35,18 @@ export const GameButtons: React.FC<GameButtonsProps> = ({ gameState, isGameActiv
       default:
     }
   };
+  const animatedValue = useAnimatedNumber({
+    value: session?.user.coins,
+    startValue: session?.user.coins,
+    duration: 1000,
+  });
 
   return (
-    <section className="h-[600px] w-full flex-1 flex flex-col">
+    <section className="w-full flex-1 flex flex-col">
       <div className="flex flex-col p-2">
         <div className="flex flex-row items-center">
           <p className="text-text text-xl font-mono small-caps">Bet Amount</p>
-          <p className="text-text text-md font-mono small-caps ml-auto">Coins:{session?.user.coins}</p>
+          <p className="text-text text-md font-mono small-caps ml-auto">Coins:{animatedValue}</p>
         </div>
         <Input
           type="number"

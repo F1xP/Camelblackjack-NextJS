@@ -22,7 +22,7 @@ export const GameDisplay: React.FC<GameDisplayProps> = ({
   gameId,
 }) => {
   return (
-    <section className="bg-black/30 h-[600px] w-full flex-[2] rounded-r-lg text-text overflow-hidden relative">
+    <section className="bg-black/30 w-full flex-[2] rounded-r-lg text-text overflow-hidden relative">
       <div className="flex flex-col justify-between h-full p-2">
         <div className="w-full flex justify-around flex-row-reverse absolute bottom-1">
           <Hand
@@ -117,7 +117,7 @@ const Card: React.FC<{
   return (
     <div
       className={cn(
-        'flip-card w-20 h-32 bg-transparent rounded-md shadow-sm shadow-black p-card-animation border-3',
+        'flip-card w-[3.5rem] h-[5.5rem] md:w-16 md:h-24 xl:w-20 xl:h-32 bg-transparent rounded-md shadow-sm shadow-black p-card-animation border-3',
         isCurrent && !gameStatus && isSplitted
           ? 'border-accentBlue'
           : gameStatus === 'PUSH'
@@ -131,7 +131,7 @@ const Card: React.FC<{
       style={{
         animationDelay: `${index * 250}ms`,
         marginTop: `${index}rem`,
-        marginLeft: index > 0 ? '-2.5rem' : '0',
+        marginLeft: index > 0 ? '-2.4rem' : '0',
         transform: `translate(0px, 1000px)`,
       }}>
       <div
@@ -141,7 +141,7 @@ const Card: React.FC<{
         }}>
         <div className="flip-card-back bg-white">
           <p
-            className={`font-mono text-5xl font-bold ml-2`}
+            className={`font-mono text-3xl md:text-5xl font-bold ml-2`}
             style={{ color: suitColor }}>
             {rank}
           </p>
