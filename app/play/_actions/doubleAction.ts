@@ -40,13 +40,20 @@ export const doubleAction = async (formData: FormData) => {
 
       const newPlayerCard = await getCard();
       playerState.cards = [...playerState.cards, newPlayerCard];
-      playerState.value = await calculateHandValue(playerState.cards, 'P');
       playerState.actions = [...playerState.actions, 'DOUBLE'];
-      const playerValue1 = await getHandValue(game.state.player[0]);
-      const playerValue2 = await getHandValue(game.state.player[1]);
+
+      // possible bug
+      const [value, playerValue1, playerValue2] = await Promise.all([
+        calculateHandValue(playerState.cards, 'P'),
+        getHandValue(game.state.player[0]),
+        getHandValue(game.state.player[1]),
+      ]);
+
+      playerState.value = value;
 
       if ((!hasSplitted && playerValue1 < 21) || (currentHand === 1 && (playerValue1 < 21 || playerValue2 < 21)))
         await dealerTurn(dealerState);
+      // possible bug
 
       const hasGameEnded = await shouldGameEnd(game.state, true);
       if (hasGameEnded) await gameEnded(tx, game);
@@ -66,6 +73,6 @@ export const doubleAction = async (formData: FormData) => {
     return { message: 'Double action finished.', error: null };
   } catch (e) {
     console.log(e);
-    return { message: null, error: 'An error occurred while processing your stand action.' };
+    return { message: null, error: 'An error occurred while processing your double action.' };
   }
 };

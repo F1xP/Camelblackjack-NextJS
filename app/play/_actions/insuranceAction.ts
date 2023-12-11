@@ -43,7 +43,7 @@ export const insuranceAcceptAction = async (formData: FormData) => {
     return { message: 'Insurance accepted action finished.', error: null };
   } catch (e) {
     console.log(e);
-    return { message: null, error: 'An error occurred while processing your stand action.' };
+    return { message: null, error: 'An error occurred while processing your insurance action.' };
   }
 };
 
@@ -80,6 +80,6 @@ export const insuranceDeclineAction = async (formData: FormData) => {
     return { message: 'Insurance declined action finished.', error: null };
   } catch (e) {
     console.log(e);
-    return { message: null, error: 'An error occurred while processing your stand action.' };
+    return { message: null, error: 'An error occurred while processing your insurance action.' };
   }
 };

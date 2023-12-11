@@ -199,6 +199,7 @@ export const gameEnded = async (tx: Prisma.TransactionClient, game: Game) => {
 };
 
 export const getHandValue = async (playerState: UserState) => {
+  if (!playerState) return 0;
   return playerState.value.length > 1
     ? playerState.value[1] > 21
       ? Number(playerState.value[0])
