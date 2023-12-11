@@ -36,15 +36,19 @@ export const GameButtons: React.FC<GameButtonsProps> = ({ gameState, isGameActiv
         break;
       case 'HIT':
         await handleAction(hitAction, formData);
+        update();
         break;
       case 'STAND':
         await handleAction(standAction, formData);
+        update();
         break;
       case 'SPLIT':
         await handleAction(splitAction, formData);
+        update();
         break;
       case 'DOUBLE':
         await handleAction(doubleAction, formData);
+        update();
         break;
       default:
     }
