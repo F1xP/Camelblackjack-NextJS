@@ -16,12 +16,21 @@ export const getCurrentGame = async () => {
       },
       orderBy: { updatedAt: 'desc' },
     });
+    if (!game) return null;
 
-    if (game && game.active && game.state.dealer.cards.length === 2 && game.state.dealer.value[0] !== 21) {
+    const lastPlayerAction = game?.state.player[0].actions.slice(-1)[0];
+    const insurance = ['INS_DECLINED', 'INS_ACCEPTED'].includes(lastPlayerAction);
+
+    if (
+      game &&
+      game.active &&
+      game.state.dealer.cards.length === 2 &&
+      game.state.dealer.value[0] !== 21 &&
+      !insurance
+    ) {
       game.state.dealer.cards = [game.state.dealer.cards[0]];
       game.state.dealer.value = await calculateHandValue(game.state.dealer.cards, 'D');
     }
-
     return game;
   } catch (e) {
     console.log(e);

@@ -97,4 +97,6 @@ enum ActionName {
   PUSH
   BUST
   DOUBLE
+  INS_DECLINED
+  INS_ACCEPTED
 }

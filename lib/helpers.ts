@@ -128,7 +128,14 @@ export const shouldGameEnd = async (gameState: GameState | null, end: boolean) =
   const lastPlayerAction = playerState.actions.slice(-1)[0];
   const lastDealerAction = playerState.actions.slice(-1)[0];
 
-  if (lastDealerAction === 'DEAL' && lastPlayerAction === 'DEAL' && dealerValue === 21) return true;
+  if (
+    lastDealerAction === 'DEAL' &&
+    (lastPlayerAction === 'INS_ACCEPTED' ||
+      lastPlayerAction === 'INS_DECLINED' ||
+      ['10', 'J', 'Q', 'K'].includes(dealerState.cards[0].rank)) &&
+    dealerValue === 21
+  )
+    return true; // Blackjack for dealer
 
   if (!hasSplitted && playerState.cards.length === 2 && playerValue === 21) return true; // Blackjack for player
   if (hasSplitted && currentHand === 1 && lastPlayerAction !== 'SPLIT') return hasBusted || end;

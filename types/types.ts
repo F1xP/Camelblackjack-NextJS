@@ -44,4 +44,4 @@ export type Card = {
   suit: string;
 };
 
-export type Actions = 'DEAL' | 'HIT' | 'SPLIT' | 'STAND' | 'PUSH' | 'BUST' | 'DOUBLE';
+export type Actions = 'DEAL' | 'HIT' | 'SPLIT' | 'STAND' | 'PUSH' | 'BUST' | 'DOUBLE' | 'INS_DECLINED' | 'INS_ACCEPTED';
