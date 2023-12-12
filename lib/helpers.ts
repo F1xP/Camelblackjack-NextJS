@@ -66,14 +66,6 @@ export const calculateHandValue = async (hand: any, type: 'P' | 'D') => {
   return values;
 };
 
-export const takeInsurance = (dealer: { rank: string }[]) => {
-  if (dealer[0] && dealer[0].rank === 'A') {
-    // Insurance Accepted
-    // If dealer has blackjack reveals hand and win
-    // Game continues
-  }
-};
-
 export const ranks = ['K', 'A'];
 export const suits = ['Hearts', 'Diamonds', 'Clubs', 'Spades'];
 
@@ -134,18 +126,16 @@ export const shouldGameEnd = async (gameState: GameState | null, end: boolean) =
   const playerValue = await getHandValue(playerState);
   const hasBusted = playerValue > 21;
   const lastPlayerAction = playerState.actions.slice(-1)[0];
-  const lastDealerAction = playerState.actions.slice(-1)[0];
+  const lastDealerAction = dealerState.actions.slice(-1)[0];
 
   if (!hasSplitted && playerState.cards.length === 2 && playerValue === 21) return true; // Blackjack for player
   if (
     lastDealerAction === 'DEAL' &&
-    (lastPlayerAction === 'INS_ACCEPTED' || lastPlayerAction === 'INS_DECLINED') &&
+    ['INS_ACCEPTED', 'INS_DECLINED'].includes(lastPlayerAction) &&
     dealerState.cards[0].rank === 'A' &&
     dealerValue === 21
-  ) {
-    console.log('blackjack for dealer', lastPlayerAction);
-    return true; // Blackjack for dealer
-  }
+  )
+    return true;
 
   if (hasSplitted && currentHand === 1 && lastPlayerAction !== 'SPLIT') return hasBusted || end;
   else return hasBusted || end;
@@ -182,27 +172,29 @@ export const dealerTurn = async (dealerState: UserState) => {
 export const gameEnded = async (tx: Prisma.TransactionClient, game: Game) => {
   const updateCoins = async (index: number) => {
     const amount = game.state.player[index].amount;
-    const handResult = await getGameStatus(!!game.active, game.state, index);
+    const handResult = await getGameStatus(!game.active, game.state, index);
     const resultMultiplier =
       handResult === 'Blackjack Player' ? 2.5 : handResult === 'Win' ? 2 : handResult === 'PUSH' ? 1 : 0;
-
     if (resultMultiplier === 0) return;
     const incrementAmount = amount * resultMultiplier;
-
-    await tx.user.update({
+    console.log(amount, incrementAmount);
+    const updatedUser = await tx.user.update({
       where: { email: game.user_email as string },
       data: {
-        coins: { increment: incrementAmount },
+        coins: {
+          increment: incrementAmount,
+        },
       },
     });
   };
 
   const hasSplitted = await hasPlayerSplitted(game.state);
-
+  console.log(hasSplitted, 'hassplit');
   if (hasSplitted) {
     await updateCoins(0);
     await updateCoins(1);
   } else {
+    console.log('is running');
     await updateCoins(0);
   }
 };

@@ -98,6 +98,3 @@ export const insuranceDeclineAction = async (formData: FormData) => {
     return { message: null, error: 'An error occurred while processing your insurance action.' };
   }
 };
-// BUGS
-// after declining insurance it still reveals the card even when not bj
-// BJ Doesn't reveal upon insurance

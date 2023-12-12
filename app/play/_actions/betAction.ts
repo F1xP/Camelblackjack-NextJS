@@ -46,15 +46,15 @@ export const betAction = async (formData: FormData) => {
       });
 
       const hasGameEnded = await shouldGameEnd(game.state, false);
-      if (hasGameEnded) await gameEnded(tx, game);
-
-      if (hasGameEnded)
+      if (hasGameEnded) {
+        await gameEnded(tx, game);
         await tx.game.update({
           where: { id: game.id },
           data: {
             active: false,
           },
         });
+      }
       revalidatePath('/play');
     });
     return { message: 'Bet action finished.', error: null };
@@ -63,4 +63,3 @@ export const betAction = async (formData: FormData) => {
     return { message: null, error: getErrorMessage(e) };
   }
 };
-// BJ DOESN't pay player
