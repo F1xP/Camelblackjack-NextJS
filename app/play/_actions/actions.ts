@@ -18,16 +18,7 @@ export const getCurrentGame = async () => {
     });
     if (!game) return null;
 
-    const lastPlayerAction = game?.state.player[0].actions.slice(-1)[0];
-    const insurance = ['INS_DECLINED', 'INS_ACCEPTED'].includes(lastPlayerAction);
-
-    if (
-      game &&
-      game.active &&
-      game.state.dealer.cards.length === 2 &&
-      game.state.dealer.value[0] !== 21 &&
-      !insurance
-    ) {
+    if (game && game.active && game.state.dealer.cards.length === 2) {
       game.state.dealer.cards = [game.state.dealer.cards[0]];
       game.state.dealer.value = await calculateHandValue(game.state.dealer.cards, 'D');
     }

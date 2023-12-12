@@ -5,6 +5,7 @@ import { getCurrentUser } from '@/lib/session';
 import { deductCoins, gameEnded, shouldGameEnd } from '@/lib/helpers';
 import { Game } from '@/types/types';
 import { revalidatePath } from 'next/cache';
+import { ActionName } from '@prisma/client';
 
 export const insuranceAcceptAction = async (formData: FormData) => {
   try {
@@ -19,11 +20,18 @@ export const insuranceAcceptAction = async (formData: FormData) => {
 
       const playerState = game.state.player[0];
 
+      if (playerState.actions.includes('INS_ACCEPTED') || playerState.actions.includes('INS_DECLINED')) {
+        return {
+          message: null,
+          error: 'Insurance is not available at this point. Please check your current game status.',
+        };
+      }
+
       await deductCoins(tx, user.email as string, playerState.amount / 2);
 
       playerState.actions = [...playerState.actions, 'INS_ACCEPTED'];
 
-      const hasGameEnded = await shouldGameEnd(game.state, true);
+      const hasGameEnded = await shouldGameEnd(game.state, false);
       if (hasGameEnded) {
         playerState.amount += playerState.amount / 2;
         await gameEnded(tx, game);
@@ -60,9 +68,16 @@ export const insuranceDeclineAction = async (formData: FormData) => {
 
       const playerState = game.state.player[0];
 
+      if (playerState.actions.includes('INS_ACCEPTED') || playerState.actions.includes('INS_DECLINED')) {
+        return {
+          message: null,
+          error: 'Insurance is not available at this point. Please check your current game status.',
+        };
+      }
+
       playerState.actions = [...playerState.actions, 'INS_DECLINED'];
 
-      const hasGameEnded = await shouldGameEnd(game.state, true);
+      const hasGameEnded = await shouldGameEnd(game.state, false);
       if (hasGameEnded) await gameEnded(tx, game);
 
       await tx.game.update({
@@ -83,3 +98,6 @@ export const insuranceDeclineAction = async (formData: FormData) => {
     return { message: null, error: 'An error occurred while processing your insurance action.' };
   }
 };
+// BUGS
+// after declining insurance it still reveals the card even when not bj
+// BJ Doesn't reveal upon insurance

@@ -9,8 +9,8 @@ export default async function Play() {
 
   const gameState = gameData?.state || null;
   const isGameActive = gameData?.active || false;
-  const gameStatus1 = await getGameStatus(gameState, 0);
-  const gameStatus2 = await getGameStatus(gameState, 1);
+  const gameStatus1 = await getGameStatus(!!gameData?.active, gameState, 0);
+  const gameStatus2 = await getGameStatus(!!gameData?.active, gameState, 1);
   const currentHand = await getCurrentHand(gameState);
 
   return (

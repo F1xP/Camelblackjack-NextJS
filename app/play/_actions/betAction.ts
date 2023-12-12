@@ -6,7 +6,6 @@ import { calculateHandValue, deductCoins, gameEnded, getCard, shouldGameEnd } fr
 import { revalidatePath } from 'next/cache';
 import { getErrorMessage } from '@/lib/utils';
 
-// Smth is wrong with the bet action it's setting game active to false on inital cards
 export const betAction = async (formData: FormData) => {
   try {
     const user = await getCurrentUser();
@@ -16,12 +15,12 @@ export const betAction = async (formData: FormData) => {
     if (isNaN(betAmount)) return { message: null, error: 'Bet amount must be a valid number.' };
     if (betAmount < 10) return { message: null, error: 'Minimum bet amount is 10.' };
 
-    await prisma.$transaction(async (tx) => {
-      const isActive = await tx.game.findFirst({
-        where: { active: true, user_email: user.email },
-      });
-      if (isActive) throw new Error('You must finish your active game in order to start another.');
+    const isActive = await prisma.game.findFirst({
+      where: { active: true, user_email: user.email },
+    });
+    if (isActive) throw new Error('You must finish your active game in order to start another.');
 
+    await prisma.$transaction(async (tx) => {
       const [coinsDeducted, playerCard1, playerCard2, dealerCard1, dealerCard2] = await Promise.all([
         deductCoins(tx, user.email as string, betAmount),
         getCard(),
@@ -64,3 +63,4 @@ export const betAction = async (formData: FormData) => {
     return { message: null, error: getErrorMessage(e) };
   }
 };
+// BJ DOESN't pay player

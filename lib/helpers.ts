@@ -74,7 +74,7 @@ export const takeInsurance = (dealer: { rank: string }[]) => {
   }
 };
 
-export const ranks = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
+export const ranks = ['K', 'A'];
 export const suits = ['Hearts', 'Diamonds', 'Clubs', 'Spades'];
 
 export const getCard = async () => {
@@ -86,8 +86,10 @@ export const getCard = async () => {
   return { rank: randomRank, suit: randomSuit };
 };
 
-export const getGameStatus = async (gameState: GameState | null, hand: number) => {
+export const getGameStatus = async (isGameActive: boolean, gameState: GameState | null, hand: number) => {
+  if (isGameActive) return null;
   if (!gameState || !gameState.player[hand]) return null;
+  const hasSplitted = await hasPlayerSplitted(gameState);
 
   const playerCards = gameState.player[hand].cards;
   const dealerCards = gameState.dealer.cards;
@@ -95,14 +97,20 @@ export const getGameStatus = async (gameState: GameState | null, hand: number) =
   const playerValue = await getHandValue(gameState.player[hand]);
   const dealerValue = Number(gameState.dealer.value[0]);
 
-  const playerLastAction = gameState.player[hand].actions.slice(-1)[0];
-  const dealerLastAction = gameState.dealer.actions.slice(-1)[0];
+  const lastPlayerAction = gameState.player[hand].actions.slice(-1)[0];
+  const lastDealerAction = gameState.dealer.actions.slice(-1)[0];
 
-  const isPlayerBusted = playerLastAction === 'BUST';
-  const isDealerBusted = dealerLastAction === 'BUST';
+  const isPlayerBusted = lastPlayerAction === 'BUST';
+  const isDealerBusted = lastDealerAction === 'BUST';
 
-  if (playerValue === 21 && playerCards.length === 2 && dealerLastAction === 'DEAL') return 'Blackjack Player';
-  if (dealerValue === 21 && dealerCards.length === 2 && playerLastAction === 'DEAL') return 'Blackjack Dealer';
+  if (!hasSplitted && playerCards.length === 2 && playerValue === 21) return 'Blackjack Player';
+  if (
+    lastDealerAction === 'DEAL' &&
+    (lastPlayerAction === 'INS_ACCEPTED' || lastPlayerAction === 'INS_DECLINED') &&
+    dealerCards[0].rank === 'A' &&
+    dealerValue === 21
+  )
+    return 'Blackjack Dealer';
 
   if (isPlayerBusted) return 'Lose';
   if (!isPlayerBusted && isDealerBusted) return 'Win';
@@ -128,16 +136,17 @@ export const shouldGameEnd = async (gameState: GameState | null, end: boolean) =
   const lastPlayerAction = playerState.actions.slice(-1)[0];
   const lastDealerAction = playerState.actions.slice(-1)[0];
 
+  if (!hasSplitted && playerState.cards.length === 2 && playerValue === 21) return true; // Blackjack for player
   if (
     lastDealerAction === 'DEAL' &&
-    (lastPlayerAction === 'INS_ACCEPTED' ||
-      lastPlayerAction === 'INS_DECLINED' ||
-      ['10', 'J', 'Q', 'K'].includes(dealerState.cards[0].rank)) &&
+    (lastPlayerAction === 'INS_ACCEPTED' || lastPlayerAction === 'INS_DECLINED') &&
+    dealerState.cards[0].rank === 'A' &&
     dealerValue === 21
-  )
+  ) {
+    console.log('blackjack for dealer', lastPlayerAction);
     return true; // Blackjack for dealer
+  }
 
-  if (!hasSplitted && playerState.cards.length === 2 && playerValue === 21) return true; // Blackjack for player
   if (hasSplitted && currentHand === 1 && lastPlayerAction !== 'SPLIT') return hasBusted || end;
   else return hasBusted || end;
 };
@@ -173,7 +182,7 @@ export const dealerTurn = async (dealerState: UserState) => {
 export const gameEnded = async (tx: Prisma.TransactionClient, game: Game) => {
   const updateCoins = async (index: number) => {
     const amount = game.state.player[index].amount;
-    const handResult = await getGameStatus(game.state, index);
+    const handResult = await getGameStatus(!!game.active, game.state, index);
     const resultMultiplier =
       handResult === 'Blackjack Player' ? 2.5 : handResult === 'Win' ? 2 : handResult === 'PUSH' ? 1 : 0;
 

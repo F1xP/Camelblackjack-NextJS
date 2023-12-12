@@ -41,9 +41,7 @@ export const GameButtons: React.FC<GameButtonsProps> = ({ gameState, isGameActiv
       <div className="flex flex-col p-2">
         <div className="flex flex-row items-center">
           <p className="text-text text-xl font-mono small-caps">Bet Amount</p>
-          <p className="text-text text-md font-mono small-caps ml-auto">
-            Coins: <UserCoins />
-          </p>
+          <UserCoins />
         </div>
         <Input
           type="number"
@@ -61,7 +59,10 @@ export const GameButtons: React.FC<GameButtonsProps> = ({ gameState, isGameActiv
           BET
         </Button>
       </div>
-      {gameState?.dealer.cards[0].rank === 'A' ? (
+      {gameState?.dealer.cards[0].rank === 'A' &&
+      isGameActive &&
+      !gameState.player[0].actions.includes('INS_ACCEPTED') &&
+      !gameState.player[0].actions.includes('INS_DECLINED') ? (
         <InsuranceButtons isGameActive={isGameActive} />
       ) : (
         <PlayButtons
@@ -80,18 +81,29 @@ export const UserCoins: React.FC = () => {
   const [coinsValue, setCoinsValue] = useState({ start: 0, end: 0 });
 
   useEffect(() => {
+    if (coins === coinsValue.end) return;
     setCoinsValue((current) => ({ start: current.end, end: coins }));
   }, [coins]);
 
+  const isIncreasing = coinsValue.start < coinsValue.end;
+  const isDecreasing = coinsValue.start > coinsValue.end;
+
   return (
     <>
-      <AnimatedNumber
-        value={coinsValue.end}
-        startValue={coinsValue.start}
-        duration={500}
-        generateCommas={false}
-        generateDecimals={true}
-      />
+      <p
+        key={coins}
+        className={`text-text text-md font-mono small-caps ml-auto ${
+          isIncreasing ? 'coins-plus' : isDecreasing ? 'coins-minus' : ''
+        }`}>
+        Coins:
+        <AnimatedNumber
+          value={coinsValue.end}
+          startValue={coinsValue.start}
+          duration={500}
+          generateCommas={false}
+          generateDecimals={false}
+        />
+      </p>
     </>
   );
 };

@@ -115,3 +115,29 @@
     transform: rotateY(180deg);
   }
 }
+
+.coins-plus {
+  animation: coinsPlus 1s alternate;
+}
+
+@keyframes coinsPlus {
+  0% {
+    color: rgb(200, 200, 200);
+  }
+  100% {
+    color: #28dd14;
+  }
+}
+
+.coins-minus {
+  animation: coinsMinus 1s alternate;
+}
+
+@keyframes coinsMinus {
+  0% {
+    color: rgb(200, 200, 200);
+  }
+  100% {
+    color: #dd2814;
+  }
+}
