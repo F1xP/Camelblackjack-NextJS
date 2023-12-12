@@ -1,9 +1,8 @@
 'use client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from '../../_components/Button';
 import { Input } from '../../_components/Input';
 import useAction from '@/app/hooks/useAction';
-import useAnimatedNumber from '@/app/hooks/useAnimatedNumber';
 import { GameState } from '@/types/types';
 import { useSession } from 'next-auth/react';
 import { betAction } from '../_actions/betAction';
@@ -12,6 +11,7 @@ import { standAction } from '../_actions/standAction';
 import { splitAction } from '../_actions/splitAction';
 import { doubleAction } from '../_actions/doubleAction';
 import { insuranceAcceptAction, insuranceDeclineAction } from '../_actions/insuranceAction';
+import AnimatedNumber from '@/app/hooks/animatedNumber';
 
 type GameButtonsProps = {
   gameState: GameState | null;
@@ -35,18 +35,15 @@ export const GameButtons: React.FC<GameButtonsProps> = ({ gameState, isGameActiv
       default:
     }
   };
-  const animatedValue = useAnimatedNumber({
-    value: session?.user.coins,
-    startValue: session?.user.coins,
-    duration: 1000,
-  });
 
   return (
     <section className="w-full flex-1 flex flex-col">
       <div className="flex flex-col p-2">
         <div className="flex flex-row items-center">
           <p className="text-text text-xl font-mono small-caps">Bet Amount</p>
-          <p className="text-text text-md font-mono small-caps ml-auto">Coins:{animatedValue}</p>
+          <p className="text-text text-md font-mono small-caps ml-auto">
+            Coins: <UserCoins />
+          </p>
         </div>
         <Input
           type="number"
@@ -74,6 +71,28 @@ export const GameButtons: React.FC<GameButtonsProps> = ({ gameState, isGameActiv
         />
       )}
     </section>
+  );
+};
+
+export const UserCoins: React.FC = () => {
+  const { data: session } = useSession();
+  const coins = Number(session?.user.coins);
+  const [coinsValue, setCoinsValue] = useState({ start: 0, end: 0 });
+
+  useEffect(() => {
+    setCoinsValue((current) => ({ start: current.end, end: coins }));
+  }, [coins]);
+
+  return (
+    <>
+      <AnimatedNumber
+        value={coinsValue.end}
+        startValue={coinsValue.start}
+        duration={500}
+        generateCommas={false}
+        generateDecimals={true}
+      />
+    </>
   );
 };
 
