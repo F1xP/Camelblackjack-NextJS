@@ -23,6 +23,11 @@ export const GameDisplay: React.FC<GameDisplayProps> = ({
 }) => {
   return (
     <section className="bg-black/30 w-full flex-[2] rounded-r-lg text-text overflow-hidden relative">
+      <div className="absolute left-1/2 transform -translate-x-1/2 top-1/2 -translate-y-1/2 bg-background px-3 py-1 rounded-md pointer-events-none">
+        <p className="font-bold font-mono text-2xl ">BLACKJACK PAYS 3 TO 2</p>
+        <p className="font-bold font-mono text-2xl ">INSURANCE PAYS 2 TO 1</p>
+      </div>
+
       <div className="flex flex-col justify-between h-full p-2">
         <div className="w-full flex justify-around flex-row-reverse absolute bottom-1">
           <Hand
