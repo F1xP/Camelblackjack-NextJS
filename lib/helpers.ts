@@ -232,6 +232,18 @@ export const gameEnded = async (tx: Prisma.TransactionClient, game: Game) => {
         coins: {
           increment: incrementAmount,
         },
+        games: {
+          increment: 1,
+        },
+        pushes: {
+          increment: resultMultiplier === 1 ? 1 : 0,
+        },
+        wins: {
+          increment: resultMultiplier > 1 ? 1 : 0,
+        },
+        loses: {
+          increment: resultMultiplier < 2 ? 1 : 0,
+        },
       },
     });
   };

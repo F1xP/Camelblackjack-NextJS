@@ -2,30 +2,42 @@
 import { useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import { LeaderboardDataProps } from '@/types/types';
+import LeaderboardHead from './LeaderboardHead';
 
 const LeaderboardTable: React.FC<{ leaderboardData: LeaderboardDataProps }> = ({ leaderboardData }) => {
   const searchParams = useSearchParams();
 
   const currentPage: string = searchParams.get('page')?.toString() || '1';
   const currentRows: string = searchParams.get('rows')?.toString() || '5';
+  const currentFilter: string = searchParams.get('filter')?.toString() || 'coins';
 
   const startIndex: number = (Number(currentPage) - 1) * Number(currentRows);
   const endIndex: number = startIndex + Number(currentRows);
 
-  const dataToDisplay = leaderboardData?.slice(startIndex, endIndex);
+  const dataToDisplay =
+    currentFilter === 'coins'
+      ? leaderboardData
+          ?.sort((a, b) => b.coins - a.coins)
+          ?.slice(startIndex, endIndex)
+          ?.map((item) => ({ ...item, winRate: (item.wins / item.games) * 100 || 0 }))
+      : currentFilter === 'games'
+      ? leaderboardData
+          ?.sort((a, b) => b.games - a.games)
+          ?.slice(startIndex, endIndex)
+          ?.map((item) => ({ ...item, winRate: (item.wins / item.games) * 100 || 0 }))
+      : currentFilter === 'win'
+      ? leaderboardData
+          ?.sort((a, b) => b.games - a.games)
+          ?.slice(startIndex, endIndex)
+          ?.map((item) => ({ ...item, winRate: (item.wins / item.games) * 100 || 0 }))
+      : leaderboardData
+          ?.slice(startIndex, endIndex)
+          ?.map((item) => ({ ...item, winRate: (item.wins / item.games) * 100 || 0 }));
 
   return (
     <div className="w-full overflow-auto min-w-[320px] border-[0.5px] border-secondary">
       <table className="table-auto w-full text-left text-accent">
-        <thead>
-          <tr>
-            <th className="px-4 py-2">Rank</th>
-            <th className="px-4 py-2">User</th>
-            <th className="px-4 py-2">Coins</th>
-            <th className="px-4 py-2">Games Played</th>
-            <th className="px-4 py-2">Win Rate</th>
-          </tr>
-        </thead>
+        <LeaderboardHead />
         <tbody>
           {dataToDisplay?.map((player: any, index: number) => (
             <tr

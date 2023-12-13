@@ -1,6 +1,6 @@
 import { prisma } from '@/lib/prisma';
-import LeaderboardTable from './(components)/LeaderboardTable';
-import Navigation from './(components)/Navigation';
+import LeaderboardTable from './_components/LeaderboardTable';
+import Navigation from './_components/Navigation';
 import { Header } from '../_components/Header';
 
 export default async function Leaderboard() {
