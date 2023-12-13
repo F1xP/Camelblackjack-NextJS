@@ -96,7 +96,7 @@
   backface-visibility: hidden;
 }
 
-.flip-card-back {
+.flip-card-front {
   transform: rotateY(180deg);
 }
 
@@ -140,4 +140,14 @@
   100% {
     color: #dd2814;
   }
+}
+
+input[type='number'] {
+  -moz-appearance: textfield; /* Firefox */
+}
+
+input[type='number']::-webkit-inner-spin-button,
+input[type='number']::-webkit-outer-spin-button {
+  -webkit-appearance: none; /* Webkit browsers */
+  margin: 0; /* Removes default margin */
 }

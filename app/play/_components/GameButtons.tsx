@@ -22,7 +22,7 @@ type GameButtonsProps = {
 export const GameButtons: React.FC<GameButtonsProps> = ({ gameState, isGameActive, currentHand }) => {
   const { update, data: session } = useSession();
   const { loading, handleAction } = useAction();
-  const [betAmount, setBetAmount] = useState<number>(0);
+  const [betAmount, setBetAmount] = useState<any>(0);
 
   const handleActions = async (action: string) => {
     const formData = new FormData();
@@ -47,7 +47,7 @@ export const GameButtons: React.FC<GameButtonsProps> = ({ gameState, isGameActiv
           type="number"
           inputMode="numeric"
           value={betAmount}
-          onChange={(e) => setBetAmount(Number(e.target.value))}
+          onChange={(e) => setBetAmount(e.target.value)}
           variant={'transparent'}
           className="mb-2"
         />
