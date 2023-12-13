@@ -51,17 +51,33 @@ export const doubleAction = async (formData: FormData) => {
 
       playerState.value = value;
 
-      if ((!hasSplitted && playerValue1 < 21) || (currentHand === 1 && (playerValue1 < 21 || playerValue2 < 21)))
-        await dealerTurn(dealerState);
+      const hasGameEnded = await shouldGameEnd(game.state, true);
+      if (hasGameEnded) {
+        await gameEnded(tx, game);
+        await tx.game.update({
+          where: { id: game.id },
+          data: {
+            active: false,
+            state: {
+              player: game.state.player,
+              dealer: game.state.dealer,
+            },
+          },
+        });
+        return revalidatePath('/play');
+      }
+
+      // if ((!hasSplitted && playerValue1 < 21) || (currentHand === 1 && (playerValue1 < 21 || playerValue2 < 21)))
+      await dealerTurn(dealerState);
       // possible bug
 
-      const hasGameEnded = await shouldGameEnd(game.state, true);
-      if (hasGameEnded) await gameEnded(tx, game);
+      const hasGameEnded2 = await shouldGameEnd(game.state, true);
+      if (hasGameEnded2) await gameEnded(tx, game);
 
       await tx.game.update({
         where: { id: game.id },
         data: {
-          active: !hasGameEnded,
+          active: !hasGameEnded2,
           state: {
             player: game.state.player,
             dealer: game.state.dealer,

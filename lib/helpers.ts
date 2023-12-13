@@ -35,7 +35,7 @@ export const isAllowedToDouble = async (gameState: GameState | null, hand: numbe
   const playerState = gameState.player[hand];
   const lastPlayerAction = playerState.actions.slice(-1)[0];
 
-  if (['DOUBLE', 'STAND', 'BUST'].includes(lastPlayerAction)) return false;
+  if (['DOUBLE', 'STAND', 'BUST', 'HIT'].includes(lastPlayerAction)) return false;
   return true;
 };
 
@@ -128,15 +128,16 @@ export const shouldGameEnd = async (gameState: GameState | null, end: boolean) =
   const lastPlayerAction = playerState.actions.slice(-1)[0];
   const lastDealerAction = dealerState.actions.slice(-1)[0];
 
-  if (!hasSplitted && playerState.cards.length === 2 && playerValue === 21) return true; // Blackjack for player
+  if (!hasSplitted && playerState.cards.length === 2 && playerValue === 21) return true; // Blackjack for Player
   if (
     lastDealerAction === 'DEAL' &&
     ['INS_ACCEPTED', 'INS_DECLINED'].includes(lastPlayerAction) &&
     dealerState.cards[0].rank === 'A' &&
     dealerValue === 21
   )
-    return true;
+    return true; // Blackjack for Dealer
 
+  if (hasSplitted && currentHand === 0) return false;
   if (hasSplitted && currentHand === 1 && lastPlayerAction !== 'SPLIT') return hasBusted || end;
   else return hasBusted || end;
 };

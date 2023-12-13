@@ -33,7 +33,7 @@ export const insuranceAcceptAction = async (formData: FormData) => {
 
       const hasGameEnded = await shouldGameEnd(game.state, false);
       if (hasGameEnded) {
-        playerState.amount += playerState.amount / 2;
+        playerState.amount = playerState.amount + playerState.amount / 2;
         await gameEnded(tx, game);
       }
       await tx.game.update({
