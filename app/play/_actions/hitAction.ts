@@ -9,9 +9,10 @@ import {
   getCard,
   getCurrentHand,
   hasPlayerSplitted,
+  isAllowedToStand,
   shouldGameEnd,
 } from '@/lib/helpers';
-import { Game } from '@/types/types';
+import { Actions, Game } from '@/types/types';
 import { revalidatePath } from 'next/cache';
 
 export const hitAction = async (formData: FormData) => {
@@ -31,8 +32,8 @@ export const hitAction = async (formData: FormData) => {
     const playerState = game.state.player[currentHand];
     const dealerState = game.state.dealer;
 
-    const lastPlayerAction = playerState.actions.slice(-1)[0];
-    if (['DOUBLE', 'STAND', 'BUST'].includes(lastPlayerAction))
+    const canHit = await isAllowedToStand(game.state, currentHand);
+    if (!canHit)
       return { message: null, error: 'Hitting is not available at this point. Please check your current game status.' };
 
     const newPlayerCard = await getCard();

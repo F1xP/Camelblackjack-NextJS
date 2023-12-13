@@ -2,7 +2,14 @@
 
 import { prisma } from '@/lib/prisma';
 import { getCurrentUser } from '@/lib/session';
-import { dealerTurn, gameEnded, getCurrentHand, hasPlayerSplitted, shouldGameEnd } from '@/lib/helpers';
+import {
+  dealerTurn,
+  gameEnded,
+  getCurrentHand,
+  hasPlayerSplitted,
+  isAllowedToStand,
+  shouldGameEnd,
+} from '@/lib/helpers';
 import { Game } from '@/types/types';
 import { revalidatePath } from 'next/cache';
 
@@ -18,13 +25,21 @@ export const standAction = async (formData: FormData) => {
     if (!game) return { message: null, error: 'No active game found.' };
 
     const currentHand = await getCurrentHand(game.state);
+
+    const canStand = await isAllowedToStand(game.state, currentHand);
+    if (!canStand)
+      return {
+        message: null,
+        error: 'Stand is not available at this point. Please check your current game status.',
+      };
+
     const hasSplitted = await hasPlayerSplitted(game.state);
 
     const playerState = game.state.player[currentHand];
     const dealerState = game.state.dealer;
-    if (!hasSplitted || currentHand === 1) await dealerTurn(dealerState);
-
     playerState.actions = [...playerState.actions, 'STAND'];
+
+    if (!hasSplitted || currentHand === 1) await dealerTurn(dealerState);
 
     await prisma.$transaction(async (tx) => {
       const hasGameEnded = await shouldGameEnd(game.state, true);

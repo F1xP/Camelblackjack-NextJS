@@ -2,10 +2,9 @@
 
 import { prisma } from '@/lib/prisma';
 import { getCurrentUser } from '@/lib/session';
-import { deductCoins, gameEnded, shouldGameEnd } from '@/lib/helpers';
-import { Game } from '@/types/types';
+import { deductCoins, gameEnded, isAllowedToInsure, shouldGameEnd } from '@/lib/helpers';
+import { Actions, Game } from '@/types/types';
 import { revalidatePath } from 'next/cache';
-import { ActionName } from '@prisma/client';
 
 export const insuranceAcceptAction = async (formData: FormData) => {
   try {
@@ -20,12 +19,12 @@ export const insuranceAcceptAction = async (formData: FormData) => {
 
       const playerState = game.state.player[0];
 
-      if (playerState.actions.includes('INS_ACCEPTED') || playerState.actions.includes('INS_DECLINED')) {
+      const canInsure = await isAllowedToInsure(game.state);
+      if (!canInsure)
         return {
           message: null,
           error: 'Insurance is not available at this point. Please check your current game status.',
         };
-      }
 
       await deductCoins(tx, user.email as string, playerState.amount / 2);
 
@@ -68,7 +67,7 @@ export const insuranceDeclineAction = async (formData: FormData) => {
 
       const playerState = game.state.player[0];
 
-      if (playerState.actions.includes('INS_ACCEPTED') || playerState.actions.includes('INS_DECLINED')) {
+      if (['INS_ACCEPTED', 'INS_DECLINED'].some((action) => playerState.actions.includes(action as Actions))) {
         return {
           message: null,
           error: 'Insurance is not available at this point. Please check your current game status.',

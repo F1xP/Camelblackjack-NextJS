@@ -1,15 +1,17 @@
-import { Game, GameState, UserState } from '@/types/types';
+import { Actions, Game, GameState, UserState } from '@/types/types';
 import { Prisma } from '@prisma/client';
 
 export const hasPlayerSplitted = async (gameState: GameState | null) => {
-  return gameState?.player[0].actions.includes('SPLIT');
+  return ['SPLIT'].some((action) => gameState?.player[0].actions.includes(action as Actions));
 };
-
 export const getCurrentHand = async (gameState: GameState | null) => {
   if (!gameState) return 0;
   const playerHands = gameState.player.length;
   const currentHand =
-    playerHands > 1 && ['STAND', 'BUST', 'DOUBLE'].includes(gameState.player[0].actions.slice(-1)[0]) ? 1 : 0;
+    playerHands > 1 &&
+    ['STAND', 'BUST', 'DOUBLE'].some((action) => gameState?.player[0].actions.includes(action as Actions))
+      ? 1
+      : 0;
 
   return currentHand;
 };
@@ -21,9 +23,9 @@ export const isAllowedToSplit = async (gameState: GameState | null) => {
   if (playerHands > 1) false;
 
   const playerState = gameState.player[0];
-  const lastPlayerAction = playerState.actions.slice(-1)[0];
 
-  if (['DOUBLE', 'STAND', 'BUST'].includes(lastPlayerAction)) return false;
+  if (['STAND', 'BUST', 'DOUBLE', 'SPLIT'].some((action) => playerState.actions.includes(action as Actions)))
+    return false;
   if (playerState.cards.length !== 2 || playerState.cards[0].rank !== playerState.cards[1].rank) return false;
 
   return true;
@@ -33,10 +35,46 @@ export const isAllowedToDouble = async (gameState: GameState | null, hand: numbe
   if (!gameState) return false;
 
   const playerState = gameState.player[hand];
-  const lastPlayerAction = playerState.actions.slice(-1)[0];
-
-  if (['DOUBLE', 'STAND', 'BUST', 'HIT'].includes(lastPlayerAction)) return false;
+  if (['DOUBLE', 'STAND', 'BUST', 'HIT'].some((action) => playerState.actions.includes(action as Actions)))
+    return false;
   return true;
+};
+
+export const isAllowedToStand = async (gameState: GameState | null, hand: number) => {
+  if (!gameState) return false;
+  const playerState = gameState.player[hand];
+  if (['DOUBLE', 'STAND', 'BUST'].some((action) => playerState.actions.includes(action as Actions))) return false;
+  return true;
+};
+
+export const isAllowedToInsure = async (gameState: GameState | null) => {
+  if (!gameState) return false;
+  const playerState = gameState.player[0];
+  const lastPlayerAction = playerState.actions.slice(-1)[0];
+  if (gameState?.dealer.cards[0].rank !== 'A' || lastPlayerAction !== 'DEAL') return false;
+  return true;
+};
+
+export const disabledButtons = async (gameData: Game | null) => {
+  const gameState: GameState | null = gameData?.state || null;
+  const isGameActive = gameData?.active;
+
+  const currentHand = await getCurrentHand(gameState);
+  const [canDouble, canSplit, canStand, canInsure] = await Promise.all([
+    isAllowedToDouble(gameState, currentHand),
+    isAllowedToSplit(gameState),
+    isAllowedToStand(gameState, currentHand),
+    isAllowedToInsure(gameState),
+  ]);
+
+  return {
+    bet: gameData?.active || false,
+    split: !isGameActive || !canSplit,
+    stand: !isGameActive || !canStand,
+    double: !isGameActive || !canDouble,
+    hit: !isGameActive || !canStand,
+    insurance: !isGameActive || !canInsure,
+  };
 };
 
 export const calculateHandValue = async (hand: any, type: 'P' | 'D') => {
@@ -66,7 +104,7 @@ export const calculateHandValue = async (hand: any, type: 'P' | 'D') => {
   return values;
 };
 
-export const ranks = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
+export const ranks = ['2'];
 export const suits = ['Hearts', 'Diamonds', 'Clubs', 'Spades'];
 
 export const getCard = async () => {
@@ -119,9 +157,11 @@ export const shouldGameEnd = async (gameState: GameState | null, end: boolean) =
   if (!gameState) return true;
 
   const dealerState = gameState.dealer;
-  const dealerValue = await getHandValue(dealerState);
-  const hasSplitted = await hasPlayerSplitted(gameState);
-  const currentHand = await getCurrentHand(gameState);
+  const [dealerValue, hasSplitted, currentHand] = await Promise.all([
+    getHandValue(dealerState),
+    hasPlayerSplitted(gameState),
+    getCurrentHand(gameState),
+  ]);
   const playerState = gameState.player[currentHand];
   const playerValue = await getHandValue(playerState);
   const hasBusted = playerValue > 21;
@@ -131,7 +171,7 @@ export const shouldGameEnd = async (gameState: GameState | null, end: boolean) =
   if (!hasSplitted && playerState.cards.length === 2 && playerValue === 21) return true; // Blackjack for Player
   if (
     lastDealerAction === 'DEAL' &&
-    ['INS_ACCEPTED', 'INS_DECLINED'].includes(lastPlayerAction) &&
+    ['INS_ACCEPTED', 'INS_DECLINED'].some((action) => playerState.actions.includes(action as Actions)) &&
     dealerState.cards[0].rank === 'A' &&
     dealerValue === 21
   )
@@ -139,7 +179,7 @@ export const shouldGameEnd = async (gameState: GameState | null, end: boolean) =
 
   if (hasSplitted && currentHand === 0) return false;
   if (hasSplitted && currentHand === 1 && lastPlayerAction !== 'SPLIT') return hasBusted || end;
-  else return hasBusted || end;
+  return hasBusted || end;
 };
 
 export const deductCoins = async (tx: Prisma.TransactionClient, userEmail: string, amountToDeduct: number) => {

@@ -28,10 +28,11 @@ export const doubleAction = async (formData: FormData) => {
       });
       if (!game) return { message: null, error: 'No active game found.' };
 
-      const [currentHand, hasSplitted] = await Promise.all([getCurrentHand(game.state), hasPlayerSplitted(game.state)]);
+      const currentHand = await getCurrentHand(game.state);
       const canDouble = await isAllowedToDouble(game.state, currentHand);
       if (!canDouble) return { message: null, error: 'Double action not allowed.' };
 
+      const hasSplitted = await hasPlayerSplitted(game.state);
       const playerState = game.state.player[currentHand];
       const dealerState = game.state.dealer;
 
@@ -40,50 +41,27 @@ export const doubleAction = async (formData: FormData) => {
 
       const newPlayerCard = await getCard();
       playerState.cards = [...playerState.cards, newPlayerCard];
-      playerState.actions = [...playerState.actions, 'DOUBLE'];
+      playerState.value = await calculateHandValue(playerState.cards, 'P');
 
-      // possible bug
-      const [value, playerValue1, playerValue2] = await Promise.all([
-        calculateHandValue(playerState.cards, 'P'),
-        getHandValue(game.state.player[0]),
-        getHandValue(game.state.player[1]),
-      ]);
+      const hasBusted = playerState.value[0] > 21;
+      playerState.actions = hasBusted ? [...playerState.actions, 'DOUBLE', 'BUST'] : [...playerState.actions, 'DOUBLE'];
 
-      playerState.value = value;
+      if ((hasSplitted && currentHand === 1) || (!hasSplitted && !hasBusted)) await dealerTurn(dealerState);
 
       const hasGameEnded = await shouldGameEnd(game.state, true);
-      if (hasGameEnded) {
-        await gameEnded(tx, game);
-        await tx.game.update({
-          where: { id: game.id },
-          data: {
-            active: false,
-            state: {
-              player: game.state.player,
-              dealer: game.state.dealer,
-            },
-          },
-        });
-        return revalidatePath('/play');
-      }
-
-      // if ((!hasSplitted && playerValue1 < 21) || (currentHand === 1 && (playerValue1 < 21 || playerValue2 < 21)))
-      await dealerTurn(dealerState);
-      // possible bug
-
-      const hasGameEnded2 = await shouldGameEnd(game.state, true);
-      if (hasGameEnded2) await gameEnded(tx, game);
+      if (hasGameEnded) await gameEnded(tx, game);
 
       await tx.game.update({
         where: { id: game.id },
         data: {
-          active: !hasGameEnded2,
+          active: !hasGameEnded,
           state: {
             player: game.state.player,
             dealer: game.state.dealer,
           },
         },
       });
+
       revalidatePath('/play');
     });
     return { message: 'Double action finished.', error: null };

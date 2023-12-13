@@ -14,12 +14,17 @@ import { insuranceAcceptAction, insuranceDeclineAction } from '../_actions/insur
 import AnimatedNumber from '@/app/hooks/animatedNumber';
 
 type GameButtonsProps = {
-  gameState: GameState | null;
-  isGameActive: boolean;
-  currentHand: number;
+  isDisabled: {
+    bet: boolean;
+    split: boolean;
+    stand: boolean;
+    double: boolean;
+    hit: boolean;
+    insurance: boolean;
+  };
 };
 
-export const GameButtons: React.FC<GameButtonsProps> = ({ gameState, isGameActive, currentHand }) => {
+export const GameButtons: React.FC<GameButtonsProps> = ({ isDisabled }) => {
   const { update, data: session } = useSession();
   const { loading, handleAction } = useAction();
   const [betAmount, setBetAmount] = useState<any>(0);
@@ -54,23 +59,12 @@ export const GameButtons: React.FC<GameButtonsProps> = ({ gameState, isGameActiv
         <Button
           variant={'outlined'}
           size={'xl'}
-          disabled={loading || isGameActive}
+          disabled={loading || isDisabled.bet}
           onClick={() => handleActions('BET')}>
           BET
         </Button>
       </div>
-      {gameState?.dealer.cards[0].rank === 'A' &&
-      isGameActive &&
-      !gameState.player[0].actions.includes('INS_ACCEPTED') &&
-      !gameState.player[0].actions.includes('INS_DECLINED') ? (
-        <InsuranceButtons isGameActive={isGameActive} />
-      ) : (
-        <PlayButtons
-          gameState={gameState}
-          isGameActive={isGameActive}
-          currentHand={currentHand}
-        />
-      )}
+      {!isDisabled.insurance ? <InsuranceButtons isDisabled={isDisabled} /> : <PlayButtons isDisabled={isDisabled} />}
     </section>
   );
 };
@@ -108,13 +102,9 @@ export const UserCoins: React.FC = () => {
   );
 };
 
-const PlayButtons: React.FC<GameButtonsProps> = ({ gameState, isGameActive, currentHand }) => {
+const PlayButtons: React.FC<GameButtonsProps> = ({ isDisabled }) => {
   const { update, data: session } = useSession();
   const { loading, handleAction } = useAction();
-
-  const didStandOrBust = (hand: number) =>
-    gameState?.player[hand].actions.includes('STAND') || gameState?.player[hand].actions.includes('BUST');
-  const didDouble = (hand: number) => gameState?.player[hand].actions.includes('DOUBLE');
 
   const handleActions = async (action: string) => {
     const formData = new FormData();
@@ -145,12 +135,12 @@ const PlayButtons: React.FC<GameButtonsProps> = ({ gameState, isGameActive, curr
           {
             name: 'HIT',
             action: 'HIT',
-            disabled: loading || !isGameActive || didStandOrBust(currentHand),
+            disabled: loading || isDisabled.hit,
           },
           {
             name: 'STAND',
             action: 'STAND',
-            disabled: loading || !isGameActive || didStandOrBust(currentHand),
+            disabled: loading || isDisabled.stand,
           },
         ].map((item, index) => (
           <Button
@@ -169,18 +159,12 @@ const PlayButtons: React.FC<GameButtonsProps> = ({ gameState, isGameActive, curr
           {
             name: 'SPLIT',
             action: 'SPLIT',
-            disabled:
-              loading ||
-              !isGameActive ||
-              didStandOrBust(currentHand) ||
-              gameState?.player.length !== 1 ||
-              gameState?.player[currentHand].cards.length !== 2 ||
-              gameState?.player[currentHand].cards[0].rank !== gameState?.player[currentHand].cards[1].rank,
+            disabled: loading || isDisabled.split,
           },
           {
             name: 'DOUBLE',
             action: 'DOUBLE',
-            disabled: loading || !isGameActive || didStandOrBust(currentHand) || didDouble(currentHand),
+            disabled: loading || isDisabled.double,
           },
         ].map((item, index) => (
           <Button
@@ -198,7 +182,7 @@ const PlayButtons: React.FC<GameButtonsProps> = ({ gameState, isGameActive, curr
   );
 };
 
-const InsuranceButtons: React.FC<{ isGameActive: boolean }> = ({ isGameActive }) => {
+const InsuranceButtons: React.FC<GameButtonsProps> = ({ isDisabled }) => {
   const { update } = useSession();
   const { loading, handleAction } = useAction();
 
@@ -225,12 +209,12 @@ const InsuranceButtons: React.FC<{ isGameActive: boolean }> = ({ isGameActive })
           {
             name: 'ACCEPT',
             action: 'ACCEPT',
-            disabled: loading || !isGameActive,
+            disabled: loading || isDisabled.insurance,
           },
           {
             name: 'DECLINE',
             action: 'DECLINE',
-            disabled: loading || !isGameActive,
+            disabled: loading || isDisabled.insurance,
           },
         ].map((item, index) => (
           <Button
