@@ -12,7 +12,7 @@ const useAction = () => {
     setLoading(true);
     try {
       const actionResponse = await action(formData);
-      if (actionResponse.message) addToast(actionResponse.message, 'Success');
+      //if (actionResponse.message) addToast(actionResponse.message, 'Success');
       if (actionResponse.error) {
         addToast(actionResponse.error, 'Error');
         throw new Error('An error occurred while processing the action.');
