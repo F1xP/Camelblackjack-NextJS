@@ -104,7 +104,7 @@ export const calculateHandValue = async (hand: any, type: 'P' | 'D') => {
   return values;
 };
 
-export const ranks = ['2'];
+export const ranks = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
 export const suits = ['Hearts', 'Diamonds', 'Clubs', 'Spades'];
 
 export const getCard = async () => {
@@ -178,7 +178,7 @@ export const shouldGameEnd = async (gameState: GameState | null, end: boolean) =
     return true; // Blackjack for Dealer
 
   if (hasSplitted && currentHand === 0) return false;
-  if (hasSplitted && currentHand === 1 && lastPlayerAction !== 'SPLIT') return hasBusted || end;
+  if (hasSplitted && currentHand === 1) return lastPlayerAction === 'SPLIT' ? false : hasBusted || end;
   return hasBusted || end;
 };
 
@@ -212,14 +212,21 @@ export const dealerTurn = async (dealerState: UserState) => {
 
 export const gameEnded = async (tx: Prisma.TransactionClient, game: Game) => {
   const updateCoins = async (index: number) => {
-    const amount = game.state.player[index].amount;
+    const playerState = game.state.player[index];
+    const hasInsured = ['INS_ACCEPTED'].some((action) => playerState.actions.includes(action as Actions));
+    const amount = playerState.amount;
     const handResult = await getGameStatus(!game.active, game.state, index);
     const resultMultiplier =
-      handResult === 'Blackjack Player' ? 2.5 : handResult === 'Win' ? 2 : handResult === 'PUSH' ? 1 : 0;
+      handResult === 'Blackjack Player'
+        ? 2.5
+        : handResult === 'Win' || (handResult === 'Blackjack Dealer' && hasInsured)
+        ? 2
+        : handResult === 'PUSH'
+        ? 1
+        : 0;
     if (resultMultiplier === 0) return;
     const incrementAmount = amount * resultMultiplier;
-    console.log(amount, incrementAmount);
-    const updatedUser = await tx.user.update({
+    await tx.user.update({
       where: { email: game.user_email as string },
       data: {
         coins: {
@@ -230,12 +237,10 @@ export const gameEnded = async (tx: Prisma.TransactionClient, game: Game) => {
   };
 
   const hasSplitted = await hasPlayerSplitted(game.state);
-  console.log(hasSplitted, 'hassplit');
   if (hasSplitted) {
     await updateCoins(0);
     await updateCoins(1);
   } else {
-    console.log('is running');
     await updateCoins(0);
   }
 };
