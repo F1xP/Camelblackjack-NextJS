@@ -146,7 +146,7 @@ export const getGameStatus = async (isGameActive: boolean, gameState: GameState 
   if (!isPlayerBusted && isDealerBusted) return 'Win';
 
   if (dealerValue > 16 && playerValue <= 21) {
-    if (playerValue === dealerValue) return 'PUSH';
+    if (playerValue === dealerValue) return 'Push';
     if (playerValue > dealerValue) return 'Win';
     if (playerValue < dealerValue) return 'Lose';
   }
@@ -221,7 +221,7 @@ export const gameEnded = async (tx: Prisma.TransactionClient, game: Game) => {
         ? 2.5
         : handResult === 'Win' || (handResult === 'Blackjack Dealer' && hasInsured)
         ? 2
-        : handResult === 'PUSH'
+        : handResult === 'Push'
         ? 1
         : 0;
     if (resultMultiplier === 0) return;

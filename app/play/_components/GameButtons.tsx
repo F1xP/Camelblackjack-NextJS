@@ -59,7 +59,7 @@ export const GameButtons: React.FC<GameButtonsProps> = ({ isDisabled }) => {
         <Button
           variant={'outlined'}
           size={'xl'}
-          disabled={loading || isDisabled.bet}
+          disabled={isDisabled.bet || loading}
           onClick={() => handleActions('BET')}>
           BET
         </Button>
@@ -135,12 +135,12 @@ const PlayButtons: React.FC<GameButtonsProps> = ({ isDisabled }) => {
           {
             name: 'HIT',
             action: 'HIT',
-            disabled: loading || isDisabled.hit,
+            disabled: isDisabled.hit || loading,
           },
           {
             name: 'STAND',
             action: 'STAND',
-            disabled: loading || isDisabled.stand,
+            disabled: isDisabled.stand || loading,
           },
         ].map((item, index) => (
           <Button
@@ -159,12 +159,12 @@ const PlayButtons: React.FC<GameButtonsProps> = ({ isDisabled }) => {
           {
             name: 'SPLIT',
             action: 'SPLIT',
-            disabled: loading || isDisabled.split,
+            disabled: isDisabled.split || loading,
           },
           {
             name: 'DOUBLE',
             action: 'DOUBLE',
-            disabled: loading || isDisabled.double,
+            disabled: isDisabled.double || loading,
           },
         ].map((item, index) => (
           <Button
@@ -209,12 +209,12 @@ const InsuranceButtons: React.FC<GameButtonsProps> = ({ isDisabled }) => {
           {
             name: 'ACCEPT',
             action: 'ACCEPT',
-            disabled: loading || isDisabled.insurance,
+            disabled: isDisabled.insurance || loading,
           },
           {
             name: 'DECLINE',
             action: 'DECLINE',
-            disabled: loading || isDisabled.insurance,
+            disabled: isDisabled.insurance || loading,
           },
         ].map((item, index) => (
           <Button
