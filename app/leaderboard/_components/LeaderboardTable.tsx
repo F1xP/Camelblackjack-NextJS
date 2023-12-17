@@ -3,7 +3,8 @@ import { useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import { LeaderboardDataProps } from '@/types/types';
 import LeaderboardHead from './LeaderboardHead';
-import { FaMedal } from 'react-icons/fa';
+import { BiSolidMedal } from 'react-icons/bi';
+import { RiStarSFill } from 'react-icons/ri';
 
 const LeaderboardTable: React.FC<{ leaderboardData: LeaderboardDataProps }> = ({ leaderboardData }) => {
   const searchParams = useSearchParams();
@@ -45,31 +46,29 @@ const LeaderboardTable: React.FC<{ leaderboardData: LeaderboardDataProps }> = ({
         <LeaderboardHead />
         <tbody>
           {dataToDisplay?.map((player: any, index: number) => (
-            <>
-              <tr
-                key={index}
-                className="border-t-[0.5px] border-secondary text-text font-semibold w-full">
-                <td className="px-4 py-2 ordinal">
-                  <LeaderboardPlace
-                    index={index}
-                    compensation={compensation}
-                  />
-                </td>
-                <td className="px-4 py-2 flex flex-row gap-1 items-center justify-start flex-wrap">
-                  <Image
-                    className="rounded-full"
-                    src={player.image}
-                    alt={''}
-                    width={38}
-                    height={38}
-                  />
-                  {player.name}
-                </td>
-                <td className="px-4 py-2">{player.coins}</td>
-                <td className="px-4 py-2">{player.games}</td>
-                <td className="px-4 py-2">{`${(player.wins / player.games) * 100}%`}</td>
-              </tr>
-            </>
+            <tr
+              key={index}
+              className="border-t-[0.5px] border-secondary text-text font-semibold w-full">
+              <td className="px-4 py-2">
+                <LeaderboardPlace
+                  index={index}
+                  compensation={compensation}
+                />
+              </td>
+              <td className="px-4 py-2 flex flex-row gap-1 items-center justify-start flex-wrap">
+                <Image
+                  className="rounded-full"
+                  src={player.image}
+                  alt={''}
+                  width={38}
+                  height={38}
+                />
+                {player.name}
+              </td>
+              <td className="px-4 py-2">{player.coins}</td>
+              <td className="px-4 py-2">{player.games}</td>
+              <td className="px-4 py-2">{`${(player.wins / player.games) * 100}%`}</td>
+            </tr>
           ))}
         </tbody>
       </table>
@@ -84,12 +83,20 @@ const LeaderboardPlace: React.FC<{ index: number; compensation: number }> = ({ i
   return (
     <p className="relative text-lg small-caps">
       {indexPlus <= 2 ? (
-        <FaMedal
-          size={20}
-          style={{
-            color: indexPlus === 0 ? 'rgb(255, 215, 0)' : indexPlus === 1 ? 'rgb(192, 192, 192)' : 'rgb(205, 127, 50)',
-          }}
-        />
+        <span className="relative">
+          <BiSolidMedal
+            size={35}
+            style={{
+              color:
+                indexPlus === 0 ? 'rgb(255, 215, 0)' : indexPlus === 1 ? 'rgb(192, 192, 192)' : 'rgb(205, 127, 50)',
+            }}
+          />
+          <RiStarSFill
+            size={15}
+            color="FFFFFF"
+            className="absolute top-2.5 left-4 opacity-0 shine"
+          />
+        </span>
       ) : (
         <>
           {indexPlus + 1}

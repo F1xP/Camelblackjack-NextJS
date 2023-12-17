@@ -151,3 +151,22 @@ input[type='number']::-webkit-outer-spin-button {
   -webkit-appearance: none; /* Webkit browsers */
   margin: 0; /* Removes default margin */
 }
+
+.shine {
+  animation: shineAnimation 5s alternate infinite;
+}
+
+@keyframes shineAnimation {
+  0% {
+    transform: scale(0.5) rotate(0deg);
+    opacity: 1;
+  }
+  20% {
+    opacity: 0;
+    transform: scale(1) rotate(160deg);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1) rotate(160deg);
+  }
+}

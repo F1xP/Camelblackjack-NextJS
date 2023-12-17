@@ -24,36 +24,44 @@ const LeaderboardHead: React.FC = () => {
         <th
           className="px-4 py-2 hover:underline cursor-pointer"
           onClick={() => setFilter('coins')}>
-          Coins
-          {currentFilter === 'coins' && (
-            <MdOutlineKeyboardArrowRight
-              className={`${order === 'asc' ? 'rotate-90' : 'rotate-[270deg]'}`}
-              size={25}
-            />
-          )}
+          <p className="flex flex-row">
+            Coins
+            {currentFilter === 'coins' && (
+              <MdOutlineKeyboardArrowRight
+                className={`min-w-[1.5rem] min-h-[1.5rem] self-start ${
+                  order === 'asc' ? 'rotate-90' : 'rotate-[270deg]'
+                }`}
+              />
+            )}
+          </p>
         </th>
         <th
-          className="px-4 py-2 hover:underline cursor-pointer flex flex-row items-center justify-start text-left"
+          className="px-4 py-2 hover:underline cursor-pointer"
           onClick={() => setFilter('games')}>
-          Games Played
-          {currentFilter === 'games' && (
-            <MdOutlineKeyboardArrowRight
-              className={`min-w-[1.5rem] min-h-[1.5rem] self-start ${
-                order === 'asc' ? 'rotate-90' : 'rotate-[270deg]'
-              }`}
-            />
-          )}
+          <p className="flex flex-row">
+            Games Played
+            {currentFilter === 'games' && (
+              <MdOutlineKeyboardArrowRight
+                className={`min-w-[1.5rem] min-h-[1.5rem] self-start ${
+                  order === 'asc' ? 'rotate-90' : 'rotate-[270deg]'
+                }`}
+              />
+            )}
+          </p>
         </th>
         <th
           className="px-4 py-2 hover:underline cursor-pointer"
           onClick={() => setFilter('win')}>
-          Win Rate
-          {currentFilter === 'win' && (
-            <MdOutlineKeyboardArrowRight
-              className={`${order === 'asc' ? 'rotate-90' : 'rotate-[270deg]'}`}
-              size={25}
-            />
-          )}
+          <p className="flex flex-row">
+            Win Rate
+            {currentFilter === 'win' && (
+              <MdOutlineKeyboardArrowRight
+                className={`min-w-[1.5rem] min-h-[1.5rem] self-start ${
+                  order === 'asc' ? 'rotate-90' : 'rotate-[270deg]'
+                }`}
+              />
+            )}
+          </p>
         </th>
       </tr>
     </thead>
