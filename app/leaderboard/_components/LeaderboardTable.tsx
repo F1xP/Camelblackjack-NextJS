@@ -48,14 +48,14 @@ const LeaderboardTable: React.FC<{ leaderboardData: LeaderboardDataProps }> = ({
             <>
               <tr
                 key={index}
-                className="border-t-[0.5px] border-secondary text-text font-semibold flex w-full">
-                <td className="px-4 py-2 ordinal flex-1">
+                className="border-t-[0.5px] border-secondary text-text font-semibold w-full">
+                <td className="px-4 py-2 ordinal">
                   <LeaderboardPlace
                     index={index}
                     compensation={compensation}
                   />
                 </td>
-                <td className="px-4 py-2 flex flex-row gap-1 items-center justify-start flex-1 overflow-hidden">
+                <td className="px-4 py-2 flex flex-row gap-1 items-center justify-start overflow-hidden">
                   <Image
                     className="rounded-full"
                     src={player.image}
@@ -65,9 +65,9 @@ const LeaderboardTable: React.FC<{ leaderboardData: LeaderboardDataProps }> = ({
                   />
                   {player.name}
                 </td>
-                <td className="px-4 py-2 flex-1">{player.coins}</td>
-                <td className="px-4 py-2 flex-1">{player.games}</td>
-                <td className="px-4 py-2 flex-1">{`${(player.wins / player.games) * 100}%`}</td>
+                <td className="px-4 py-2">{player.coins}</td>
+                <td className="px-4 py-2">{player.games}</td>
+                <td className="px-4 py-2">{`${(player.wins / player.games) * 100}%`}</td>
               </tr>
             </>
           ))}

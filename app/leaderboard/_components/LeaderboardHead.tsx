@@ -18,11 +18,11 @@ const LeaderboardHead: React.FC = () => {
   };
   return (
     <thead className="w-full text-left">
-      <tr className="flex w-full items-center">
-        <th className="px-4 py-2 flex-1">Rank</th>
-        <th className="px-4 py-2 flex-1">User</th>
+      <tr>
+        <th className="px-4 py-2">Rank</th>
+        <th className="px-4 py-2">User</th>
         <th
-          className="px-4 py-2 hover:underline cursor-pointer flex flex-row justify-start items-center flex-1 whitespace-nowrap flex-nowrap"
+          className="px-4 py-2 hover:underline cursor-pointer"
           onClick={() => setFilter('coins')}>
           Coins
           {currentFilter === 'coins' && (
@@ -33,18 +33,19 @@ const LeaderboardHead: React.FC = () => {
           )}
         </th>
         <th
-          className="px-4 py-2 hover:underline cursor-pointer flex flex-row justify-start items-center flex-1 whitespace-nowrap flex-nowrap"
+          className="px-4 py-2 hover:underline cursor-pointer flex flex-row items-center justify-start text-left"
           onClick={() => setFilter('games')}>
           Games Played
           {currentFilter === 'games' && (
             <MdOutlineKeyboardArrowRight
-              className={`${order === 'asc' ? 'rotate-90' : 'rotate-[270deg]'}`}
-              size={25}
+              className={`min-w-[1.5rem] min-h-[1.5rem] self-start ${
+                order === 'asc' ? 'rotate-90' : 'rotate-[270deg]'
+              }`}
             />
           )}
         </th>
         <th
-          className="px-4 py-2 hover:underline cursor-pointer flex flex-row justify-start items-center flex-1 whitespace-nowrap flex-nowrap"
+          className="px-4 py-2 hover:underline cursor-pointer"
           onClick={() => setFilter('win')}>
           Win Rate
           {currentFilter === 'win' && (
