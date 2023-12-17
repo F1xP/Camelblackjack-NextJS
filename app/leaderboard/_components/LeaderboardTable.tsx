@@ -3,6 +3,7 @@ import { useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import { LeaderboardDataProps } from '@/types/types';
 import LeaderboardHead from './LeaderboardHead';
+import { FaMedal } from 'react-icons/fa';
 
 const LeaderboardTable: React.FC<{ leaderboardData: LeaderboardDataProps }> = ({ leaderboardData }) => {
   const searchParams = useSearchParams();
@@ -14,6 +15,8 @@ const LeaderboardTable: React.FC<{ leaderboardData: LeaderboardDataProps }> = ({
 
   const startIndex: number = (Number(currentPage) - 1) * Number(currentRows);
   const endIndex: number = startIndex + Number(currentRows);
+
+  const compensation = Number(Number(currentPage) - 1) * Number(currentRows);
 
   const dataToDisplay =
     currentFilter === 'coins'
@@ -47,18 +50,10 @@ const LeaderboardTable: React.FC<{ leaderboardData: LeaderboardDataProps }> = ({
                 key={index}
                 className="border-t-[0.5px] border-secondary text-text font-semibold flex w-full">
                 <td className="px-4 py-2 ordinal flex-1">
-                  <p className="relative text-lg small-caps">
-                    {index + 1}
-                    {index + (1 % 10) === 1 && index + (1 % 100) !== 11 ? (
-                      <span className="absolute -top-2">st</span>
-                    ) : index + (1 % 10) === 2 && index + (1 % 100) !== 12 ? (
-                      <span className="absolute -top-2">nd</span>
-                    ) : index + (1 % 10) === 3 && index + (1 % 100) !== 13 ? (
-                      <span className="absolute -top-2">rd</span>
-                    ) : (
-                      <span className="absolute -top-2">th</span>
-                    )}
-                  </p>
+                  <LeaderboardPlace
+                    index={index}
+                    compensation={compensation}
+                  />
                 </td>
                 <td className="px-4 py-2 flex flex-row gap-1 items-center justify-start flex-1 overflow-hidden">
                   <Image
@@ -83,3 +78,32 @@ const LeaderboardTable: React.FC<{ leaderboardData: LeaderboardDataProps }> = ({
 };
 
 export default LeaderboardTable;
+
+const LeaderboardPlace: React.FC<{ index: number; compensation: number }> = ({ index, compensation }) => {
+  const indexPlus = index + compensation;
+  return (
+    <p className="relative text-lg small-caps">
+      {indexPlus <= 2 ? (
+        <FaMedal
+          size={20}
+          style={{
+            color: indexPlus === 0 ? 'rgb(255, 215, 0)' : indexPlus === 1 ? 'rgb(192, 192, 192)' : 'rgb(205, 127, 50)',
+          }}
+        />
+      ) : (
+        <>
+          {indexPlus + 1}
+          {indexPlus + (1 % 10) === 1 && indexPlus + (1 % 100) !== 11 ? (
+            <span className="absolute -top-2">st</span>
+          ) : indexPlus + (1 % 10) === 2 && indexPlus + (1 % 100) !== 12 ? (
+            <span className="absolute -top-2">nd</span>
+          ) : indexPlus + (1 % 10) === 3 && indexPlus + (1 % 100) !== 13 ? (
+            <span className="absolute -top-2">rd</span>
+          ) : (
+            <span className="absolute -top-2">th</span>
+          )}
+        </>
+      )}
+    </p>
+  );
+};
