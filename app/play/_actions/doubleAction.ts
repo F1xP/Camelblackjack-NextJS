@@ -9,7 +9,6 @@ import {
   gameEnded,
   getCard,
   getCurrentHand,
-  getHandValue,
   hasPlayerSplitted,
   isAllowedToDouble,
   shouldGameEnd,
