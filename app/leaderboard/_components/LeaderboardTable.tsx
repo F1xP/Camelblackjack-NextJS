@@ -55,7 +55,7 @@ const LeaderboardTable: React.FC<{ leaderboardData: LeaderboardDataProps }> = ({
                     compensation={compensation}
                   />
                 </td>
-                <td className="px-4 py-2 flex flex-row gap-1 items-center justify-start overflow-hidden">
+                <td className="px-4 py-2 flex flex-row gap-1 items-center justify-start flex-wrap">
                   <Image
                     className="rounded-full"
                     src={player.image}
