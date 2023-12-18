@@ -15,6 +15,7 @@ import {
 } from '@/lib/helpers';
 import { Game } from '@/types/types';
 import { revalidatePath } from 'next/cache';
+import { getErrorMessage } from '@/lib/utils';
 
 export const doubleAction = async (formData: FormData) => {
   try {
@@ -70,6 +71,6 @@ export const doubleAction = async (formData: FormData) => {
     return { message: 'Double action finished.', error: null };
   } catch (e) {
     console.log(e);
-    return { message: null, error: 'An error occurred while processing your double action.' };
+    return { message: null, error: getErrorMessage(e) };
   }
 };

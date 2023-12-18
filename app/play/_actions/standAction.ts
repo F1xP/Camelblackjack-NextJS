@@ -12,6 +12,7 @@ import {
 } from '@/lib/helpers';
 import { Game } from '@/types/types';
 import { revalidatePath } from 'next/cache';
+import { getErrorMessage } from '@/lib/utils';
 
 export const standAction = async (formData: FormData) => {
   try {
@@ -60,6 +61,6 @@ export const standAction = async (formData: FormData) => {
     return { message: 'Stand action finished.', error: null };
   } catch (e) {
     console.log(e);
-    return { message: null, error: 'An error occurred while processing your stand action.' };
+    return { message: null, error: getErrorMessage(e) };
   }
 };

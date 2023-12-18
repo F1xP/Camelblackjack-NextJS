@@ -5,6 +5,7 @@ import { getCurrentUser } from '@/lib/session';
 import { deductCoins, gameEnded, isAllowedToInsure, shouldGameEnd } from '@/lib/helpers';
 import { Actions, Game } from '@/types/types';
 import { revalidatePath } from 'next/cache';
+import { getErrorMessage } from '@/lib/utils';
 
 export const insuranceAcceptAction = async (formData: FormData) => {
   try {
@@ -94,6 +95,6 @@ export const insuranceDeclineAction = async (formData: FormData) => {
     return { message: 'Insurance declined action finished.', error: null };
   } catch (e) {
     console.log(e);
-    return { message: null, error: 'An error occurred while processing your insurance action.' };
+    return { message: null, error: getErrorMessage(e) };
   }
 };

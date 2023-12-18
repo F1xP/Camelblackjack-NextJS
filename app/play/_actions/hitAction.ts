@@ -14,6 +14,7 @@ import {
 } from '@/lib/helpers';
 import { Actions, Game } from '@/types/types';
 import { revalidatePath } from 'next/cache';
+import { getErrorMessage } from '@/lib/utils';
 
 export const hitAction = async (formData: FormData) => {
   try {
@@ -68,6 +69,6 @@ export const hitAction = async (formData: FormData) => {
     return { message: 'Hit action finished.', error: null };
   } catch (e) {
     console.log(e);
-    return { message: null, error: 'An error occurred while processing your hit action.' };
+    return { message: null, error: getErrorMessage(e) };
   }
 };
