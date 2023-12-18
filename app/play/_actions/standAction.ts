@@ -30,7 +30,7 @@ export const standAction = async (formData: FormData) => {
     if (!canStand)
       return {
         message: null,
-        error: 'Stand is not available at this point. Please check your current game status.',
+        error: 'Stand action is not available at this point. Please check your current game status.',
       };
 
     const hasSplitted = await hasPlayerSplitted(game.state);

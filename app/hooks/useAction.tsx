@@ -8,12 +8,17 @@ const useAction = () => {
   const { addToast, removeToast, toasts } = useToast();
   const [loading, setLoading] = useState(false);
 
-  const handleAction = async (action: ActionFunction, formData: FormData) => {
+  const handleAction = async (
+    action: ActionFunction,
+    formData: FormData,
+    successToast: boolean = true,
+    errorToast: boolean = true
+  ) => {
     setLoading(true);
     try {
       const actionResponse = await action(formData);
-      //if (actionResponse.message) addToast(actionResponse.message, 'Success');
-      if (actionResponse.error) {
+      if (actionResponse.message && successToast) addToast(actionResponse.message, 'Success');
+      if (actionResponse.error && errorToast) {
         addToast(actionResponse.error, 'Error');
         throw new Error('An error occurred while processing the action.');
       }

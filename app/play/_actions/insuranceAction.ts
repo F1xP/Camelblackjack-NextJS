@@ -23,7 +23,7 @@ export const insuranceAcceptAction = async (formData: FormData) => {
       if (!canInsure)
         return {
           message: null,
-          error: 'Insurance is not available at this point. Please check your current game status.',
+          error: 'Insurance action is not available at this point. Please check your current game status.',
         };
 
       await deductCoins(tx, user.email as string, playerState.amount / 2);
@@ -70,7 +70,7 @@ export const insuranceDeclineAction = async (formData: FormData) => {
       if (['INS_ACCEPTED', 'INS_DECLINED'].some((action) => playerState.actions.includes(action as Actions))) {
         return {
           message: null,
-          error: 'Insurance is not available at this point. Please check your current game status.',
+          error: 'Insurance action is not available at this point. Please check your current game status.',
         };
       }
 

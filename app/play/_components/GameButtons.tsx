@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 import { Button } from '../../_components/Button';
 import { Input } from '../../_components/Input';
 import useAction from '@/app/hooks/useAction';
-import { GameState } from '@/types/types';
 import { useSession } from 'next-auth/react';
 import { betAction } from '../_actions/betAction';
 import { hitAction } from '../_actions/hitAction';
@@ -34,7 +33,7 @@ export const GameButtons: React.FC<GameButtonsProps> = ({ isDisabled }) => {
     switch (action) {
       case 'BET':
         formData.append('betAmount', betAmount.toString());
-        await handleAction(betAction, formData);
+        await handleAction(betAction, formData, false);
         update();
         break;
       default:
@@ -110,26 +109,26 @@ const PlayButtons: React.FC<GameButtonsProps> = ({ isDisabled }) => {
     const formData = new FormData();
     switch (action) {
       case 'HIT':
-        await handleAction(hitAction, formData);
+        await handleAction(hitAction, formData, false);
         update();
         break;
       case 'STAND':
-        await handleAction(standAction, formData);
+        await handleAction(standAction, formData, false);
         update();
         break;
       case 'SPLIT':
-        await handleAction(splitAction, formData);
+        await handleAction(splitAction, formData, false);
         update();
         break;
       case 'DOUBLE':
-        await handleAction(doubleAction, formData);
+        await handleAction(doubleAction, formData, false);
         update();
         break;
       default:
     }
   };
   return (
-    <div className="flex flex-col p-1 gap-1 mt-auto">
+    <div className="flex flex-col p-1 gap-1">
       <div className="flex flex-row gap-1">
         {[
           {
@@ -190,11 +189,11 @@ const InsuranceButtons: React.FC<GameButtonsProps> = ({ isDisabled }) => {
     const formData = new FormData();
     switch (action) {
       case 'ACCEPT':
-        await handleAction(insuranceAcceptAction, formData);
+        await handleAction(insuranceAcceptAction, formData, false);
         update();
         break;
       case 'DECLINE':
-        await handleAction(insuranceDeclineAction, formData);
+        await handleAction(insuranceDeclineAction, formData, false);
         update();
         break;
       default:
@@ -202,7 +201,7 @@ const InsuranceButtons: React.FC<GameButtonsProps> = ({ isDisabled }) => {
   };
 
   return (
-    <div className="flex flex-col p-1 gap-1 mt-auto">
+    <div className="flex flex-col p-1 gap-1">
       <p className="text-center text-2xl font-bold text-text font-mono">Insurance?</p>
       <div className="flex flex-row gap-1">
         {[

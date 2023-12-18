@@ -22,7 +22,7 @@ export const splitAction = async (formData: FormData) => {
     if (!canSplit)
       return {
         message: null,
-        error: 'Splitting is not available at this point. Please check your current game status.',
+        error: 'Split action is not available at this point. Please check your current game status.',
       };
 
     const playerState = game.state.player[0];

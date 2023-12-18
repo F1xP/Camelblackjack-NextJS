@@ -29,7 +29,11 @@ export const doubleAction = async (formData: FormData) => {
 
       const currentHand = await getCurrentHand(game.state);
       const canDouble = await isAllowedToDouble(game.state, currentHand);
-      if (!canDouble) return { message: null, error: 'Double action not allowed.' };
+      if (!canDouble)
+        return {
+          message: null,
+          error: 'Double action is not available at this point. Please check your current game status.',
+        };
 
       const hasSplitted = await hasPlayerSplitted(game.state);
       const playerState = game.state.player[currentHand];

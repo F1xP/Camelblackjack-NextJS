@@ -1,7 +1,7 @@
 import { GameButtons } from './_components/GameButtons';
 import { GameDisplay } from './_components/GaneDisplay';
 import { Game } from '@/types/types';
-import { getCurrentGame } from './_actions/actions';
+import { getCurrentGame } from './_actions/getGame';
 import { disabledButtons, getCurrentHand, getGameStatus } from '@/lib/helpers';
 
 export default async function Play() {
@@ -15,7 +15,7 @@ export default async function Play() {
 
   return (
     <>
-      <div className="flex flex-col h-[800px] w-full rounded-lg border border-secondary mt-10 md:flex-row md:h-[600px] ">
+      <div className="flex flex-col h-[700px] w-full rounded-lg border border-secondary mt-10 md:flex-row md:h-[600px] ">
         <GameButtons isDisabled={isDisabled} />
         <GameDisplay
           gameState={gameState}

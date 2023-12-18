@@ -34,7 +34,10 @@ export const hitAction = async (formData: FormData) => {
 
     const canHit = await isAllowedToStand(game.state, currentHand);
     if (!canHit)
-      return { message: null, error: 'Hitting is not available at this point. Please check your current game status.' };
+      return {
+        message: null,
+        error: 'Hit action is not available at this point. Please check your current game status.',
+      };
 
     const newPlayerCard = await getCard();
     playerState.cards = [...playerState.cards, newPlayerCard];
