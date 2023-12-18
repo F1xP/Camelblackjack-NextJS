@@ -128,7 +128,7 @@ const Card: React.FC<{
         'flip-card w-[3.5rem] h-[5.5rem] md:w-16 md:h-24 xl:w-20 xl:h-32 bg-transparent rounded-md shadow-sm shadow-black p-card-animation border-3 bg-white',
         isCurrent && !gameStatus && isSplitted
           ? 'border-accentBlue'
-          : gameStatus === 'PUSH'
+          : gameStatus === 'Push'
           ? 'border-accent'
           : gameStatus === 'Lose' || gameStatus === 'Blackjack Dealer'
           ? 'border-accentRed'
@@ -171,7 +171,7 @@ const Result: React.FC<{
           'px-2 text-black font-bold font-mono rounded-sm text-center',
           isCurrent && !gameStatus && isSplitted
             ? 'bg-accentBlue'
-            : gameStatus === 'PUSH'
+            : gameStatus === 'Push'
             ? 'bg-accent'
             : gameStatus === 'Lose' || gameStatus === 'Blackjack Dealer'
             ? 'bg-accentRed'
@@ -187,7 +187,7 @@ const Result: React.FC<{
         'px-2 text-black font-bold font-mono rounded-sm text-center',
         isCurrent && !gameStatus && isSplitted
           ? 'bg-accentBlue'
-          : gameStatus === 'PUSH'
+          : gameStatus === 'Push'
           ? 'bg-accent'
           : gameStatus === 'Lose' || gameStatus === 'Blackjack Dealer'
           ? 'bg-accentRed'
