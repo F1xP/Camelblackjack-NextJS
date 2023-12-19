@@ -12,6 +12,7 @@ export type LeaderboardDataProps = {
   wins: number;
   loses: number;
   pushes: number;
+  winRate: number;
   createdAt: Date;
   updatedAt: Date;
 }[];

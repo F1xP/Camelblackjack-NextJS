@@ -22,22 +22,17 @@ const LeaderboardTable: React.FC<{ leaderboardData: LeaderboardDataProps }> = ({
   const dataToDisplay =
     currentFilter === 'coins'
       ? leaderboardData
-          ?.sort((a, b) => (currentOrder === 'desc' ? a.coins - b.coins : b.coins - a.coins))
+          ?.sort((a, b) => (currentOrder === 'asc' ? a.coins - b.coins : b.coins - a.coins))
           ?.slice(startIndex, endIndex)
-          ?.map((item) => ({ ...item, winRate: (item.wins / item.games) * 100 || 0 }))
       : currentFilter === 'games'
       ? leaderboardData
-          ?.sort((a, b) => (currentOrder === 'desc' ? a.games - b.games : b.games - a.games))
+          ?.sort((a, b) => (currentOrder === 'asc' ? a.games - b.games : b.games - a.games))
           ?.slice(startIndex, endIndex)
-          ?.map((item) => ({ ...item, winRate: (item.wins / item.games) * 100 || 0 }))
       : currentFilter === 'win'
       ? leaderboardData
-          ?.map((item) => ({ ...item, winRate: (item.wins / item.games) * 100 || 0 }))
-          ?.sort((a, b) => (currentOrder === 'desc' ? a.winRate - b.winRate : b.winRate - a.winRate))
+          ?.sort((a, b) => (currentOrder === 'asc' ? a.winRate - b.winRate : b.winRate - a.winRate))
           ?.slice(startIndex, endIndex)
-      : leaderboardData
-          ?.slice(startIndex, endIndex)
-          ?.map((item) => ({ ...item, winRate: (item.wins / item.games) * 100 || 0 }));
+      : leaderboardData?.slice(startIndex, endIndex);
 
   return (
     <div className="w-full overflow-auto min-w-[320px] border-[0.5px] border-secondary">
