@@ -61,7 +61,7 @@ const LeaderboardTable: React.FC<{ leaderboardData: LeaderboardDataProps }> = ({
               </td>
               <td className="px-4 py-2">{player.coins}</td>
               <td className="px-4 py-2">{player.games}</td>
-              <td className="px-4 py-2">{`${(player.wins / player.games) * 100}%`}</td>
+              <td className="px-4 py-2">{`${player.winRate}%`}</td>
             </tr>
           ))}
         </tbody>
