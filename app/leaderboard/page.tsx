@@ -8,7 +8,7 @@ export default async function Leaderboard() {
 
   const leaderboardDataWithWinRate = leaderboardData?.map((item) => ({
     ...item,
-    winRate: (item.wins / item.games) * 100 || 0,
+    winRate: isNaN((item.wins / item.games) * 100) ? 0 : (item.wins / item.games) * 100,
   }));
 
   return (
