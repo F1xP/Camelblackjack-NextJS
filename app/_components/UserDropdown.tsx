@@ -33,7 +33,7 @@ export default function UserDropdown({ isDropdownOpen, setIsDropdownOpen }: User
           <Link
             onClick={() => setIsDropdownOpen(false)}
             className="hover:bg-secondary py-1 px-2 rounded-sm w-full transition-all duration-300 flex justify-center items-center"
-            href={'/profile'}>
+            href={'/settings'}>
             <AiOutlineUser className="mr-auto" />
             <p className="mr-auto">Profile</p>
           </Link>

@@ -35,7 +35,7 @@ export const updateProfile = async (formData: FormData) => {
         name: name,
       },
     });
-    revalidatePath('/profile');
+    revalidatePath('/settings');
     return { message: 'Profile Settings have been saved successfully.', error: null };
   } catch (e) {
     return { message: null, error: 'An error occurred while trying to save your profile settings. Please try again.' };
@@ -79,7 +79,7 @@ export const resetProfile = async (formData: FormData) => {
       }),
     ]);
 
-    revalidatePath('/profile');
+    revalidatePath('/settings');
     return { message: 'Your account has been reset successfully.', error: null };
   } catch (e) {
     return {
@@ -113,7 +113,7 @@ export const deleteProfile = async (formData: FormData) => {
     await prisma.user.delete({
       where: { email: user?.email },
     });
-    revalidatePath('/profile');
+    revalidatePath('/settings');
     return { message: 'Your account has been deleted successfully.', error: null };
   } catch (e) {
     return {
