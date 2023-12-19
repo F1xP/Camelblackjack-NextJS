@@ -22,7 +22,7 @@ const LeaderboardTable: React.FC<{ leaderboardData: LeaderboardDataProps }> = ({
   const dataToDisplay =
     currentFilter === 'coins'
       ? leaderboardData
-          ?.sort((a, b) => (currentOrder === 'desc' ? a.games - b.games : b.games - a.games))
+          ?.sort((a, b) => (currentOrder === 'desc' ? a.coins - b.coins : b.coins - a.coins))
           ?.slice(startIndex, endIndex)
           ?.map((item) => ({ ...item, winRate: (item.wins / item.games) * 100 || 0 }))
       : currentFilter === 'games'
@@ -32,11 +32,10 @@ const LeaderboardTable: React.FC<{ leaderboardData: LeaderboardDataProps }> = ({
           ?.map((item) => ({ ...item, winRate: (item.wins / item.games) * 100 || 0 }))
       : currentFilter === 'win'
       ? leaderboardData
-          ?.sort((a, b) => (currentOrder === 'desc' ? a.games - b.games : b.games - a.games))
-          ?.slice(startIndex, endIndex)
           ?.map((item) => ({ ...item, winRate: (item.wins / item.games) * 100 || 0 }))
+          ?.sort((a, b) => (currentOrder === 'desc' ? a.winRate - b.winRate : b.winRate - a.winRate))
+          ?.slice(startIndex, endIndex)
       : leaderboardData
-          ?.sort((a, b) => (currentOrder === 'desc' ? a.games - b.games : b.games - a.games))
           ?.slice(startIndex, endIndex)
           ?.map((item) => ({ ...item, winRate: (item.wins / item.games) * 100 || 0 }));
 
