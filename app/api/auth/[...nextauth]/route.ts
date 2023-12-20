@@ -35,6 +35,7 @@ export const nextAuthOptions = {
         if (!dbUser) return session;
         session.user = {
           ...session.user,
+          bio: dbUser.bio,
           coins: dbUser.coins,
           games: dbUser.games,
           wins: dbUser.wins,

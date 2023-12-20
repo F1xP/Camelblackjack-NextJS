@@ -33,6 +33,7 @@ export const updateProfile = async (formData: FormData) => {
       where: { email: user?.email },
       data: {
         name: name,
+        bio: bio,
       },
     });
     revalidatePath('/settings');

@@ -35,12 +35,12 @@ export type GameState = {
 export type UserState = {
   value: number[];
   actions: Actions[];
-  cards: Card[];
+  cards: CardType[];
   amount: number;
   payout: number;
 };
 
-export type Card = {
+export type CardType = {
   rank: string;
   suit: string;
 };
