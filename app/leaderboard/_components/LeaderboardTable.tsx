@@ -5,6 +5,8 @@ import { LeaderboardDataProps } from '@/types/types';
 import LeaderboardHead from './LeaderboardHead';
 import { BiSolidMedal } from 'react-icons/bi';
 import { RiStarSFill } from 'react-icons/ri';
+import Link from 'next/link';
+import { User } from '@prisma/client';
 
 const LeaderboardTable: React.FC<{ leaderboardData: LeaderboardDataProps }> = ({ leaderboardData }) => {
   const searchParams = useSearchParams();
@@ -39,31 +41,42 @@ const LeaderboardTable: React.FC<{ leaderboardData: LeaderboardDataProps }> = ({
       <table className="table-auto w-full text-left text-accent">
         <LeaderboardHead />
         <tbody>
-          {dataToDisplay?.map((player: any, index: number) => (
-            <tr
-              key={index}
-              className="border-t-[0.5px] border-secondary text-text font-semibold w-full">
-              <td className="px-4 py-2">
-                <LeaderboardPlace
-                  index={index}
-                  compensation={compensation}
-                />
-              </td>
-              <td className="px-4 py-2 flex flex-row gap-1 items-center justify-start flex-wrap">
-                <Image
-                  className="rounded-full"
-                  src={player.image}
-                  alt={''}
-                  width={38}
-                  height={38}
-                />
-                {player.name}
-              </td>
-              <td className="px-4 py-2">{player.coins}</td>
-              <td className="px-4 py-2">{player.games}</td>
-              <td className="px-4 py-2">{`${player.winRate}%`}</td>
-            </tr>
-          ))}
+          {dataToDisplay?.map(
+            (
+              player: User & {
+                winRate: number;
+              },
+              index: number
+            ) => (
+              <tr
+                key={index}
+                className="border-t-[0.5px] border-secondary text-text font-semibold w-full">
+                <td className="px-4 py-2">
+                  <LeaderboardPlace
+                    index={index}
+                    compensation={compensation}
+                  />
+                </td>
+                <td className="px-4 py-2">
+                  <Link
+                    href={`/profile/${player.id}`}
+                    className="flex flex-row gap-1 items-center justify-start flex-wrap">
+                    <Image
+                      className="rounded-full"
+                      src={player.image || ''}
+                      alt={''}
+                      width={38}
+                      height={38}
+                    />
+                    {player.name}
+                  </Link>
+                </td>
+                <td className="px-4 py-2">{player.coins}</td>
+                <td className="px-4 py-2">{player.games}</td>
+                <td className="px-4 py-2">{`${player.winRate}%`}</td>
+              </tr>
+            )
+          )}
         </tbody>
       </table>
     </div>

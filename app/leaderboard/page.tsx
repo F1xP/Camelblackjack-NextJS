@@ -6,11 +6,10 @@ import { Header } from '../_components/Header';
 export default async function Leaderboard() {
   const leaderboardData = await prisma.user.findMany();
 
-  const leaderboardDataWithWinRate = leaderboardData?.map((item) => ({
-    ...item,
-    winRate: isNaN((item.wins / item.games) * 100) ? 0 : (item.wins / item.games) * 100,
+  const leaderboardDataWithWinRate = leaderboardData?.map((user) => ({
+    ...user,
+    winRate: user.games !== 0 ? Number(((user.wins / user.games) * 100).toFixed(0)) : 0,
   }));
-
   return (
     <>
       <Header className="mb-4 self-start">Leaderboard</Header>
