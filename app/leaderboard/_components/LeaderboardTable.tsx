@@ -50,7 +50,7 @@ const LeaderboardTable: React.FC<{ leaderboardData: LeaderboardDataProps }> = ({
             ) => (
               <tr
                 key={index}
-                className="border-t-[0.5px] border-secondary text-text font-semibold w-full">
+                className="border-t-[0.5px] transition-all duration-300 border-secondary text-text font-semibold w-full hover:bg-secondary">
                 <td className="px-4 py-2">
                   <LeaderboardPlace
                     index={index}
