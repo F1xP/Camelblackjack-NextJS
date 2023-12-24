@@ -47,6 +47,16 @@ export const betAction = async (formData: FormData) => {
 
       const hasGameEnded = await shouldGameEnd(game.state, false);
       if (hasGameEnded) await gameEnded(tx, game);
+      else
+        await tx.game.update({
+          where: { id: game.id },
+          data: {
+            state: {
+              player: game.state.player,
+              dealer: game.state.dealer,
+            },
+          },
+        });
       revalidatePath('/play');
     });
     return { message: 'Bet action finished.', error: null };

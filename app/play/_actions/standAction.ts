@@ -45,6 +45,16 @@ export const standAction = async (formData: FormData) => {
     await prisma.$transaction(async (tx) => {
       const hasGameEnded = await shouldGameEnd(game.state, true);
       if (hasGameEnded) await gameEnded(tx, game);
+      else
+        await tx.game.update({
+          where: { id: game.id },
+          data: {
+            state: {
+              player: game.state.player,
+              dealer: game.state.dealer,
+            },
+          },
+        });
       revalidatePath('/play');
     });
     return { message: 'Stand action finished.', error: null };
