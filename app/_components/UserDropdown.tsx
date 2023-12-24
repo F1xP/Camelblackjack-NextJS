@@ -4,6 +4,7 @@ import { useSession, signOut } from 'next-auth/react';
 import { PiSignOutBold } from 'react-icons/pi';
 import { ImStatsDots } from 'react-icons/im';
 import { AiOutlineUser } from 'react-icons/ai';
+import { LuUserCog } from 'react-icons/lu';
 import Link from 'next/link';
 
 type UserDropdownProps = {
@@ -33,7 +34,7 @@ export default function UserDropdown({ isDropdownOpen, setIsDropdownOpen }: User
           <Link
             onClick={() => setIsDropdownOpen(false)}
             className="hover:bg-secondary py-1 px-2 rounded-sm w-full transition-all duration-300 flex justify-center items-center"
-            href={'/settings'}>
+            href={`/profile/${session.user.id}`}>
             <AiOutlineUser className="mr-auto" />
             <p className="mr-auto">Profile</p>
           </Link>
@@ -43,6 +44,13 @@ export default function UserDropdown({ isDropdownOpen, setIsDropdownOpen }: User
             href={'/dashboard'}>
             <ImStatsDots className="mr-auto h-3" />
             <p className="mr-auto">Dashboard</p>
+          </Link>
+          <Link
+            onClick={() => setIsDropdownOpen(false)}
+            className="hover:bg-secondary py-1 px-2 rounded-sm w-full transition-all duration-300 flex justify-center items-center"
+            href={'/settings'}>
+            <LuUserCog className="mr-auto" />
+            <p className="mr-auto">Settings</p>
           </Link>
           <div className="border-t border-secondary w-full my-1"></div>
           <button

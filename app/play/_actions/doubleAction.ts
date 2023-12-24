@@ -54,18 +54,6 @@ export const doubleAction = async (formData: FormData) => {
 
       const hasGameEnded = await shouldGameEnd(game.state, true);
       if (hasGameEnded) await gameEnded(tx, game);
-
-      await tx.game.update({
-        where: { id: game.id },
-        data: {
-          active: !hasGameEnded,
-          state: {
-            player: game.state.player,
-            dealer: game.state.dealer,
-          },
-        },
-      });
-
       revalidatePath('/play');
     });
     return { message: 'Double action finished.', error: null };

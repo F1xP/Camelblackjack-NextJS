@@ -8,6 +8,7 @@ import { prisma } from '@/lib/prisma';
 declare module 'next-auth' {
   interface Session {
     user: User & {
+      id: string;
       bio: string;
       coins: number;
       games: number;
@@ -29,12 +30,13 @@ export const nextAuthOptions = {
   callbacks: {
     session: async ({ session, user }) => {
       try {
-        const dbUser: any = await prisma.user.findUnique({
+        const dbUser = await prisma.user.findUnique({
           where: { email: user.email },
         });
         if (!dbUser) return session;
         session.user = {
           ...session.user,
+          id: dbUser.id,
           bio: dbUser.bio,
           coins: dbUser.coins,
           games: dbUser.games,

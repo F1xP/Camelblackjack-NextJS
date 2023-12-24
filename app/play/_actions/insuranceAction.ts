@@ -36,16 +36,6 @@ export const insuranceAcceptAction = async (formData: FormData) => {
         playerState.amount = playerState.amount + playerState.amount / 2;
         await gameEnded(tx, game);
       }
-      await tx.game.update({
-        where: { id: game.id },
-        data: {
-          active: !hasGameEnded,
-          state: {
-            player: game.state.player,
-            dealer: game.state.dealer,
-          },
-        },
-      });
       revalidatePath('/play');
     });
     return { message: 'Insurance accepted action finished.', error: null };
@@ -79,17 +69,6 @@ export const insuranceDeclineAction = async (formData: FormData) => {
 
       const hasGameEnded = await shouldGameEnd(game.state, false);
       if (hasGameEnded) await gameEnded(tx, game);
-
-      await tx.game.update({
-        where: { id: game.id },
-        data: {
-          active: !hasGameEnded,
-          state: {
-            player: game.state.player,
-            dealer: game.state.dealer,
-          },
-        },
-      });
       revalidatePath('/play');
     });
     return { message: 'Insurance declined action finished.', error: null };

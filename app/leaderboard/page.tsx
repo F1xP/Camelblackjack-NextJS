@@ -14,7 +14,7 @@ export default async function Leaderboard() {
     <>
       <Header className="mb-4 self-start">Leaderboard</Header>
       <LeaderboardTable leaderboardData={leaderboardDataWithWinRate} />
-      <Navigation leaderboardData={leaderboardDataWithWinRate} />
+      <Navigation dataLength={leaderboardDataWithWinRate.length} />
     </>
   );
 }

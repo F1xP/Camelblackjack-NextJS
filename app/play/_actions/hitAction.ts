@@ -12,7 +12,7 @@ import {
   isAllowedToStand,
   shouldGameEnd,
 } from '@/lib/helpers';
-import { Actions, Game } from '@/types/types';
+import { Game } from '@/types/types';
 import { revalidatePath } from 'next/cache';
 import { getErrorMessage } from '@/lib/utils';
 
@@ -53,17 +53,6 @@ export const hitAction = async (formData: FormData) => {
     await prisma.$transaction(async (tx) => {
       const hasGameEnded = await shouldGameEnd(game.state, false);
       if (hasGameEnded) await gameEnded(tx, game);
-
-      await tx.game.update({
-        where: { id: game.id },
-        data: {
-          active: !hasGameEnded,
-          state: {
-            player: game.state.player,
-            dealer: game.state.dealer,
-          },
-        },
-      });
       revalidatePath('/play');
     });
     return { message: 'Hit action finished.', error: null };

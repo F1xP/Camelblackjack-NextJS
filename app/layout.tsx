@@ -6,8 +6,8 @@ import Navbar from './_components/Navbar';
 import { NextUIProvider } from '@/lib/nextui';
 import { ToastsDisplay, ToastsProvider } from './_components/Toasts';
 import { nextAuthOptions } from './api/auth/[...nextauth]/route';
-import './globals.css';
 import Footer from './_components/Footer';
+import './globals.css';
 
 export const metadata: Metadata = {
   title: 'Camel Blackjack',

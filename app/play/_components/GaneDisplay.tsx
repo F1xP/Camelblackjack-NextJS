@@ -1,4 +1,3 @@
-'use client';
 import { cn } from '@/lib/utils';
 import { CardType } from '@/types/types';
 import { GameState } from '@prisma/client';

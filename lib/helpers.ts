@@ -211,6 +211,7 @@ export const dealerTurn = async (dealerState: UserState) => {
 };
 
 export const gameEnded = async (tx: Prisma.TransactionClient, game: Game) => {
+  let totalPayout = 0;
   const updateCoins = async (index: number) => {
     const playerState = game.state.player[index];
     const hasInsured = ['INS_ACCEPTED'].some((action) => playerState.actions.includes(action as Actions));
@@ -226,6 +227,7 @@ export const gameEnded = async (tx: Prisma.TransactionClient, game: Game) => {
         : 0;
     if (resultMultiplier === 0) return;
     const incrementAmount = amount * resultMultiplier;
+    totalPayout += incrementAmount;
     await tx.user.update({
       where: { email: game.user_email as string },
       data: {
@@ -255,6 +257,18 @@ export const gameEnded = async (tx: Prisma.TransactionClient, game: Game) => {
   } else {
     await updateCoins(0);
   }
+
+  await tx.game.update({
+    where: { id: game.id },
+    data: {
+      payout: totalPayout,
+      active: false,
+      state: {
+        player: game.state.player,
+        dealer: game.state.dealer,
+      },
+    },
+  });
 };
 
 export const getHandValue = async (playerState: UserState) => {

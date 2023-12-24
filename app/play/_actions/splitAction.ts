@@ -40,7 +40,6 @@ export const splitAction = async (formData: FormData) => {
         actions: playerState.actions,
         cards: playerState.cards,
         amount: playerState.amount,
-        payout: 0,
       },
     ];
 

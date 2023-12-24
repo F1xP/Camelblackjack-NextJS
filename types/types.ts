@@ -20,6 +20,7 @@ export type LeaderboardDataProps = {
 export type Game = {
   id: string;
   active: boolean;
+  payout: number;
   state: GameState;
   user_email?: string | null;
   user?: User | null;
@@ -37,7 +38,6 @@ export type UserState = {
   actions: Actions[];
   cards: CardType[];
   amount: number;
-  payout: number;
 };
 
 export type CardType = {

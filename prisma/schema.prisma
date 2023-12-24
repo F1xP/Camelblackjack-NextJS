@@ -64,6 +64,7 @@ model VerificationToken {
 model Game {
   id         String    @id @default(auto()) @map("_id") @db.ObjectId
   active     Boolean
+  payout     Int       @default(0)
   state      GameState
   user_email String?
   user       User?     @relation(fields: [user_email], references: [email], onDelete: Cascade)
@@ -81,7 +82,6 @@ type UserState {
   actions ActionName[]
   cards   Card[]
   amount  Int          @default(0)
-  payout  Int          @default(0)
 }
 
 type Card {
