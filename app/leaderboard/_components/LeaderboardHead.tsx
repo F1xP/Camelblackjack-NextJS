@@ -21,48 +21,29 @@ const LeaderboardHead: React.FC = () => {
       <tr>
         <th className="px-4 py-2">Rank</th>
         <th className="px-4 py-2">User</th>
-        <th
-          className="px-4 py-2 hover:underline cursor-pointer"
-          onClick={() => setFilter('coins')}>
-          <p className="flex flex-row">
-            Coins
-            {currentFilter === 'coins' && (
-              <MdOutlineKeyboardArrowRight
-                className={`min-w-[1.5rem] min-h-[1.5rem] self-start ${
-                  order === 'asc' ? 'rotate-90' : 'rotate-[270deg]'
-                }`}
-              />
-            )}
-          </p>
-        </th>
-        <th
-          className="px-4 py-2 hover:underline cursor-pointer"
-          onClick={() => setFilter('games')}>
-          <p className="flex flex-row">
-            Games Played
-            {currentFilter === 'games' && (
-              <MdOutlineKeyboardArrowRight
-                className={`min-w-[1.5rem] min-h-[1.5rem] self-start ${
-                  order === 'asc' ? 'rotate-90' : 'rotate-[270deg]'
-                }`}
-              />
-            )}
-          </p>
-        </th>
-        <th
-          className="px-4 py-2 hover:underline cursor-pointer"
-          onClick={() => setFilter('win')}>
-          <p className="flex flex-row">
-            Win Rate
-            {currentFilter === 'win' && (
-              <MdOutlineKeyboardArrowRight
-                className={`min-w-[1.5rem] min-h-[1.5rem] self-start ${
-                  order === 'asc' ? 'rotate-90' : 'rotate-[270deg]'
-                }`}
-              />
-            )}
-          </p>
-        </th>
+        {[
+          { filter: 'coins', text: 'Coins' },
+          { filter: 'games', text: 'Games Played' },
+          { filter: 'win', text: 'Win Rate' },
+        ].map((item) => {
+          return (
+            <th
+              key={item.filter}
+              className="px-4 py-2 hover:underline cursor-pointer"
+              onClick={() => setFilter(item.filter)}>
+              <p className="flex flex-row">
+                {item.text}
+                {currentFilter === item.filter && (
+                  <MdOutlineKeyboardArrowRight
+                    className={`min-w-[1.5rem] min-h-[1.5rem] self-start ${
+                      order === 'asc' ? 'rotate-90' : 'rotate-[270deg]'
+                    }`}
+                  />
+                )}
+              </p>
+            </th>
+          );
+        })}
       </tr>
     </thead>
   );

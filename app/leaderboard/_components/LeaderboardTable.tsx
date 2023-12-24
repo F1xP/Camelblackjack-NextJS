@@ -21,20 +21,15 @@ const LeaderboardTable: React.FC<{ leaderboardData: LeaderboardDataProps }> = ({
 
   const compensation = Number(Number(currentPage) - 1) * Number(currentRows);
 
-  const dataToDisplay =
-    currentFilter === 'coins'
-      ? leaderboardData
-          ?.sort((a, b) => (currentOrder === 'asc' ? a.coins - b.coins : b.coins - a.coins))
-          ?.slice(startIndex, endIndex)
-      : currentFilter === 'games'
-      ? leaderboardData
-          ?.sort((a, b) => (currentOrder === 'asc' ? a.games - b.games : b.games - a.games))
-          ?.slice(startIndex, endIndex)
-      : currentFilter === 'win'
-      ? leaderboardData
-          ?.sort((a, b) => (currentOrder === 'asc' ? a.winRate - b.winRate : b.winRate - a.winRate))
-          ?.slice(startIndex, endIndex)
-      : leaderboardData?.slice(startIndex, endIndex);
+  const dataToDisplay = leaderboardData
+    ?.slice()
+    .sort((a, b) => {
+      if (currentFilter === 'coins') return currentOrder === 'asc' ? a.coins - b.coins : b.coins - a.coins;
+      if (currentFilter === 'games') return currentOrder === 'asc' ? a.games - b.games : b.games - a.games;
+      if (currentFilter === 'win') return currentOrder === 'asc' ? a.winRate - b.winRate : b.winRate - a.winRate;
+      return 0;
+    })
+    ?.slice(startIndex, endIndex);
 
   return (
     <div className="w-full overflow-auto min-w-[320px] border-[0.5px] border-secondary">
