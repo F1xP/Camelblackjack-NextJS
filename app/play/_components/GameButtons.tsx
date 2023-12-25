@@ -42,7 +42,7 @@ export const GameButtons: React.FC<GameButtonsProps> = ({ isDisabled }) => {
 
   return (
     <section className="w-full flex-1 flex flex-col">
-      <div className="flex flex-col p-2">
+      <div className="flex flex-col px-1">
         <div className="flex flex-row items-center">
           <p className="text-text text-xl font-mono small-caps">Bet Amount</p>
           <UserCoins />

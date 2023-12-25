@@ -13,7 +13,7 @@ export const Card: React.FC<{
   return (
     <div
       className={cn(
-        'flip-card w-[3.5rem] h-[5.5rem] md:w-16 md:h-24 xl:w-20 xl:h-32 bg-transparent rounded-md shadow-sm shadow-black p-card-animation border-3 bg-white',
+        'flip-card w-[3.5rem] h-[5.5rem] md:w-16 md:h-24 xl:w-20 xl:h-32 bg-transparent rounded-md shadow-sm shadow-black p-card-animation border-2 xl:border-3 bg-white',
         isCurrent && !gameStatus && isSplitted
           ? 'border-accentBlue'
           : gameStatus === 'Push'
@@ -46,19 +46,17 @@ export const Card: React.FC<{
 };
 
 const CardFront: React.FC<{ suit: string; rank: string }> = ({ suit, rank }) => {
-  const { icon, suitColor } = suitIcons(32)[suit as keyof typeof suitIcons] || {};
+  const { icon, suitColor } = suitIcons()[suit as keyof typeof suitIcons] || {};
 
   return (
-    <div className="flip-card-front">
-      <p
-        className={`font-mono text-3xl md:text-5xl font-bold ml-2`}
-        style={{ color: suitColor }}>
-        {rank}
-      </p>
-      <div
-        className="ml-1 mt-1"
-        style={{ color: suitColor }}>
-        {icon}
+    <div className="flip-card-front flex self-start">
+      <div className="flex flex-col items-center ml-0.5 5 md:ml-1">
+        <p
+          className={`font-mono text-2xl md:text-4xl xl:text-5xl font-bold`}
+          style={{ color: suitColor }}>
+          {rank}
+        </p>
+        <div style={{ color: suitColor }}>{icon}</div>
       </div>
     </div>
   );
