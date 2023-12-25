@@ -15,7 +15,7 @@ export default async function Play() {
 
   return (
     <>
-      <div className="flex flex-col h-[700px] w-full rounded-lg border border-secondary mt-10 md:flex-row md:h-[600px] ">
+      <div className="flex flex-row flex-wrap xl:flex-nowrap w-full rounded-xl border-2 border-secondary mt-10">
         <GameButtons isDisabled={isDisabled} />
         <GameDisplay
           gameState={gameState}

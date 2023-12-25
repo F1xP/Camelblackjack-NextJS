@@ -24,9 +24,9 @@ export const GameDisplay: React.FC<GameDisplayProps> = ({
 }) => {
   return (
     <>
-      <section className="bg-black/30 w-full flex-[2] rounded-r-lg text-text overflow-hidden relative  pointer-events-none">
+      <section className="bg-black/30 w-full flex-[3] min-w-[300px] sm:min-w-[500px] md:min-w-[600px] h-[600px] lg:h-[700px] rounded-r-lg text-text overflow-hidden relative pointer-events-none">
         <Decoration />
-        <div className="flex flex-col justify-between h-full p-2">
+        <div className="flex flex-col justify-between h-full">
           <div className="w-full flex justify-around flex-row-reverse absolute bottom-1">
             <Hand
               cards={gameState?.player[0].cards}
