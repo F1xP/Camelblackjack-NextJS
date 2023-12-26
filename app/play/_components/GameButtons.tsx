@@ -24,7 +24,7 @@ type GameButtonsProps = {
 };
 
 export const GameButtons: React.FC<GameButtonsProps> = ({ isDisabled }) => {
-  const { update, data: session } = useSession();
+  const { update } = useSession();
   const { loading, handleAction } = useAction();
   const [betAmount, setBetAmount] = useState<any>(0);
 
@@ -41,12 +41,9 @@ export const GameButtons: React.FC<GameButtonsProps> = ({ isDisabled }) => {
   };
 
   return (
-    <section className="w-full h-auto flex-1 flex flex-col p-1">
+    <section className="w-full h-auto flex-1 flex flex-col p-1 bg-secondary_bg/30">
       <div className="flex flex-col px-1">
-        <div className="flex flex-row items-center">
-          <p className="text-text text-xl font-mono small-caps">Bet Amount</p>
-          <UserCoins />
-        </div>
+        <UserCoins />
         <Input
           type="number"
           inputMode="numeric"
@@ -68,7 +65,7 @@ export const GameButtons: React.FC<GameButtonsProps> = ({ isDisabled }) => {
   );
 };
 
-export const UserCoins: React.FC = () => {
+const UserCoins: React.FC = () => {
   const { data: session } = useSession();
   const coins = Number(session?.user.coins);
   const [coinsValue, setCoinsValue] = useState({ start: 0, end: 0 });
@@ -82,10 +79,11 @@ export const UserCoins: React.FC = () => {
   const isDecreasing = coinsValue.start > coinsValue.end;
 
   return (
-    <>
+    <div className="flex flex-row items-center">
+      <p className="text-accent text-lg font-mono">Bet Amount</p>
       <p
         key={coins}
-        className={`text-text text-md font-mono small-caps ml-auto ${
+        className={`text-text text-sm font-mono ml-auto ${
           isIncreasing ? 'coins-plus' : isDecreasing ? 'coins-minus' : ''
         }`}>
         Coins:
@@ -97,7 +95,7 @@ export const UserCoins: React.FC = () => {
           generateDecimals={false}
         />
       </p>
-    </>
+    </div>
   );
 };
 

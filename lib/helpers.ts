@@ -1,9 +1,13 @@
 import { Actions, Game, GameState, UserState } from '@/types/types';
 import { Prisma } from '@prisma/client';
 
-export const hasPlayerSplitted = async (gameState: GameState | null) => {
-  return ['SPLIT'].some((action) => gameState?.player[0].actions.includes(action as Actions));
-};
+// Pick<Type, Keys>
+
+// Omit<Type, Keys>
+
+export const hasPlayerSplitted = async (gameState: GameState | null) =>
+  ['SPLIT'].some((action) => gameState?.player[0].actions.includes(action as Actions));
+
 export const getCurrentHand = async (gameState: GameState | null) => {
   if (!gameState) return 0;
   const playerHands = gameState.player.length;
@@ -88,16 +92,15 @@ export const calculateHandValue = async (hand: any, type: 'P' | 'D') => {
   }
 
   for (let i = 0; i < aceCount; i++) {
-    if (type === 'P') {
-      if (values[0] >= 11) values[0] += 1;
-      else {
+    if (values[0] >= 11) values[0] += 1;
+    else {
+      if (type === 'P') {
         values[1] = values[0] + 11;
         values[0] += 1;
       }
-    }
-    if (type === 'D') {
-      if (values[0] >= 11) values[0] += 1;
-      else values[0] += 11;
+      if (type === 'D') {
+        values[0] += 11;
+      }
     }
   }
 
@@ -133,22 +136,21 @@ export const getGameStatus = async (isGameActive: boolean, gameState: GameState 
   const isPlayerBusted = lastPlayerAction === 'BUST';
   const isDealerBusted = lastDealerAction === 'BUST';
 
-  if (!hasSplitted && playerCards.length === 2 && playerValue === 21) return 'Blackjack Player';
+  if (!hasSplitted && playerCards.length === 2 && playerValue === 21) return { state: 'PBJ', text: 'Player Blackjack' };
   if (
     lastDealerAction === 'DEAL' &&
     (lastPlayerAction === 'INS_ACCEPTED' || lastPlayerAction === 'INS_DECLINED') &&
     dealerCards[0].rank === 'A' &&
     dealerValue === 21
   )
-    return 'Blackjack Dealer';
-
-  if (isPlayerBusted) return 'Lose';
-  if (!isPlayerBusted && isDealerBusted) return 'Win';
+    return { state: 'DBJ', text: 'Dealer Blackjack' };
+  if (isPlayerBusted) return { state: 'Lose', text: 'Player Bust' };
+  if (!isPlayerBusted && isDealerBusted) return { state: 'Win', text: 'Dealer Bust' };
 
   if (dealerValue > 16 && playerValue <= 21) {
-    if (playerValue === dealerValue) return 'Push';
-    if (playerValue > dealerValue) return 'Win';
-    if (playerValue < dealerValue) return 'Lose';
+    if (playerValue === dealerValue) return { state: 'Push', text: 'Push' };
+    if (playerValue > dealerValue) return { state: 'Win', text: 'Player Wins' };
+    if (playerValue < dealerValue) return { state: 'Lose', text: 'Dealer Wins' };
   }
   return null;
 };
@@ -218,11 +220,11 @@ export const gameEnded = async (tx: Prisma.TransactionClient, game: Game) => {
     const amount = playerState.amount;
     const handResult = await getGameStatus(!game.active, game.state, index);
     const resultMultiplier =
-      handResult === 'Blackjack Player'
+      handResult?.state === 'PBJ'
         ? 2.5
-        : handResult === 'Win' || (handResult === 'Blackjack Dealer' && hasInsured)
+        : handResult?.state === 'Win' || (handResult?.state === 'DBJ' && hasInsured)
         ? 2
-        : handResult === 'Push'
+        : handResult?.state === 'Push'
         ? 1
         : 0;
     if (resultMultiplier === 0) return;
@@ -251,12 +253,8 @@ export const gameEnded = async (tx: Prisma.TransactionClient, game: Game) => {
   };
 
   const hasSplitted = await hasPlayerSplitted(game.state);
-  if (hasSplitted) {
-    await updateCoins(0);
-    await updateCoins(1);
-  } else {
-    await updateCoins(0);
-  }
+  if (hasSplitted) await Promise.all([updateCoins(0), updateCoins(1)]);
+  else await updateCoins(0);
 
   await tx.game.update({
     where: { id: game.id },
@@ -279,3 +277,40 @@ export const getHandValue = async (playerState: UserState) => {
       : Number(playerState.value[1])
     : Number(playerState.value[0]);
 };
+
+import { createHmac } from 'crypto';
+
+interface ByteGeneratorParams {
+  serverSeed: string;
+  clientSeed: string;
+  nonce: number;
+}
+
+function getRandomByte({ serverSeed, clientSeed, nonce }: ByteGeneratorParams): number {
+  let currentRound = 0;
+  let currentRoundCursor = 0;
+
+  const hmac = createHmac('sha256', serverSeed);
+  hmac.update(`${clientSeed}:${nonce}:${currentRound}`);
+  const buffer = hmac.digest();
+
+  const randomByte = buffer[currentRoundCursor];
+  currentRoundCursor += 1;
+  return randomByte;
+}
+
+// Example usage:
+const randomByte1 = getRandomByte({
+  serverSeed: 'serverSeed',
+  clientSeed: 'clientSeed',
+  nonce: 123,
+});
+
+const randomByte2 = getRandomByte({
+  serverSeed: 'serverSeed',
+  clientSeed: 'clientSeed',
+  nonce: 456,
+});
+
+console.log(randomByte1);
+console.log(randomByte2);

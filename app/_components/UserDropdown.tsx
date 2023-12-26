@@ -41,9 +41,9 @@ export default function UserDropdown({ isDropdownOpen, setIsDropdownOpen }: User
           <Link
             onClick={() => setIsDropdownOpen(false)}
             className="hover:bg-secondary py-1 px-2 rounded-sm w-full transition-all duration-300 flex justify-center items-center"
-            href={'/dashboard'}>
+            href={'/history'}>
             <ImStatsDots className="mr-auto h-3" />
-            <p className="mr-auto">Dashboard</p>
+            <p className="mr-auto">History</p>
           </Link>
           <Link
             onClick={() => setIsDropdownOpen(false)}

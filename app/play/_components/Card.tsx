@@ -6,21 +6,21 @@ export const Card: React.FC<{
   index: number;
   rank: string;
   suit: string;
-  gameStatus: string | null;
+  status: { state: string; text: string } | null;
   isCurrent: boolean;
   isSplitted: boolean;
-}> = ({ index, rank, suit, gameStatus, isCurrent, isSplitted }) => {
+}> = ({ index, rank, suit, status, isCurrent, isSplitted }) => {
   return (
     <div
       className={cn(
         'flip-card w-[3.5rem] h-[5.5rem] md:w-16 md:h-24 xl:w-20 xl:h-32 bg-transparent rounded-md shadow-sm shadow-black p-card-animation border-2 xl:border-3 bg-white',
-        isCurrent && !gameStatus && isSplitted
+        isCurrent && !status && isSplitted
           ? 'border-accentBlue'
-          : gameStatus === 'Push'
+          : status?.state === 'Push'
           ? 'border-accent'
-          : gameStatus === 'Lose' || gameStatus === 'Blackjack Dealer'
+          : status?.state === 'Lose' || status?.state === 'DBJ'
           ? 'border-accentRed'
-          : gameStatus === 'Win' || gameStatus === 'Blackjack Player'
+          : status?.state === 'Win' || status?.state === 'PBJ'
           ? 'border-accentGreen'
           : 'border-transparent'
       )}

@@ -9,8 +9,8 @@ type GameDisplayProps = {
   gameState: GameState | null;
   currentHand: number;
   isSplitted: boolean;
-  gameStatus1: string | null;
-  gameStatus2: string | null;
+  status1: { state: string; text: string } | null;
+  status2: { state: string; text: string } | null;
   gameId: string | undefined;
 };
 
@@ -18,59 +18,57 @@ export const GameDisplay: React.FC<GameDisplayProps> = ({
   gameState,
   currentHand,
   isSplitted,
-  gameStatus1,
-  gameStatus2,
+  status1,
+  status2,
   gameId,
 }) => {
   return (
-    <>
-      <section className="bg-black/30 w-full flex-[3] min-w-[300px] sm:min-w-[500px] md:min-w-[600px] h-[600px] lg:h-[700px] rounded-r-lg text-text overflow-hidden relative pointer-events-none">
-        <Decoration />
-        <div className="flex flex-col justify-between h-full">
-          <div className="w-full flex justify-around flex-row-reverse absolute bottom-1">
+    <section className="bg-black/30 w-full flex-[3] min-w-[300px] sm:min-w-[500px] md:min-w-[600px] h-[600px] lg:h-[700px] rounded-r-lg text-text overflow-hidden relative pointer-events-none">
+      <Decoration />
+      <div className="flex flex-col justify-between h-full">
+        <div className="w-full flex justify-around flex-row-reverse absolute bottom-1">
+          <Hand
+            cards={gameState?.player[0].cards}
+            handValues={
+              <>
+                {gameState?.player[0].value[0]}
+                {gameState?.player[0].value[1] && `,${gameState?.player[0].value[1]}`}
+              </>
+            }
+            status={status1}
+            isCurrent={currentHand === 0}
+            isSplitted={isSplitted}
+            gameId={gameId}
+          />
+          {isSplitted && (
             <Hand
-              cards={gameState?.player[0].cards}
+              cards={gameState?.player[1].cards}
               handValues={
                 <>
-                  {gameState?.player[0].value[0]}
-                  {gameState?.player[0].value[1] && `,${gameState?.player[0].value[1]}`}
+                  {gameState?.player[1].value[0]}
+                  {gameState?.player[1].value[1] && `,${gameState?.player[1].value[1]}`}
                 </>
               }
-              gameStatus={gameStatus1}
-              isCurrent={currentHand === 0}
+              status={status2}
+              isCurrent={currentHand === 1}
               isSplitted={isSplitted}
               gameId={gameId}
             />
-            {isSplitted && (
-              <Hand
-                cards={gameState?.player[1].cards}
-                handValues={
-                  <>
-                    {gameState?.player[1].value[0]}
-                    {gameState?.player[1].value[1] && `,${gameState?.player[1].value[1]}`}
-                  </>
-                }
-                gameStatus={gameStatus2}
-                isCurrent={currentHand === 1}
-                isSplitted={isSplitted}
-                gameId={gameId}
-              />
-            )}
-          </div>
-          <div className="w-full flex justify-around flex-row-reverse absolute top-1">
-            <Hand
-              cards={gameState?.dealer.cards}
-              downCard={gameState?.dealer.cards.length === 1}
-              handValues={<>{gameState?.dealer.value}</>}
-              gameStatus={null}
-              isCurrent={false}
-              isSplitted={false}
-              gameId={gameId}
-            />
-          </div>
+          )}
         </div>
-      </section>
-    </>
+        <div className="w-full flex justify-around flex-row-reverse absolute top-1">
+          <Hand
+            cards={gameState?.dealer.cards}
+            downCard={gameState?.dealer.cards.length === 1}
+            handValues={<>{gameState?.dealer.value}</>}
+            status={null}
+            isCurrent={false}
+            isSplitted={false}
+            gameId={gameId}
+          />
+        </div>
+      </div>
+    </section>
   );
 };
 
@@ -78,19 +76,16 @@ type HandProps = {
   cards: CardType[] | undefined;
   downCard?: boolean;
   handValues: React.ReactNode;
-  gameStatus: string | null;
+  status: { state: string; text: string } | null;
   isCurrent: boolean;
-  isSplitted: boolean;
-  gameId: string | undefined;
-};
+} & Pick<GameDisplayProps, 'gameId' | 'isSplitted'>;
 
-const Hand: React.FC<HandProps> = ({ cards, downCard, handValues, gameStatus, isCurrent, isSplitted, gameId }) => {
+const Hand: React.FC<HandProps> = ({ cards, downCard, handValues, status, isCurrent, isSplitted, gameId }) => {
   return (
     <div className="flex items-center justify-center flex-col relative">
       <Result
-        status={gameStatus}
-        values={handValues}
-        gameStatus={gameStatus}
+        status={status}
+        handValues={handValues}
         isCurrent={isCurrent}
         isSplitted={isSplitted}
       />
@@ -101,7 +96,7 @@ const Hand: React.FC<HandProps> = ({ cards, downCard, handValues, gameStatus, is
               index={index}
               rank={card?.rank}
               suit={card?.suit}
-              gameStatus={gameStatus}
+              status={status}
               isCurrent={isCurrent}
               isSplitted={isSplitted}
             />
@@ -113,48 +108,46 @@ const Hand: React.FC<HandProps> = ({ cards, downCard, handValues, gameStatus, is
   );
 };
 
-const Result: React.FC<{
-  status: string | null;
-  values: React.ReactNode;
-  gameStatus: string | null;
-  isCurrent: boolean;
-  isSplitted: boolean;
-}> = ({ status, values, gameStatus, isCurrent, isSplitted }) => (
-  <div className="flex flex-col gap-0.5">
-    {status && (
+type ResultProps = Pick<HandProps, 'handValues' | 'status' | 'isCurrent' | 'isSplitted'>;
+
+const Result: React.FC<ResultProps> = ({ handValues, status, isCurrent, isSplitted }) => {
+  return (
+    <div className="flex flex-col gap-0.5">
+      {status && (
+        <p
+          className={cn(
+            'px-2 text-black font-bold font-mono rounded-sm text-center',
+            isCurrent && !status && isSplitted
+              ? 'bg-accentBlue'
+              : status?.state === 'Push'
+              ? 'bg-accent'
+              : status?.state === 'Win' || status?.state === 'DBJ'
+              ? 'bg-accentRed'
+              : status?.state === 'Lose' || status?.state === 'PBJ'
+              ? 'bg-accentGreen'
+              : 'bg-text'
+          )}>
+          {status?.text}
+        </p>
+      )}
       <p
         className={cn(
           'px-2 text-black font-bold font-mono rounded-sm text-center',
-          isCurrent && !gameStatus && isSplitted
+          isCurrent && !status && isSplitted
             ? 'bg-accentBlue'
-            : gameStatus === 'Push'
+            : status?.state === 'Push'
             ? 'bg-accent'
-            : gameStatus === 'Lose' || gameStatus === 'Blackjack Dealer'
+            : status?.state === 'Win' || status?.state === 'DBJ'
             ? 'bg-accentRed'
-            : gameStatus === 'Win' || gameStatus === 'Blackjack Player'
+            : status?.state === 'Lose' || status?.state === 'PBJ'
             ? 'bg-accentGreen'
             : 'bg-text'
         )}>
-        {status}
+        {handValues}
       </p>
-    )}
-    <p
-      className={cn(
-        'px-2 text-black font-bold font-mono rounded-sm text-center',
-        isCurrent && !gameStatus && isSplitted
-          ? 'bg-accentBlue'
-          : gameStatus === 'Push'
-          ? 'bg-accent'
-          : gameStatus === 'Lose' || gameStatus === 'Blackjack Dealer'
-          ? 'bg-accentRed'
-          : gameStatus === 'Win' || gameStatus === 'Blackjack Player'
-          ? 'bg-accentGreen'
-          : 'bg-text'
-      )}>
-      {values}
-    </p>
-  </div>
-);
+    </div>
+  );
+};
 
 const Decoration: React.FC = () => {
   return (

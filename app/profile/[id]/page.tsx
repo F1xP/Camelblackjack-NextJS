@@ -24,9 +24,9 @@ export default async function Profile({ params }: { params: { id: string } }) {
   const winRate = games !== 0 ? ((wins / games) * 100).toFixed(0) : 0;
 
   return (
-    <div className="bg-secondary rounded-lg w-full">
+    <div className="bg-primary/10 rounded-lg w-full border-2 border-secondary">
       <div className="flex flex-row w-full justify-between relative h-52 mb-20">
-        <div className="overflow-hidden h-52 w-full rounded-lg border-2 border-secondary">
+        <div className="overflow-hidden h-52 w-full rounded-lg">
           <CardBackSVG
             fill="#0c0d24"
             color="#2f314b"
@@ -44,19 +44,22 @@ export default async function Profile({ params }: { params: { id: string } }) {
         <Header className="overflow-hidden overflow-ellipsis max-w-[15ch] sm:max-w-[25ch] md:max-w-[30ch] lg:max-w-[34ch] xl:max-w-[40ch] whitespace-nowrap">
           {user.name}
         </Header>
-        <div className="flex flex-row justify-center items-center gap-1">
-          <div className=" w-24 h-24 rounded-full bg-gradient-to-br from-secondary to-background flex flex-col justify-center items-center shadow-md">
-            <p className="text-center text-accent font-bold">Games</p>
-            <p className="text-center text-text font-bold text-sm">{user.games}</p>
-          </div>
-          <div className="w-28 h-28 rounded-full bg-gradient-to-br from-secondary to-background flex flex-col justify-center items-center text-text font-bold mt-20 shadow-md">
-            <p className="text-center text-accent font-bold text-xl">Coins</p>
-            <p className="text-center text-text font-bold text-sm">{user.coins}</p>
-          </div>
-          <div className="w-24 h-24 rounded-full bg-gradient-to-br from-secondary to-background flex flex-col justify-center items-center text-text font-bold shadow-md">
-            <p className="text-center text-accent font-bold">Winrate</p>
-            <p className="text-center text-text font-bold text-sm">{winRate}%</p>
-          </div>
+        <div className="flex flex-row flex-wrap justify-center items-center gap-2 mt-5">
+          {[
+            { text: 'Winrate', value: `${winRate}%` },
+            { text: 'Coins', value: user.coins },
+            { text: 'Games', value: user.games },
+            { text: 'Wagered', value: user.games },
+          ].map((item, index) => {
+            return (
+              <div
+                key={index}
+                className={`w-24 h-24 rounded-lg bg-gradient-to-br from-primary/30 to-secondary flex flex-col justify-center items-center shadow-md`}>
+                <p className="text-center text-accent font-bold">{item.text}</p>
+                <p className="text-center text-text font-bold text-sm">{item.value}</p>
+              </div>
+            );
+          })}
         </div>
         <Header className="self-start">Biography</Header>
         <p className="text-text w-fullrounded-md p-1 w-full text-xl max-w-[360px] break-words self-start">

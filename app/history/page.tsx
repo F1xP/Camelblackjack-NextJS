@@ -5,7 +5,7 @@ import GameHistoryTable from './_components/GameHistoryTable';
 // Game Bet ID / Date / Bet Amount / Multiplier / Payout
 // Total Bets / Number of Wins / Number of Losses / Wagered
 
-export default async function Dashboard() {
+export default async function History() {
   const gameHistory = await prisma.game.findMany({
     where: {
       active: false,
@@ -14,7 +14,7 @@ export default async function Dashboard() {
 
   return (
     <>
-      <Header className="mb-4 self-start">Dashboard</Header>
+      <Header className="mb-4 self-start">History</Header>
       <GameHistoryTable ganeHistory={gameHistory} />
       <Navigation dataLength={gameHistory.length} />
     </>

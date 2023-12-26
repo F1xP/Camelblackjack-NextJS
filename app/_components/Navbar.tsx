@@ -6,6 +6,7 @@ import { useSession, signIn } from 'next-auth/react';
 import { useState } from 'react';
 import SideNavbar from './SideNavbar';
 import UserDropdown from './UserDropdown';
+import ThemeDropdown from './ThemeDropdown';
 
 export default function Navbar() {
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
@@ -68,6 +69,7 @@ export default function Navbar() {
         </button>
       ) : (
         <div className="relative ml-auto hidden md:flex">
+          <ThemeDropdown />
           <button
             className="flex-row flex h-10 justify-center items-center gap-1 border rounded-md text-text border-secondary text-[1.2rem] hover:bg-secondary cursor-pointer transition-all duration-300"
             onClick={(e) => {

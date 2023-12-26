@@ -15,13 +15,13 @@ export default async function Play() {
 
   return (
     <>
-      <div className="flex flex-row flex-wrap xl:flex-nowrap w-full rounded-xl border-2 border-secondary mt-10">
+      <div className="flex flex-row flex-wrap xl:flex-nowrap w-full rounded-xl border-2 border-secondary mt-10 overflow-hidden">
         <GameButtons isDisabled={isDisabled} />
         <GameDisplay
           gameState={gameState}
           currentHand={currentHand}
-          gameStatus1={gameStatus1}
-          gameStatus2={gameStatus2}
+          status1={gameStatus1}
+          status2={gameStatus2}
           isSplitted={gameState?.player.length === 2}
           gameId={gameData?.id}
         />

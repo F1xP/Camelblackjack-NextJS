@@ -6,8 +6,8 @@ import { cn } from '@/lib/utils';
 export const inputVariants = cva('outline-none transition-all duration-300', {
   variants: {
     variant: {
-      default: 'font-mono bg-primary font-bold border border-text text-text bg-secondary focus:border-accent',
-      transparent: 'bg-transparent text-text border border-text focus:border-accent',
+      default: 'font-mono bg-primary font-bold border-[1.8px] border-text text-text bg-secondary focus:border-accent',
+      transparent: 'bg-transparent text-text border-[1.8px] border-text focus:border-accent',
     },
     size_: {
       xs: 'p-0.5 text-xsm rounded-xsm',

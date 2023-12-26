@@ -17,9 +17,9 @@ export const buttonVariants = cva(
       size: {
         xs: 'py-1 px-4 text-xs rounded-sm',
         sm: 'py-1.5 px-6 text-sm rounded-sm',
-        md: 'py-1.5 px-8 text-md rounded-md',
-        lg: 'py-2 px-10 text-lg rounded-md',
-        xl: 'py-2 px-12 text-xl rounded-md',
+        md: 'py-1.5 px-8 text-md rounded-sm',
+        lg: 'py-2 px-10 text-lg rounded-sm',
+        xl: 'py-2 px-12 text-xl rounded-sm',
         default:
           'py-1 px-4 text-xs sm:py-2 sm:px-6 text-sm md:py-2 md:px-8 text-md lg:py-2 lg:px-10 text-lg xl:py-2 xl:px-12 text-xl rounded-md',
       },
