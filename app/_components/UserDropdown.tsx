@@ -30,7 +30,7 @@ export default function UserDropdown({ isDropdownOpen, setIsDropdownOpen }: User
       {isDropdownOpen && session && (
         <section
           ref={dropdownRef}
-          className="bg-secondary_bg w-40 text-text text-md font-semibold absolute top-[3.1rem] right-0 border gap-1 border-secondary p-1 rounded-md flex-col justify-center items-center">
+          className="bg-primary w-40 text-text text-md font-semibold absolute top-[3.1rem] right-0 border gap-1 border-secondary p-1 rounded-md flex-col justify-center items-center">
           <Link
             onClick={() => setIsDropdownOpen(false)}
             className="hover:bg-secondary py-1 px-2 rounded-sm w-full transition-all duration-300 flex justify-center items-center"

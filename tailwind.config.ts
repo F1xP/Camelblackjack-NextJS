@@ -11,6 +11,7 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        /*
         text: '#c8c8c8',
         background: '#0c0d24',
         primary: '#243392',
@@ -19,7 +20,19 @@ const config: Config = {
         accentRed: '#dd2814',
         accentGreen: '#28dd14',
         accentBlue: '#1428dd',
-        secondary_bg: '#15183b',
+        primary: '#15183b',
+        */
+
+        buttonBg: 'var(--buttonBg)',
+        gray: '#c8c8c8',
+        text: 'var(--text)',
+        background: 'var(--background)',
+        primary: 'var(--primary)',
+        secondary: 'var(--secondary)',
+        accent: 'var(--accent)',
+        accentRed: 'var(--accentRed)',
+        accentGreen: 'var(--accentGreen)',
+        accentBlue: 'var(--accentBlue)',
       },
     },
   },

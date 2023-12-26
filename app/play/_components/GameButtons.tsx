@@ -41,7 +41,7 @@ export const GameButtons: React.FC<GameButtonsProps> = ({ isDisabled }) => {
   };
 
   return (
-    <section className="w-full h-auto flex-1 flex flex-col p-1 bg-secondary_bg/30">
+    <section className="w-full h-auto flex-1 flex flex-col p-1 bg-primary/30">
       <div className="flex flex-col px-1">
         <UserCoins />
         <Input
@@ -80,10 +80,10 @@ const UserCoins: React.FC = () => {
 
   return (
     <div className="flex flex-row items-center">
-      <p className="text-accent text-lg font-mono">Bet Amount</p>
+      <p className="text-accent text-lg font-mono font-bold">Bet Amount</p>
       <p
         key={coins}
-        className={`text-text text-sm font-mono ml-auto ${
+        className={`text-text text-md font-mono ml-auto font-bold ${
           isIncreasing ? 'coins-plus' : isDecreasing ? 'coins-minus' : ''
         }`}>
         Coins:

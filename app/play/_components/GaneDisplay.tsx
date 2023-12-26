@@ -23,7 +23,7 @@ export const GameDisplay: React.FC<GameDisplayProps> = ({
   gameId,
 }) => {
   return (
-    <section className="bg-black/30 w-full flex-[3] min-w-[300px] sm:min-w-[500px] md:min-w-[600px] h-[600px] lg:h-[700px] rounded-r-lg text-text overflow-hidden relative pointer-events-none">
+    <section className="bg-black/30 w-full flex-[3] min-w-[300px] sm:min-w-[500px] md:min-w-[600px] h-[500px] lg:h-[700px] overflow-hidden relative pointer-events-none">
       <Decoration />
       <div className="flex flex-col justify-between h-full">
         <div className="w-full flex justify-around flex-row-reverse absolute bottom-1">
@@ -121,11 +121,11 @@ const Result: React.FC<ResultProps> = ({ handValues, status, isCurrent, isSplitt
               ? 'bg-accentBlue'
               : status?.state === 'Push'
               ? 'bg-accent'
-              : status?.state === 'Win' || status?.state === 'DBJ'
+              : status?.state === 'Lose' || status?.state === 'DBJ'
               ? 'bg-accentRed'
-              : status?.state === 'Lose' || status?.state === 'PBJ'
+              : status?.state === 'Win' || status?.state === 'PBJ'
               ? 'bg-accentGreen'
-              : 'bg-text'
+              : 'bg-gray'
           )}>
           {status?.text}
         </p>
@@ -137,11 +137,11 @@ const Result: React.FC<ResultProps> = ({ handValues, status, isCurrent, isSplitt
             ? 'bg-accentBlue'
             : status?.state === 'Push'
             ? 'bg-accent'
-            : status?.state === 'Win' || status?.state === 'DBJ'
+            : status?.state === 'Lose' || status?.state === 'DBJ'
             ? 'bg-accentRed'
-            : status?.state === 'Lose' || status?.state === 'PBJ'
+            : status?.state === 'Win' || status?.state === 'PBJ'
             ? 'bg-accentGreen'
-            : 'bg-text'
+            : 'bg-gray'
         )}>
         {handValues}
       </p>

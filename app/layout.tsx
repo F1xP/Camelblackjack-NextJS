@@ -8,6 +8,7 @@ import { ToastsDisplay, ToastsProvider } from './_components/Toasts';
 import { nextAuthOptions } from './api/auth/[...nextauth]/route';
 import Footer from './_components/Footer';
 import './globals.css';
+import ThProvider from './_components/ThemeProvider';
 
 export const metadata: Metadata = {
   title: 'Camel Blackjack',
@@ -20,22 +21,24 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html lang="en">
       <body className={`${GeistSans.className} font-sans bg-background`}>
-        <SessionProvider
-          session={session}
-          refetchInterval={5 * 60}>
-          <ToastsProvider>
-            <NextUIProvider>
-              <div id="portal-root"></div>
-              <ToastsDisplay />
-              <Navbar />
-              <main className="flex min-h-screen gap-2 flex-col items-center justify-center py-10 px-4 sm:px-14 md:px-18 lg:px-44 xl:px-64">
-                <span className="mt-2"></span>
-                {children}
-              </main>
-              <Footer />
-            </NextUIProvider>
-          </ToastsProvider>
-        </SessionProvider>
+        <ThProvider>
+          <SessionProvider
+            session={session}
+            refetchInterval={5 * 60}>
+            <ToastsProvider>
+              <NextUIProvider>
+                <div id="portal-root"></div>
+                <ToastsDisplay />
+                <Navbar />
+                <main className="flex min-h-screen gap-2 flex-col items-center justify-center py-10 px-4 sm:px-14 md:px-18 lg:px-44 xl:px-64">
+                  <span className="mt-2"></span>
+                  {children}
+                </main>
+                <Footer />
+              </NextUIProvider>
+            </ToastsProvider>
+          </SessionProvider>
+        </ThProvider>
       </body>
     </html>
   );

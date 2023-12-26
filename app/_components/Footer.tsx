@@ -13,7 +13,7 @@ export default function Footer() {
             width={30}
             height={30}
           />
-          <p className="text-white font-bold text-md font-sans">
+          <p className="text-text font-bold text-md font-sans">
             <Link
               href={''}
               className="hover:opacity-80 transition-all duration-300">
@@ -23,7 +23,7 @@ export default function Footer() {
             <span className="text-text"> Built by </span>
             <Link
               href={'https://github.com/F1xP'}
-              className="text-accent hover:opacity-80 transition-all duration-300">
+              className="text-accent hover:opacity-80 transition-all duration-300 font-bold">
               F1x
             </Link>
           </p>

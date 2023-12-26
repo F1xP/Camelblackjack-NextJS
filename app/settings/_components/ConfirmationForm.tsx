@@ -59,7 +59,7 @@ export default function ConfirmationForm({
         classNames={{
           body: 'py-6',
           backdrop: 'bg-black/70',
-          base: 'border-secondary bg-background dark:bg-background text-text',
+          base: 'border-secondary bg-background text-text',
           header: 'border-b-[1px] border-secondary',
           footer: 'border-t-[1px] border-secondary',
           closeButton: 'hover:bg-white/5 active:bg-white/50 transition-all duration-300',

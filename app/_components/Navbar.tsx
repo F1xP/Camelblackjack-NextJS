@@ -25,7 +25,7 @@ export default function Navbar() {
   ];
 
   return (
-    <nav className="fixed w-full h-12 bg-secondary_bg flex px-4 sm:px-14 md:px-18 lg:px-44 xl:px-64 flex-row items-center z-20">
+    <nav className="fixed w-full h-12 bg-primary flex px-4 sm:px-14 md:px-18 lg:px-44 xl:px-64 flex-row items-center z-20">
       <Link
         className="flex flex-row gap-2 h-full justify-center items-center"
         href={'/'}>
@@ -45,7 +45,7 @@ export default function Navbar() {
             <Link
               key={link.name}
               href={link.href}
-              className={`text-accent small-caps text-[1.2rem] font-bold hover:text-text hover:bg-text/20 px-4 h-full flex justify-center items-center transition-all duration-300 ${
+              className={`text-accent small-caps text-[1.2rem] font-bold hover:text-text hover:bg-secondary px-4 h-full flex justify-center items-center transition-all duration-300 ${
                 link.href === location ? 'border-b border-text text-text' : ''
               }`}>
               {link.name}
