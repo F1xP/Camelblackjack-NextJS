@@ -23,7 +23,7 @@ const config: Config = {
         accentBlue: '#1428dd',
         primary: '#15183b',
         */
-        buttonBg: '#f0da81',
+        buttonBg: '#d79e00',
         text: '#3a3a3a',
         background: '#ffffff',
         primary: '#c2c2c2',
@@ -36,7 +36,7 @@ const config: Config = {
         dark_secondary: '#2f314b',
 
         gray: '#c8c8c8',
-        accent: '#b58500',
+        accent: '#d79e00',
         accentRed: '#dd2814',
         accentGreen: '#28dd14',
         accentBlue: '#1428dd',
