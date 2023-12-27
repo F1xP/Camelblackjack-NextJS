@@ -10,9 +10,11 @@ export const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          'bg-buttonBg text-primary hover:text-background hover:-translate-y-1 hover:bg-text font-extrabold font-sans duration-1000',
-        transparent: 'font-mono border-2 border-secondary font-bold text-text hover:bg-secondary',
-        outlined: 'font-mono text-lg bg-secondary border border-secondary font-bold text-text hover:border-text',
+          'bg-buttonBg dark:dark_bg-buttonBg text-primary dark:text-dark_primary hover:text-background dark:hover:text-dark_background hover:-translate-y-1 hover:bg-textt dark:bg-dark_text font-extrabold font-sans duration-1000',
+        transparent:
+          'font-mono border-2 border-secondary dark:border-dark_secondary font-bold text-text dark:text-dark_text hover:bg-secondary dark:hover:bg-dark_secondary',
+        outlined:
+          'font-mono text-lg bg-secondary dark:bg-dark_secondary border border-secondary dark:border-dark_secondary font-bold text-text dark:text-dark_text hover:border-text',
       },
       size: {
         xs: 'py-1 px-4 text-xs rounded-sm',

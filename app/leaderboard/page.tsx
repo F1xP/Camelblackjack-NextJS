@@ -1,7 +1,7 @@
 import { prisma } from '@/lib/prisma';
 import LeaderboardTable from './_components/LeaderboardTable';
 import Navigation from './_components/Navigation';
-import { Header } from '../_components/Header';
+import { Header } from '../_components/ui/Header';
 
 export default async function Leaderboard() {
   const leaderboardData = await prisma.user.findMany();

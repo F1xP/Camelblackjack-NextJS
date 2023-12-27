@@ -32,7 +32,7 @@ const LeaderboardTable: React.FC<{ leaderboardData: LeaderboardDataProps }> = ({
     ?.slice(startIndex, endIndex);
 
   return (
-    <div className="w-full overflow-auto min-w-[320px] border-[0.5px] border-secondary">
+    <div className="w-full overflow-auto min-w-[320px] border-[0.5px] border-secondary dark:border-dark_secondary">
       <table className="table-auto w-full text-left text-accent">
         <LeaderboardHead />
         <tbody>
@@ -45,7 +45,7 @@ const LeaderboardTable: React.FC<{ leaderboardData: LeaderboardDataProps }> = ({
             ) => (
               <tr
                 key={index}
-                className="border-t-[0.5px] transition-all duration-300 border-secondary text-text font-semibold w-full hover:bg-secondary">
+                className="border-t-[0.5px] transition-all duration-300 border-secondary dark:border-dark_secondary text-text dark:text-dark_text font-semibold w-full hover:bg-secondary dark:hover:bg-dark_secondary">
                 <td className="px-4 py-2">
                   <LeaderboardPlace
                     index={index}

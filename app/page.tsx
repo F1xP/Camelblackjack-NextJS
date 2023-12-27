@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import { Button } from './_components/Button';
+import { Button } from './_components/ui/Button';
 import { BsFillSuitClubFill, BsFillSuitHeartFill, BsFillSuitDiamondFill, BsFillSuitSpadeFill } from 'react-icons/bs';
 
 export default function Home() {
@@ -30,10 +30,10 @@ export default function Home() {
     <section className="flex flex-row w-full justify-center items-center gap-10 flex-wrap sm:flex-nowrap">
       <div className="flex-[2] flex flex-col items-center sm:items-start">
         <h1 className="text-accent text-[2rem] sm:text-[2rem] md:text-[2.5rem] lg:text-[3rem] xl:text-[4rem] font-black small-caps whitespace-nowrap">
-          <span className="text-text whitespace-nowrap">C</span>amel{' '}
-          <span className="text-text whitespace-nowrap">B</span>lackjack
+          <span className="text-text dark:text-dark_text whitespace-nowrap">C</span>amel{' '}
+          <span className="text-text dark:text-dark_text whitespace-nowrap">B</span>lackjack
         </h1>
-        <p className="text-text text-lg md:text-xl lg:text-2xl font-bold mb-5 text-center sm:text-left">
+        <p className="text-text dark:text-dark_text text-lg md:text-xl lg:text-2xl font-bold mb-5 text-center sm:text-left">
           Test your Blackjack skills and aim for the top of the leaderboard!
         </p>
         <Button

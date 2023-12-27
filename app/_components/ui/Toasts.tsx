@@ -73,7 +73,7 @@ export const ToastsDisplay = () => {
 
 const Toast: React.FC<{ item: ToastProps; onDismiss: () => void }> = ({ item, onDismiss }) => {
   return (
-    <div className="bg-secondary text-lg font-sans px-4 py-3 rounded-md relative noti pointer-events-auto">
+    <div className="bg-secondary dark:bg-dark_secondary text-lg font-sans px-4 py-3 rounded-md relative noti pointer-events-auto">
       <svg
         onClick={onDismiss}
         version="1.1"
@@ -85,7 +85,7 @@ const Toast: React.FC<{ item: ToastProps; onDismiss: () => void }> = ({ item, on
         height="25px"
         viewBox="0 0 121.31 122.876"
         enableBackground="new 0 0 121.31 122.876"
-        className="fill-accent hover:bg-secondary p-1 rounded-md cursor-pointer transition-all duration-300 hover:fill-text mb-1 self-end absolute right-1 top-1">
+        className="fill-accent hover:bg-secondary dark:hover:bg-dark_secondary p-1 rounded-md cursor-pointer transition-all duration-300 hover:fill-text mb-1 self-end absolute right-1 top-1">
         <g>
           <path
             fillRule="evenodd"
@@ -95,7 +95,7 @@ const Toast: React.FC<{ item: ToastProps; onDismiss: () => void }> = ({ item, on
         </g>
       </svg>
       <p className={`font-bold ${item.type === 'Success' ? 'text-accent' : 'text-red-500'}`}>{item.type}</p>
-      <p className="font-sembiold text-text break-words">{item.message}</p>
+      <p className="font-sembiold text-text dark:text-dark_text break-words">{item.message}</p>
     </div>
   );
 };

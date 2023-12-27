@@ -1,5 +1,5 @@
 'use client';
-import Dropdown from '@/app/_components/Dropdown';
+import Dropdown from '@/app/_components/ui/Dropdown';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { MdOutlineKeyboardDoubleArrowRight, MdOutlineKeyboardArrowRight } from 'react-icons/md';
 
@@ -30,7 +30,7 @@ const Navigation: React.FC<{ dataLength: number }> = ({ dataLength }) => {
   return (
     <section className="flex flex-row flex-wrap whitespace-nowrap gap-4 justify-center items-center">
       <div className="flex flex-row gap-1">
-        <p className="text-text font-bold text-lg">Rows per page</p>
+        <p className="text-text dark:text-dark_text font-bold text-lg">Rows per page</p>
         <Dropdown
           list={[
             { name: '5', value: 5 },
@@ -43,29 +43,29 @@ const Navigation: React.FC<{ dataLength: number }> = ({ dataLength }) => {
         />
       </div>
 
-      <p className="text-text font-bold text-lg">
+      <p className="text-text dark:text-dark_text font-bold text-lg">
         Page {currentPage} of {totalPages}
       </p>
 
-      <div className="text-text flex flex-row text-3xl justify-center items-center gap-1">
+      <div className="text-text dark:text-dark_text flex flex-row text-3xl justify-center items-center gap-1">
         <button
           onClick={() => setPage(1)}
-          className="border border-secondary rounded-sm hover:bg-secondary transition-all duration-300 rotate-180">
+          className="border border-secondary dark:border-dark_secondary rounded-sm hover:bg-secondary dark:hover:bg-dark_secondary transition-all duration-300 rotate-180">
           <MdOutlineKeyboardDoubleArrowRight />
         </button>
         <button
           onClick={() => setPage(Number(currentPage) - 1)}
-          className="border border-secondary rounded-sm hover:bg-secondary transition-all duration-300 rotate-180">
+          className="border border-secondary dark:border-dark_secondary rounded-sm hover:bg-secondary dark:hover:bg-dark_secondary transition-all duration-300 rotate-180">
           <MdOutlineKeyboardArrowRight />
         </button>
         <button
           onClick={() => setPage(Number(currentPage) + 1)}
-          className="border border-secondary rounded-sm hover:bg-secondary transition-all duration-300">
+          className="border border-secondary dark:border-dark_secondary rounded-sm hover:bg-secondary dark:hover:bg-dark_secondary transition-all duration-300">
           <MdOutlineKeyboardArrowRight />
         </button>
         <button
           onClick={() => setPage(totalPages)}
-          className="border border-secondary rounded-sm hover:bg-secondary transition-all duration-300">
+          className="border border-secondary dark:border-dark_secondary rounded-sm hover:bg-secondary dark:hover:bg-dark_secondary transition-all duration-300">
           <MdOutlineKeyboardDoubleArrowRight />
         </button>
       </div>

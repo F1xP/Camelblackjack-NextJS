@@ -1,7 +1,7 @@
 import Image from 'next/image';
-import { Header } from '../../_components/Header';
+import { Header } from '../../_components/ui/Header';
 import React from 'react';
-import { CardBackSVG } from '../../_components/CardBackSVG';
+import { CardBackSVG } from '../../_components/ui/CardBackSVG';
 import { prisma } from '@/lib/prisma';
 import { notFound } from 'next/navigation';
 import { User } from '@prisma/client';
@@ -24,12 +24,12 @@ export default async function Profile({ params }: { params: { id: string } }) {
   const winRate = games !== 0 ? ((wins / games) * 100).toFixed(0) : 0;
 
   return (
-    <div className="rounded-lg w-full border-2 border-secondary bg-primary">
+    <div className="rounded-lg w-full border-2 border-secondary dark:border-dark_secondary bg-primary dark:bg-dark_primary">
       <div className="flex flex-row w-full justify-between relative h-52 mb-20">
         <div className="overflow-hidden h-52 w-full rounded-lg">
           <CardBackSVG
-            fill="var(--background)"
-            color="var(--secondary)"
+            fill="#ddb814"
+            color="#ffffff"
           />
         </div>
         <Image
@@ -54,15 +54,15 @@ export default async function Profile({ params }: { params: { id: string } }) {
             return (
               <div
                 key={index}
-                className={`w-24 h-24 rounded-lg bg-secondary flex flex-col justify-center items-center shadow-md`}>
+                className={`w-24 h-24 rounded-lg bg-secondary dark:bg-dark_secondary flex flex-col justify-center items-center shadow-md`}>
                 <p className="text-center text-accent font-bold">{item.text}</p>
-                <p className="text-center text-text font-bold text-sm">{item.value}</p>
+                <p className="text-center text-text dark:text-dark_text font-bold text-sm">{item.value}</p>
               </div>
             );
           })}
         </div>
         <Header className="self-start">Biography</Header>
-        <p className="text-text w-fullrounded-md p-1 w-full text-xl max-w-[360px] break-words self-start font-bold">
+        <p className="text-text dark:text-dark_text w-fullrounded-md p-1 w-full text-xl max-w-[360px] break-words self-start font-bold">
           {user.bio || 'Not specified.'}
         </p>
       </div>

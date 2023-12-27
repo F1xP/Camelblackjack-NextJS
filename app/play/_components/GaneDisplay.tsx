@@ -162,7 +162,7 @@ const Decoration: React.FC = () => {
         />
       </div>
       <div className="absolute left-1/2 transform -translate-x-1/2 top-1/2 -translate-y-1/2">
-        <p className="font-bold font-mono text-xl md:text-2xl text-center bg-background px-3 py-1 rounded-md whitespace-nowrap">
+        <p className="font-bold font-mono text-xl md:text-2xl text-center bg-background dark:bg-dark_background px-3 py-1 rounded-md whitespace-nowrap">
           BLACKJACK PAYS 3 TO 2
         </p>
         <p className="font-bold font-mono text-lg md:text-xl text-center bg-transparent px-3 py-1 rounded-md whitespace-nowrap">

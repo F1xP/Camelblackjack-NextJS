@@ -24,11 +24,11 @@ const Dropdown: React.FC<DropdownProps> = ({ list, current, setCurrent }) => {
       className="relative"
       ref={dropdownRef}>
       <button
-        className="bg-transparent px-2 py-0.5 border border-secondary text-text font-bold text-lg rounded-sm flex flex-row justify-center items-center min-w-[60px]"
+        className="bg-transparent px-2 py-0.5 border border-secondary dark:border-dark_secondary text-text dark:text-dark_text font-bold text-lg rounded-sm flex flex-row justify-center items-center min-w-[60px]"
         onClick={() => setIsDropdownOpen((current) => !current)}>
         <p className="mr-auto">{current}</p>
         <svg
-          className="h-6 w-6 text-text"
+          className="h-6 w-6 text-text dark:text-dark_text"
           viewBox="0 0 20 20"
           fill="currentColor"
           aria-hidden="true">
@@ -40,14 +40,14 @@ const Dropdown: React.FC<DropdownProps> = ({ list, current, setCurrent }) => {
         </svg>
       </button>
       {isDropdownOpen && (
-        <div className="flex flex-col bg-background w-auto absolute top-8 border border-secondary rounded-sm p-1 min-w-[60px]">
+        <div className="flex flex-col bg-background dark:bg-dark_background w-auto absolute top-8 border border-secondary dark:border-dark_secondary rounded-sm p-1 min-w-[60px]">
           {list.map((item, index) => (
             <button
               onClick={() => {
                 setCurrent(item.value);
                 setIsDropdownOpen(false);
               }}
-              className="w-full bg-transparent px-2 py-0.5 text-text hover:bg-secondary rounded-sm font-bold"
+              className="w-full bg-transparent px-2 py-0.5 text-text dark:text-dark_text hover:bg-secondary dark:hover:bg-dark_secondary rounded-sm font-bold"
               key={index}>
               {item.name}
             </button>

@@ -25,7 +25,7 @@ export default function Navbar() {
   ];
 
   return (
-    <nav className="fixed w-full h-12 bg-primary flex px-4 sm:px-14 md:px-18 lg:px-44 xl:px-64 flex-row items-center z-20">
+    <nav className="fixed w-full h-12 bg-primary dark:bg-dark_primary flex px-4 sm:px-14 md:px-18 lg:px-44 xl:px-64 flex-row items-center z-20">
       <Link
         className="flex flex-row gap-2 h-full justify-center items-center"
         href={'/'}>
@@ -36,7 +36,8 @@ export default function Navbar() {
           height={33}
         />
         <p className="text-accent text-[1.3rem] font-black small-caps text-3xl hidden sm:block whitespace-nowrap">
-          <span className="text-text">C</span>amel <span className="text-text">B</span>lackjack
+          <span className="text-text dark:text-dark_text">C</span>amel{' '}
+          <span className="text-text dark:text-dark_text">B</span>lackjack
         </p>
       </Link>
       <div className="hidden h-full ml-5 md:flex flex-row justify-center items-center">
@@ -45,19 +46,20 @@ export default function Navbar() {
             <Link
               key={link.name}
               href={link.href}
-              className={`text-accent small-caps text-[1.2rem] font-bold hover:text-text hover:bg-secondary px-4 h-full flex justify-center items-center transition-all duration-300 ${
-                link.href === location ? 'border-b border-text text-text' : ''
+              className={`text-accent small-caps text-[1.2rem] font-bold hover:text-text dark:text-dark_text dark:hover:text-dark_text hover:bg-secondary dark:hover:bg-dark_secondary px-4 h-full flex justify-center items-center transition-all duration-300 ${
+                link.href === location ? 'border-b border-text text-text dark:text-dark_text' : ''
               }`}>
               {link.name}
             </Link>
           );
         })}
       </div>
+      <ThemeDropdown />
       {!session ? (
         <button
-          className="flex-row hidden md:flex h-10 ml-auto justify-center items-center gap-1 border rounded-md text-text border-secondary text-[1.2rem] hover:bg-secondary cursor-pointer transition-all duration-300"
+          className="flex-row hidden md:flex h-10 justify-center items-center gap-1 border rounded-md text-text dark:text-dark_text border-secondary dark:border-dark_secondary text-[1.2rem] hover:bg-secondary dark:hover:bg-dark_secondary cursor-pointer transition-all duration-300"
           onClick={() => signIn('google')}>
-          <div className="bg-secondary h-10 p-2 flex justify-center items-center rounded-md rounded-r-none">
+          <div className="bg-secondary dark:bg-dark_secondary h-10 p-2 flex justify-center items-center rounded-md rounded-r-none">
             <Image
               src={'/Google.svg'}
               alt={''}
@@ -68,15 +70,14 @@ export default function Navbar() {
           <p className="font-bold p-1 px-3 small-caps">Sign In </p>
         </button>
       ) : (
-        <div className="relative ml-auto hidden md:flex">
-          <ThemeDropdown />
+        <div className="relative hidden md:flex">
           <button
-            className="flex-row flex h-10 justify-center items-center gap-1 border rounded-md text-text border-secondary text-[1.2rem] hover:bg-secondary cursor-pointer transition-all duration-300"
+            className="flex-row flex h-10 justify-center items-center gap-1 border rounded-md text-text dark:text-dark_text border-secondary dark:border-dark_secondary text-[1.2rem] hover:bg-secondary dark:hover:bg-dark_secondary cursor-pointer transition-all duration-300"
             onClick={(e) => {
               setIsDropdownOpen((current) => !current);
               e.stopPropagation();
             }}>
-            <div className="bg-secondary h-10 p-2 flex justify-center items-center rounded-md rounded-r-none flex-shrink-0">
+            <div className="bg-secondary dark:bg-dark_secondary h-10 p-2 flex justify-center items-center rounded-md rounded-r-none flex-shrink-0">
               <Image
                 src={session?.user?.image || ''}
                 alt={''}

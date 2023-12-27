@@ -1,6 +1,6 @@
 import { prisma } from '@/lib/prisma';
 import Navigation from './_components/Navigation';
-import { Header } from '../_components/Header';
+import { Header } from '../_components/ui/Header';
 import GameHistoryTable from './_components/GameHistoryTable';
 // Game Bet ID / Date / Bet Amount / Multiplier / Payout
 // Total Bets / Number of Wins / Number of Losses / Wagered

@@ -1,5 +1,5 @@
-import { CardBackSVG } from '@/app/_components/CardBackSVG';
-import { suitIcons } from '@/app/_components/Suits';
+import { CardBackSVG } from '@/app/_components/ui/CardBackSVG';
+import { suitIcons } from '@/app/_components/ui/Suits';
 import { cn } from '@/lib/utils';
 
 export const Card: React.FC<{

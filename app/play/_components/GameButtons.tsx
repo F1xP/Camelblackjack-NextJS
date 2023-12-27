@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { Button } from '../../_components/Button';
-import { Input } from '../../_components/Input';
+import { Button } from '../../_components/ui/Button';
+import { Input } from '../../_components/ui/Input';
 import useAction from '@/app/hooks/useAction';
 import { useSession } from 'next-auth/react';
 import { betAction } from '../_actions/betAction';
@@ -41,7 +41,7 @@ export const GameButtons: React.FC<GameButtonsProps> = ({ isDisabled }) => {
   };
 
   return (
-    <section className="w-full h-auto flex-1 flex flex-col p-1 bg-primary/30">
+    <section className="w-full h-auto flex-1 flex flex-col p-1 bg-primary dark:bg-dark_primary/30">
       <div className="flex flex-col px-1">
         <UserCoins />
         <Input
@@ -83,7 +83,7 @@ const UserCoins: React.FC = () => {
       <p className="text-accent text-lg font-mono font-bold">Bet Amount</p>
       <p
         key={coins}
-        className={`text-text text-md font-mono ml-auto font-bold ${
+        className={`text-text dark:text-dark_text text-md font-mono ml-auto font-bold ${
           isIncreasing ? 'coins-plus' : isDecreasing ? 'coins-minus' : ''
         }`}>
         Coins:
@@ -200,7 +200,7 @@ const InsuranceButtons: React.FC<GameButtonsProps> = ({ isDisabled }) => {
 
   return (
     <div className="flex flex-col p-1 gap-1">
-      <p className="text-center text-2xl font-bold text-text font-mono">Insurance?</p>
+      <p className="text-center text-2xl font-bold text-text dark:text-dark_text font-mono">Insurance?</p>
       <div className="flex flex-row gap-1">
         {[
           {

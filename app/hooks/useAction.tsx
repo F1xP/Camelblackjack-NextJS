@@ -1,6 +1,6 @@
 'use client';
 import { useState } from 'react';
-import { useToast } from '../_components/Toasts';
+import { useToast } from '../_components/ui/Toasts';
 
 type ActionFunction = (formData: FormData) => Promise<{ message: string | null; error: string | null }>;
 

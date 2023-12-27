@@ -3,8 +3,8 @@ import { updateProfile } from '../_actions/actions';
 import { useSession } from 'next-auth/react';
 import { useState } from 'react';
 import useAction from '@/app/hooks/useAction';
-import { Button } from '@/app/_components/Button';
-import { Input } from '@/app/_components/Input';
+import { Button } from '@/app/_components/ui/Button';
+import { Input } from '@/app/_components/ui/Input';
 
 export function SaveForm() {
   const { update, data: session } = useSession();
@@ -36,10 +36,10 @@ export function SaveForm() {
         <div className="flex flex-row">
           <label
             htmlFor="name"
-            className="self-start text-text font-bold text-lg">
+            className="self-start text-text dark:text-dark_text font-bold text-lg">
             Name <span className="text-red-500">*</span>
           </label>
-          <p className="text-text font-bold text-lg ml-auto">{fields.name.length}/39</p>
+          <p className="text-text dark:text-dark_text font-bold text-lg ml-auto">{fields.name.length}/39</p>
         </div>
         <Input
           type="text"
@@ -51,10 +51,10 @@ export function SaveForm() {
         <div className="flex flex-row">
           <label
             htmlFor="bio"
-            className="self-start text-text font-bold text-lg">
+            className="self-start text-text dark:text-dark_text font-bold text-lg">
             Biography
           </label>
-          <p className="text-text font-bold text-lg ml-auto">{fields.bio.length}/128</p>
+          <p className="text-text dark:text-dark_text font-bold text-lg ml-auto">{fields.bio.length}/128</p>
         </div>
         <Input
           type="text"

@@ -44,7 +44,7 @@ const SideNavbar: React.FC = () => {
         width="40px"
         height="40px"
         viewBox="0 0 122.88 95.95"
-        className="block md:hidden ml-auto fill-accent hover:bg-secondary p-1 rounded-md cursor-pointer transition-all duration-300 hover:fill-text mb-1 self-end">
+        className="block md:hidden fill-accent hover:bg-secondary dark:hover:bg-dark_secondary p-1 rounded-md cursor-pointer transition-all duration-300 hover:fill-text mb-1 self-end">
         <g>
           <path d="M8.94,0h105c4.92,0,8.94,4.02,8.94,8.94l0,0c0,4.92-4.02,8.94-8.94,8.94h-105C4.02,17.88,0,13.86,0,8.94l0,0 C0,4.02,4.02,0,8.94,0L8.94,0z M8.94,78.07h105c4.92,0,8.94,4.02,8.94,8.94l0,0c0,4.92-4.02,8.94-8.94,8.94h-105 C4.02,95.95,0,91.93,0,87.01l0,0C0,82.09,4.02,78.07,8.94,78.07L8.94,78.07z M8.94,39.03h105c4.92,0,8.94,4.02,8.94,8.94l0,0 c0,4.92-4.02,8.94-8.94,8.94h-105C4.02,56.91,0,52.89,0,47.97l0,0C0,43.06,4.02,39.03,8.94,39.03L8.94,39.03z" />
         </g>
@@ -55,7 +55,7 @@ const SideNavbar: React.FC = () => {
           <div className="fixed h-full w-full bg-black/70 z-40">
             <aside
               ref={navbarRef}
-              className={`fixed z-50 bg-background p-6 shadow-lg inset-y-0 right-0 h-full border-l border-secondary sm:max-w-sm w-[300px] sm:w-[540px] flex flex-col ${
+              className={`fixed z-50 bg-background dark:bg-dark_background p-6 shadow-lg inset-y-0 right-0 h-full border-l border-secondary dark:border-dark_secondary sm:max-w-sm w-[300px] sm:w-[540px] flex flex-col ${
                 isSideNavbarOpen && 'opened'
               }`}>
               <svg
@@ -69,7 +69,7 @@ const SideNavbar: React.FC = () => {
                 height="40px"
                 viewBox="0 0 121.31 122.876"
                 enableBackground="new 0 0 121.31 122.876"
-                className="fill-accent hover:bg-secondary p-1 rounded-md cursor-pointer transition-all duration-300 hover:fill-text mb-1 self-end">
+                className="fill-accent hover:bg-secondary dark:hover:bg-dark_secondary p-1 rounded-md cursor-pointer transition-all duration-300 hover:fill-text mb-1 self-end">
                 <g>
                   <path
                     fillRule="evenodd"
@@ -81,12 +81,12 @@ const SideNavbar: React.FC = () => {
               {session && (
                 <div className="relative">
                   <button
-                    className="w-full bg-background mb-1 px-10 h-12 cursor-pointer font-bold border border-secondary text-text rounded-md flex justify-center items-center hover:bg-secondary transition-all duration-300 relative"
+                    className="w-full bg-background dark:bg-dark_background mb-1 px-10 h-12 cursor-pointer font-bold border border-secondary dark:border-dark_secondary text-text dark:text-dark_text rounded-md flex justify-center items-center hover:bg-secondary dark:hover:bg-dark_secondary transition-all duration-300 relative"
                     onClick={(e) => {
                       setIsDropdownOpen((current) => !current);
                       e.stopPropagation();
                     }}>
-                    <div className="bg-secondary h-full p-2 flex justify-center items-center rounded-md rounded-r-none flex-shrink-0 absolute left-0">
+                    <div className="bg-secondary dark:bg-dark_secondary h-full p-2 flex justify-center items-center rounded-md rounded-r-none flex-shrink-0 absolute left-0">
                       <Image
                         src={session?.user?.image || ''}
                         alt={''}
@@ -110,34 +110,34 @@ const SideNavbar: React.FC = () => {
                   <Link
                     key={link.name}
                     href={link.href}
-                    className="bg-background mb-1 h-12 px-10 font-bold border border-secondary text-text rounded-md flex justify-center items-center hover:bg-secondary transition-all duration-300">
+                    className="bg-background dark:bg-dark_background mb-1 h-12 px-10 font-bold border border-secondary dark:border-dark_secondary text-text dark:text-dark_text rounded-md flex justify-center items-center hover:bg-secondary dark:hover:bg-dark_secondary transition-all duration-300">
                     <p> {link.name}</p>
                   </Link>
                 );
               })}
               {!session ? (
                 <button
-                  className="bg-background mb-1 mt-auto px-10 h-12 cursor-pointer font-bold border border-secondary text-text rounded-md flex justify-center items-center hover:bg-secondary transition-all duration-300 relative"
+                  className="bg-background dark:bg-dark_background mb-1 mt-auto px-10 h-12 cursor-pointer font-bold border border-secondary dark:border-dark_secondary text-text dark:text-dark_text rounded-md flex justify-center items-center hover:bg-secondary dark:hover:bg-dark_secondary transition-all duration-300 relative"
                   onClick={() => signIn('google')}>
                   <Image
                     src={'/Google.svg'}
                     alt={''}
                     width={50}
                     height={50}
-                    className="bg-secondary flex h-12 px-3 justify-center items-center rounded-md rounded-r-none absolute left-0"
+                    className="bg-secondary dark:bg-dark_secondary flex h-12 px-3 justify-center items-center rounded-md rounded-r-none absolute left-0"
                   />
                   <p className="font-bold">Sign In </p>
                 </button>
               ) : (
                 <button
-                  className="bg-background mb-1 mt-auto px-10 h-12 cursor-pointer font-bold border border-secondary text-text rounded-md flex justify-center items-center hover:bg-secondary transition-all duration-300 relative"
+                  className="bg-background dark:bg-dark_background mb-1 mt-auto px-10 h-12 cursor-pointer font-bold border border-secondary dark:border-dark_secondary text-text dark:text-dark_text rounded-md flex justify-center items-center hover:bg-secondary dark:hover:bg-dark_secondary transition-all duration-300 relative"
                   onClick={() => signOut({ callbackUrl: '/' })}>
                   <Image
                     src={'/Google.svg'}
                     alt={''}
                     width={50}
                     height={50}
-                    className="bg-secondary flex h-12 px-3 justify-center items-center rounded-md rounded-r-none absolute left-0"
+                    className="bg-secondary dark:bg-dark_secondary flex h-12 px-3 justify-center items-center rounded-md rounded-r-none absolute left-0"
                   />
                   <p className="font-bold">Sign Out </p>
                 </button>

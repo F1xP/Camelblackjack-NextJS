@@ -1,4 +1,4 @@
-import { Header } from '../_components/Header';
+import { Header } from '../_components/ui/Header';
 import ConfirmationForm from './_components/ConfirmationForm';
 import { SaveForm } from './_components/SaveForm';
 import { deleteProfile, resetProfile } from './_actions/actions';

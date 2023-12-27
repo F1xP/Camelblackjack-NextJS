@@ -6,28 +6,6 @@
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
   --background-end-rgb: 255, 255, 255;
-
-  --buttonBg: #f0da81;
-  --text: #3a3a3a;
-  --background: #ffffff;
-  --primary: #c2c2c2;
-  --secondary: #888686;
-  --accent: #ebc624;
-  --accentRed: #dd2814;
-  --accentGreen: #28dd14;
-  --accentBlue: #1428dd;
-}
-
-[data-theme='dark'] body {
-  --buttonBg: #ffffff;
-  --text: #c8c8c8;
-  --background: #0c0d24;
-  --primary: #15183b;
-  --secondary: #2f314b;
-  --accent: #ddb814;
-  --accentRed: #dd2814;
-  --accentGreen: #28dd14;
-  --accentBlue: #1428dd;
 }
 
 .small-caps {
