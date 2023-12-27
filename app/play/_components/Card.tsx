@@ -68,7 +68,7 @@ const CardBack: React.FC = () => {
       <div className="flip-card-back h-full w-full overflow-hidden rounded-md relative bg-white">
         <div className="overflow-hidden h-full w-full rounded-md">
           <CardBackSVG
-            fill="#ddb814"
+            fill="#b58500"
             color="#ffffff"
           />
         </div>

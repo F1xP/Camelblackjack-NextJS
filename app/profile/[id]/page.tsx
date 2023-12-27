@@ -24,11 +24,11 @@ export default async function Profile({ params }: { params: { id: string } }) {
   const winRate = games !== 0 ? ((wins / games) * 100).toFixed(0) : 0;
 
   return (
-    <div className="rounded-lg w-full border-2 border-secondary dark:border-dark_secondary bg-primary dark:bg-dark_primary">
+    <div className="rounded-lg w-full border-2 border-secondary dark:border-dark_secondary bg-primary dark:bg-dark_primary overflow-hidden">
       <div className="flex flex-row w-full justify-between relative h-52 mb-20">
         <div className="overflow-hidden h-52 w-full">
           <CardBackSVG
-            fill="#ddb814"
+            fill="#b58500"
             color="#ffffff"
           />
         </div>
@@ -54,7 +54,7 @@ export default async function Profile({ params }: { params: { id: string } }) {
             return (
               <div
                 key={index}
-                className={`px-2 py-4 bg-secondary dark:bg-dark_secondary flex-1 min-w-[200px] rounded-lg flex flex-col justify-center items-center shadow-md overflow-hidden overflow-ellipsis`}>
+                className={`px-2 py-4 bg-background dark:bg-dark_secondary flex-1 min-w-[200px] rounded-lg flex flex-col justify-center items-center shadow-md overflow-hidden overflow-ellipsis`}>
                 <p className="text-center text-accent font-bold">{item.value}</p>
                 <p className="text-center text-text dark:text-dark_text font-bold text-sm">{item.text}</p>
               </div>

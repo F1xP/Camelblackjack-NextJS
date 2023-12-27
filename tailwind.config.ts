@@ -36,7 +36,7 @@ const config: Config = {
         dark_secondary: '#2f314b',
 
         gray: '#c8c8c8',
-        accent: '#ebc624',
+        accent: '#b58500',
         accentRed: '#dd2814',
         accentGreen: '#28dd14',
         accentBlue: '#1428dd',
