@@ -26,7 +26,7 @@ export default async function Profile({ params }: { params: { id: string } }) {
   return (
     <div className="rounded-lg w-full border-2 border-secondary dark:border-dark_secondary bg-primary dark:bg-dark_primary">
       <div className="flex flex-row w-full justify-between relative h-52 mb-20">
-        <div className="overflow-hidden h-52 w-full rounded-lg">
+        <div className="overflow-hidden h-52 w-full">
           <CardBackSVG
             fill="#ddb814"
             color="#ffffff"
@@ -44,25 +44,25 @@ export default async function Profile({ params }: { params: { id: string } }) {
         <Header className="overflow-hidden overflow-ellipsis max-w-[15ch] sm:max-w-[25ch] md:max-w-[30ch] lg:max-w-[34ch] xl:max-w-[40ch] whitespace-nowrap">
           {user.name}
         </Header>
-        <div className="flex flex-row flex-wrap justify-center items-center gap-2 mt-5">
+        <div className="flex flex-row flex-wrap justify-center items-center gap-2 mt-5 w-full">
           {[
             { text: 'Winrate', value: `${winRate}%` },
             { text: 'Coins', value: user.coins },
-            { text: 'Games', value: user.games },
-            { text: 'Wagered', value: user.games },
+            { text: 'Games Played', value: user.games },
+            { text: 'Total Wagered', value: user.games },
           ].map((item, index) => {
             return (
               <div
                 key={index}
-                className={`w-24 h-24 rounded-lg bg-secondary dark:bg-dark_secondary flex flex-col justify-center items-center shadow-md`}>
-                <p className="text-center text-accent font-bold">{item.text}</p>
-                <p className="text-center text-text dark:text-dark_text font-bold text-sm">{item.value}</p>
+                className={`px-2 py-4 bg-secondary dark:bg-dark_secondary flex-1 min-w-[200px] rounded-lg flex flex-col justify-center items-center shadow-md overflow-hidden overflow-ellipsis`}>
+                <p className="text-center text-accent font-bold">{item.value}</p>
+                <p className="text-center text-text dark:text-dark_text font-bold text-sm">{item.text}</p>
               </div>
             );
           })}
         </div>
-        <Header className="self-start">Biography</Header>
-        <p className="text-text dark:text-dark_text w-fullrounded-md p-1 w-full text-xl max-w-[360px] break-words self-start font-bold">
+        <span className="bg-secondary dark:bg-dark_secondary w-full h-0.5 mt-4 mb-2"></span>
+        <p className="px-2 py-4 w-full flex justify-center items-center text-text dark:text-dark_text text-lg max-w-[500px] text-center break-words font-bold">
           {user.bio || 'Not specified.'}
         </p>
       </div>
