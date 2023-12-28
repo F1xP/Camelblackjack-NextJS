@@ -7,8 +7,9 @@ export const inputVariants = cva('outline-none transition-all duration-300', {
   variants: {
     variant: {
       default:
-        'font-mono bg-primary dark:bg-dark_primary font-bold border-[1.8px] border-text text-text dark:text-dark_text focus:border-accent',
-      transparent: 'bg-transparent text-text dark:text-dark_text border-[1.8px] border-text  focus:border-accent',
+        'font-mono bg-primary dark:bg-dark_primary font-bold border-[1.8px] border-secondary dark:border-dark_secondary dark:focus:border-accent focus:border-accent text-text dark:text-dark_text',
+      transparent:
+        'bg-transparent text-text dark:text-dark_text border-[1.8px] border-secondary dark:border-dark_secondary dark:focus:border-accent focus:border-accent',
     },
     size_: {
       xs: 'p-0.5 text-xsm rounded-xsm',

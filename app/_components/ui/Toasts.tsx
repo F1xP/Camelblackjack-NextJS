@@ -94,7 +94,9 @@ const Toast: React.FC<{ item: ToastProps; onDismiss: () => void }> = ({ item, on
           />
         </g>
       </svg>
-      <p className={`font-bold ${item.type === 'Success' ? 'text-accent' : 'text-red-500'}`}>{item.type}</p>
+      <p className={`font-bold ${item.type === 'Success' ? 'text-accent' : 'text-red-500 dark:text-red-500'}`}>
+        {item.type}
+      </p>
       <p className="font-sembiold text-text dark:text-dark_text break-words">{item.message}</p>
     </div>
   );

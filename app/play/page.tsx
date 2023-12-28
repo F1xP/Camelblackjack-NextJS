@@ -3,6 +3,7 @@ import { GameDisplay } from './_components/GaneDisplay';
 import { Game } from '@/types/types';
 import { getCurrentGame } from './_actions/getGame';
 import { disabledButtons, getCurrentHand, getGameStatus } from '@/lib/helpers';
+import { GameRules } from './_components/GameRules';
 
 export default async function Play() {
   const gameData: Game | null = await getCurrentGame();
@@ -15,16 +16,19 @@ export default async function Play() {
 
   return (
     <>
-      <div className="flex flex-row flex-wrap xl:flex-nowrap w-full rounded-xl border-2 border-secondary dark:border-dark_secondary mt-10 overflow-hidden">
-        <GameButtons isDisabled={isDisabled} />
-        <GameDisplay
-          gameState={gameState}
-          currentHand={currentHand}
-          status1={gameStatus1}
-          status2={gameStatus2}
-          isSplitted={gameState?.player.length === 2}
-          gameId={gameData?.id}
-        />
+      <div className="flex flex-col w-full rounded-xl border-2 border-secondary dark:border-dark_secondary mt-10 overflow-hidden">
+        <div className="flex flex-row flex-wrap xl:flex-nowrap w-full">
+          <GameButtons isDisabled={isDisabled} />
+          <GameDisplay
+            gameState={gameState}
+            currentHand={currentHand}
+            status1={gameStatus1}
+            status2={gameStatus2}
+            isSplitted={gameState?.player.length === 2}
+            gameId={gameData?.id}
+          />
+        </div>
+        <GameRules />
       </div>
     </>
   );

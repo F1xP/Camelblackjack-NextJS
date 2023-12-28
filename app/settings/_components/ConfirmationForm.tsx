@@ -47,7 +47,7 @@ export default function ConfirmationForm({
         disabled={loading}
         type="button"
         onClick={onOpen}
-        className="text-red-500 w-full">
+        className="text-red-500 dark:text-red-500 w-full">
         {text}
       </Button>
 
@@ -59,7 +59,7 @@ export default function ConfirmationForm({
         classNames={{
           body: 'py-6',
           backdrop: 'bg-black/70',
-          base: 'border-secondary dark:border-dark_secondary bg-background dark:bg-dark_secondary text-text dark:text-dark_text',
+          base: 'border-secondary dark:border-dark_secondary bg-background dark:bg-dark_primary text-text dark:text-dark_text',
           header: 'border-b-[1px] border-secondary dark:border-dark_secondary',
           footer: 'border-t-[1px] border-secondary dark:border-dark_secondary',
           closeButton: 'hover:bg-white/5 active:bg-white/50 transition-all duration-300',
@@ -68,7 +68,7 @@ export default function ConfirmationForm({
           <>
             <form onSubmit={handleSubmit}>
               <ModalHeader>
-                <h1 className="font-bold text-2xl">{modalTitle}</h1>
+                <h1 className="font-bold text-2xl text-accent">{modalTitle}</h1>
               </ModalHeader>
               <ModalBody>
                 <label
@@ -99,7 +99,7 @@ export default function ConfirmationForm({
                     disabled={loading}
                     type="button"
                     onClick={onClose}
-                    className="text-red-500 flex-1">
+                    className="text-red-500 dark:text-red-500 flex-1">
                     CANCEL
                   </Button>
                 </div>
