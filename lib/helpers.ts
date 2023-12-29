@@ -2,7 +2,6 @@ import { Actions, Game, GameState, UserState } from '@/types/types';
 import { Prisma } from '@prisma/client';
 
 // Pick<Type, Keys>
-
 // Omit<Type, Keys>
 
 export const hasPlayerSplitted = async (gameState: GameState | null) =>
@@ -136,14 +135,17 @@ export const getGameStatus = async (isGameActive: boolean, gameState: GameState 
   const isPlayerBusted = lastPlayerAction === 'BUST';
   const isDealerBusted = lastDealerAction === 'BUST';
 
-  if (!hasSplitted && playerCards.length === 2 && playerValue === 21) return { state: 'PBJ', text: 'Player Blackjack' };
-  if (
+  const naturalPlayerBlackjack = !hasSplitted && playerCards.length === 2 && playerValue === 21;
+  const naturalDealerBlackjack = lastDealerAction === 'DEAL' && dealerCards[0].rank === 'A' && dealerValue === 21;
+  const dealerBlackjack =
     lastDealerAction === 'DEAL' &&
     (lastPlayerAction === 'INS_ACCEPTED' || lastPlayerAction === 'INS_DECLINED') &&
     dealerCards[0].rank === 'A' &&
-    dealerValue === 21
-  )
-    return { state: 'DBJ', text: 'Dealer Blackjack' };
+    dealerValue === 21;
+
+  if (naturalPlayerBlackjack && naturalDealerBlackjack) return { state: 'Push', text: 'Push' };
+  if (naturalPlayerBlackjack) return { state: 'PBJ', text: 'Player Blackjack' };
+  if (dealerBlackjack) return { state: 'DBJ', text: 'Dealer Blackjack' };
   if (isPlayerBusted) return { state: 'Lose', text: 'Player Bust' };
   if (!isPlayerBusted && isDealerBusted) return { state: 'Win', text: 'Dealer Bust' };
 
@@ -169,15 +171,20 @@ export const shouldGameEnd = async (gameState: GameState | null, end: boolean) =
   const hasBusted = playerValue > 21;
   const lastPlayerAction = playerState.actions.slice(-1)[0];
   const lastDealerAction = dealerState.actions.slice(-1)[0];
+  const playerCards = gameState.player[currentHand].cards;
+  const dealerCards = gameState.dealer.cards;
 
-  if (!hasSplitted && playerState.cards.length === 2 && playerValue === 21) return true; // Blackjack for Player
-  if (
+  const naturalPlayerBlackjack = !hasSplitted && playerCards.length === 2 && playerValue === 21;
+  const naturalDealerBlackjack = lastDealerAction === 'DEAL' && dealerCards[0].rank === 'A' && dealerValue === 21;
+  const dealerBlackjack =
     lastDealerAction === 'DEAL' &&
-    ['INS_ACCEPTED', 'INS_DECLINED'].some((action) => playerState.actions.includes(action as Actions)) &&
-    dealerState.cards[0].rank === 'A' &&
-    dealerValue === 21
-  )
-    return true; // Blackjack for Dealer
+    (lastPlayerAction === 'INS_ACCEPTED' || lastPlayerAction === 'INS_DECLINED') &&
+    dealerCards[0].rank === 'A' &&
+    dealerValue === 21;
+
+  if (naturalPlayerBlackjack && naturalDealerBlackjack) return true;
+  if (naturalPlayerBlackjack) return true;
+  if (dealerBlackjack) return true;
 
   if (hasSplitted && currentHand === 0) return false;
   if (hasSplitted && currentHand === 1) return lastPlayerAction === 'SPLIT' ? false : hasBusted || end;
@@ -300,17 +307,9 @@ function getRandomByte({ serverSeed, clientSeed, nonce }: ByteGeneratorParams): 
 }
 
 // Example usage:
-const randomByte1 = getRandomByte({
+/* const randomByte1 = getRandomByte({
   serverSeed: 'serverSeed',
   clientSeed: 'clientSeed',
   nonce: 123,
 });
-
-const randomByte2 = getRandomByte({
-  serverSeed: 'serverSeed',
-  clientSeed: 'clientSeed',
-  nonce: 456,
-});
-
-console.log(randomByte1);
-console.log(randomByte2);
+*/

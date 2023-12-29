@@ -37,9 +37,9 @@ const RulesModal: React.FC = () => {
         onOpenChange={onOpenChange}
         radius="lg"
         classNames={{
-          body: 'py-6',
+          body: 'py-6 max-h-screen overflow-y-auto',
           backdrop: 'bg-black/70',
-          base: 'border-secondary dark:border-dark_secondary bg-background dark:bg-dark_primary text-text dark:text-dark_text',
+          base: 'border-secondary dark:border-dark_secondary bg-background dark:bg-dark_primary text-text dark:text-dark_text max-h-screen',
           header: 'border-b-[1px] border-secondary dark:border-dark_secondary',
           footer: 'border-t-[1px] border-secondary dark:border-dark_secondary',
           closeButton: 'hover:bg-white/5 active:bg-white/50 transition-all duration-300',
@@ -49,7 +49,7 @@ const RulesModal: React.FC = () => {
             <h1 className="font-bold text-2xl text-accent">Game Rules</h1>
           </ModalHeader>
           <ModalBody>
-            <ul className="px-2">
+            <ul className="px-2 h-auto">
               {[
                 {
                   title: 'Multiple Decks:',
