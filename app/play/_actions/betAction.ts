@@ -5,6 +5,7 @@ import { getCurrentUser } from '@/lib/session';
 import { calculateHandValue, deductCoins, gameEnded, getCard, shouldGameEnd } from '@/lib/helpers';
 import { revalidatePath } from 'next/cache';
 import { getErrorMessage } from '@/lib/utils';
+import { randomUUID } from 'crypto';
 
 export const betAction = async (formData: FormData) => {
   try {
@@ -20,13 +21,17 @@ export const betAction = async (formData: FormData) => {
     });
     if (isActive) throw new Error('You must finish your active game in order to start another.');
 
+    const serverSeed = randomUUID();
+    const clientSeed = user.seed;
+    const nonce = user.nonce;
+
     await prisma.$transaction(async (tx) => {
       const [coinsDeducted, playerCard1, playerCard2, dealerCard1, dealerCard2] = await Promise.all([
         deductCoins(tx, user.email as string, betAmount),
-        getCard(),
-        getCard(),
-        getCard(),
-        getCard(),
+        getCard(serverSeed, clientSeed, nonce, 0),
+        getCard(serverSeed, clientSeed, nonce, 1),
+        getCard(serverSeed, clientSeed, nonce, 2),
+        getCard(serverSeed, clientSeed, nonce, 3),
       ]);
 
       const [playerValue, dealerValue] = await Promise.all([
@@ -41,6 +46,7 @@ export const betAction = async (formData: FormData) => {
             player: [{ value: playerValue, actions: ['DEAL'], cards: [playerCard1, playerCard2], amount: betAmount }],
             dealer: { value: dealerValue, actions: ['DEAL'], cards: [dealerCard1, dealerCard2] },
           },
+          seed: serverSeed,
           user_email: user.email,
         },
       });
@@ -51,6 +57,7 @@ export const betAction = async (formData: FormData) => {
         await tx.game.update({
           where: { id: game.id },
           data: {
+            cursor: 4,
             state: {
               player: game.state.player,
               dealer: game.state.dealer,

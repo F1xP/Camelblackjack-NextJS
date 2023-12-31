@@ -27,11 +27,15 @@ export const hitAction = async (formData: FormData) => {
 
     if (!game) return { message: null, error: 'No active game found.' };
 
+    const serverSeed = game.seed;
+    const clientSeed = user.seed;
+    const cursor = game.cursor;
+    const nonce = user.nonce;
+
     const currentHand = await getCurrentHand(game.state);
     const hasSplitted = await hasPlayerSplitted(game.state);
 
     const playerState = game.state.player[currentHand];
-    const dealerState = game.state.dealer;
 
     const canHit = await isAllowedToStand(game.state, currentHand);
     if (!canHit)
@@ -40,7 +44,7 @@ export const hitAction = async (formData: FormData) => {
         error: 'Hit action is not available at this point. Please check your current game status.',
       };
 
-    const newPlayerCard = await getCard();
+    const newPlayerCard = await getCard(serverSeed, clientSeed, nonce, cursor);
     playerState.cards = [...playerState.cards, newPlayerCard];
     playerState.value = await calculateHandValue(playerState.cards, 'P');
 
@@ -48,7 +52,7 @@ export const hitAction = async (formData: FormData) => {
     playerState.actions = hasBusted ? [...playerState.actions, 'HIT', 'BUST'] : [...playerState.actions, 'HIT'];
 
     if (hasSplitted && currentHand === 1 && playerState.value[0] > 21 && game.state.player[0].value[1] < 21)
-      await dealerTurn(dealerState);
+      await dealerTurn(game, clientSeed, user.nonce);
 
     await prisma.$transaction(async (tx) => {
       const hasGameEnded = await shouldGameEnd(game.state, false);

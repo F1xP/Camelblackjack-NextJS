@@ -1,5 +1,6 @@
 import { Actions, Game, GameState, UserState } from '@/types/types';
 import { Prisma } from '@prisma/client';
+import { createHmac } from 'crypto';
 
 // Pick<Type, Keys>
 // Omit<Type, Keys>
@@ -106,16 +107,32 @@ export const calculateHandValue = async (hand: any, type: 'P' | 'D') => {
   return values;
 };
 
-export const ranks = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
-export const suits = ['Hearts', 'Diamonds', 'Clubs', 'Spades'];
+const ranks = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
+const suits = ['Hearts', 'Diamonds', 'Clubs', 'Spades'];
 
-export const getCard = async () => {
-  const randomRankIndex = Math.floor(Math.random() * ranks.length);
-  const randomSuitIndex = Math.floor(Math.random() * suits.length);
-  const randomRank = ranks[randomRankIndex];
-  const randomSuit = suits[randomSuitIndex];
+export const getCard = async (serverSeed: string, clientSeed: string, nonce: number, cursor: number) => {
+  let currentRound = Math.floor(cursor / 32);
+  let currentRoundCursor = cursor;
 
-  return { rank: randomRank, suit: randomSuit };
+  while (true) {
+    const hmac = createHmac('sha256', serverSeed);
+    hmac.update(`${clientSeed}:${nonce}:${currentRound}`);
+    const buffer = hmac.digest();
+    while (currentRoundCursor < 32) {
+      console.log(`nonce: ${nonce}, cursor: ${cursor}, serverSeed: ${serverSeed}`);
+      console.log(
+        `Results: ${
+          (ranks[buffer[currentRoundCursor] % ranks.length], suits[buffer[currentRoundCursor] % suits.length])
+        }`
+      );
+      return {
+        rank: ranks[buffer[currentRoundCursor] % ranks.length],
+        suit: suits[buffer[currentRoundCursor] % suits.length],
+      };
+    }
+    currentRoundCursor = 0;
+    currentRound += 1;
+  }
 };
 
 export const getGameStatus = async (isGameActive: boolean, gameState: GameState | null, hand: number) => {
@@ -203,7 +220,11 @@ export const deductCoins = async (tx: Prisma.TransactionClient, userEmail: strin
   if (deducted.coins < 0) throw new Error('Insufficient coins.');
 };
 
-export const dealerTurn = async (dealerState: UserState) => {
+export const dealerTurn = async (game: Game, clientSeed: string, nonce: number) => {
+  const serverSeed = game.seed;
+  const cursor = game.cursor;
+  const dealerState = game.state.dealer;
+
   const { value, actions, cards } = dealerState;
 
   if (value[0] >= 17) {
@@ -211,12 +232,13 @@ export const dealerTurn = async (dealerState: UserState) => {
     return;
   }
 
-  const newDealerCard = await getCard();
+  const newDealerCard = await getCard(serverSeed, clientSeed, nonce, cursor);
   dealerState.cards = [...cards, newDealerCard];
   dealerState.actions = [...actions, 'HIT'];
   dealerState.value = await calculateHandValue(dealerState.cards, 'D');
+  game.cursor += 1;
 
-  await dealerTurn(dealerState);
+  await dealerTurn(game, clientSeed, nonce);
 };
 
 export const gameEnded = async (tx: Prisma.TransactionClient, game: Game) => {
@@ -240,6 +262,9 @@ export const gameEnded = async (tx: Prisma.TransactionClient, game: Game) => {
     await tx.user.update({
       where: { email: game.user_email as string },
       data: {
+        wager: {
+          increment: amount,
+        },
         coins: {
           increment: incrementAmount,
         },
@@ -284,32 +309,3 @@ export const getHandValue = async (playerState: UserState) => {
       : Number(playerState.value[1])
     : Number(playerState.value[0]);
 };
-
-import { createHmac } from 'crypto';
-
-interface ByteGeneratorParams {
-  serverSeed: string;
-  clientSeed: string;
-  nonce: number;
-}
-
-function getRandomByte({ serverSeed, clientSeed, nonce }: ByteGeneratorParams): number {
-  let currentRound = 0;
-  let currentRoundCursor = 0;
-
-  const hmac = createHmac('sha256', serverSeed);
-  hmac.update(`${clientSeed}:${nonce}:${currentRound}`);
-  const buffer = hmac.digest();
-
-  const randomByte = buffer[currentRoundCursor];
-  currentRoundCursor += 1;
-  return randomByte;
-}
-
-// Example usage:
-/* const randomByte1 = getRandomByte({
-  serverSeed: 'serverSeed',
-  clientSeed: 'clientSeed',
-  nonce: 123,
-});
-*/

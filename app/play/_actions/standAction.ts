@@ -25,6 +25,8 @@ export const standAction = async (formData: FormData) => {
 
     if (!game) return { message: null, error: 'No active game found.' };
 
+    const clientSeed = user.seed;
+
     const currentHand = await getCurrentHand(game.state);
 
     const canStand = await isAllowedToStand(game.state, currentHand);
@@ -37,10 +39,9 @@ export const standAction = async (formData: FormData) => {
     const hasSplitted = await hasPlayerSplitted(game.state);
 
     const playerState = game.state.player[currentHand];
-    const dealerState = game.state.dealer;
     playerState.actions = [...playerState.actions, 'STAND'];
 
-    if (!hasSplitted || currentHand === 1) await dealerTurn(dealerState);
+    if (!hasSplitted || currentHand === 1) await dealerTurn(game, clientSeed, user.nonce);
 
     await prisma.$transaction(async (tx) => {
       const hasGameEnded = await shouldGameEnd(game.state, true);

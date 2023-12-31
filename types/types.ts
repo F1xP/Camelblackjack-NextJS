@@ -22,6 +22,8 @@ export type Game = {
   active: boolean;
   payout: number;
   state: GameState;
+  seed: string;
+  cursor: number;
   user_email?: string | null;
   user?: User | null;
   createdAt: Date;

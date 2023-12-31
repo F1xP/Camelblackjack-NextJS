@@ -2,25 +2,74 @@
 import React from 'react';
 import { BiNotepad } from 'react-icons/bi';
 import { FaCheckCircle } from 'react-icons/fa';
+import { Modal, ModalContent, ModalHeader, ModalBody, useDisclosure } from '@nextui-org/react';
+import { useSession } from 'next-auth/react';
 
-export const GameRules: React.FC = () => {
+type GameFooterProps = {
+  serverSeed: string | undefined;
+};
+
+export const GameFooter: React.FC<GameFooterProps> = ({ serverSeed }) => {
   return (
     <section className="bg-black/30 w-full h-10 flex flex-col">
       <span className="w-full h-[3px] bg-secondary dark:bg-dark_secondary"></span>
       <div className="w-full h-10 flex items-center px-2">
-        <RulesModal />
-        <button className="flex flex-row justify-center items-center hover:opacity-70 transition-all duration-250">
-          <FaCheckCircle size={20} />
-          <p className="ml-1 text-md font-mono font-bold">Provably Fair</p>
-        </button>
+        <GameRules />
+        <ProvablyFair serverSeed={serverSeed} />
       </div>
     </section>
   );
 };
 
-import { Modal, ModalContent, ModalHeader, ModalBody, useDisclosure } from '@nextui-org/react';
+const ProvablyFair: React.FC<GameFooterProps> = ({ serverSeed }) => {
+  const { isOpen, onOpen, onClose, onOpenChange } = useDisclosure();
+  const { data: session } = useSession();
 
-const RulesModal: React.FC = () => {
+  return (
+    <>
+      <button
+        className="flex flex-row justify-center items-center hover:opacity-70 transition-all duration-250"
+        onClick={onOpen}>
+        <FaCheckCircle size={20} />
+        <p className="ml-1 text-md font-mono font-bold">Provably Fair</p>
+      </button>
+
+      <Modal
+        backdrop="opaque"
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+        radius="lg"
+        classNames={{
+          body: 'py-6 max-h-screen overflow-y-auto',
+          backdrop: 'bg-black/70',
+          base: 'border-secondary dark:border-dark_secondary bg-background dark:bg-dark_primary text-text dark:text-dark_text max-h-screen',
+          header: 'border-b-[1px] border-secondary dark:border-dark_secondary',
+          footer: 'border-t-[1px] border-secondary dark:border-dark_secondary',
+          closeButton: 'hover:bg-white/5 active:bg-white/50 transition-all duration-300',
+        }}>
+        <ModalContent>
+          <ModalHeader>
+            <h1 className="font-bold text-2xl text-accent">Provably Fair</h1>
+          </ModalHeader>
+          <ModalBody>
+            <li className="list-disc">
+              <strong>Current Server Seed</strong>
+              <br />
+              {serverSeed || 'Active Server Seed not found.'}
+            </li>
+            <li className="list-disc">
+              <strong>Current Client Seed</strong>
+              <br />
+              {session?.user.seed}
+            </li>
+          </ModalBody>
+        </ModalContent>
+      </Modal>
+    </>
+  );
+};
+
+const GameRules: React.FC = () => {
   const { isOpen, onOpen, onClose, onOpenChange } = useDisclosure();
 
   return (

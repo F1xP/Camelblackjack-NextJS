@@ -28,6 +28,11 @@ export const doubleAction = async (formData: FormData) => {
       });
       if (!game) return { message: null, error: 'No active game found.' };
 
+      const serverSeed = game.seed;
+      const clientSeed = user.seed;
+      const cursor = game.cursor;
+      const nonce = user.nonce;
+
       const currentHand = await getCurrentHand(game.state);
       const canDouble = await isAllowedToDouble(game.state, currentHand);
       if (!canDouble)
@@ -38,19 +43,19 @@ export const doubleAction = async (formData: FormData) => {
 
       const hasSplitted = await hasPlayerSplitted(game.state);
       const playerState = game.state.player[currentHand];
-      const dealerState = game.state.dealer;
 
       await deductCoins(tx, user.email as string, playerState.amount);
       playerState.amount = playerState.amount * 2;
 
-      const newPlayerCard = await getCard();
+      const newPlayerCard = await getCard(serverSeed, clientSeed, nonce, cursor);
       playerState.cards = [...playerState.cards, newPlayerCard];
       playerState.value = await calculateHandValue(playerState.cards, 'P');
 
       const hasBusted = playerState.value[0] > 21;
       playerState.actions = hasBusted ? [...playerState.actions, 'DOUBLE', 'BUST'] : [...playerState.actions, 'DOUBLE'];
 
-      if ((hasSplitted && currentHand === 1) || (!hasSplitted && !hasBusted)) await dealerTurn(dealerState);
+      if ((hasSplitted && currentHand === 1) || (!hasSplitted && !hasBusted))
+        await dealerTurn(game, clientSeed, user.nonce);
 
       const hasGameEnded = await shouldGameEnd(game.state, true);
       if (hasGameEnded) await gameEnded(tx, game);
@@ -58,6 +63,7 @@ export const doubleAction = async (formData: FormData) => {
         await tx.game.update({
           where: { id: game.id },
           data: {
+            cursor: game.cursor + 1,
             state: {
               player: game.state.player,
               dealer: game.state.dealer,

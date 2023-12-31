@@ -49,7 +49,7 @@ export default async function Profile({ params }: { params: { id: string } }) {
             { text: 'Winrate', value: `${winRate}%` },
             { text: 'Coins', value: user.coins },
             { text: 'Games Played', value: user.games },
-            { text: 'Total Wagered', value: user.games },
+            { text: 'Total Wagered', value: user.wager },
           ].map((item, index) => {
             return (
               <div

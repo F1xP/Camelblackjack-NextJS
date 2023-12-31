@@ -15,6 +15,9 @@ declare module 'next-auth' {
       wins: number;
       loses: number;
       pushes: number;
+      wager: number;
+      seed: string;
+      nonce: number;
     };
   }
 }
@@ -43,6 +46,9 @@ export const nextAuthOptions = {
           wins: dbUser.wins,
           loses: dbUser.loses,
           pushes: dbUser.pushes,
+          wager: dbUser.wager,
+          seed: dbUser.seed,
+          nonce: dbUser.nonce,
         };
       } catch (e) {
         console.log(e);
