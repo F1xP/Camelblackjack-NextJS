@@ -27,7 +27,7 @@ export const hitAction = async (formData: FormData) => {
 
     if (!game) return { message: null, error: 'No active game found.' };
 
-    const serverSeed = game.seed;
+    const serverSeed = game.hashedSeed;
     const clientSeed = user.seed;
     const cursor = game.cursor;
     const nonce = user.nonce;

@@ -1,13 +1,13 @@
 'use client';
 import { useSearchParams } from 'next/navigation';
 import Image from 'next/image';
-import { LeaderboardDataProps } from '@/types/types';
+import { UserLeaderboardData } from '@/types/types';
 import LeaderboardHead from './LeaderboardHead';
 import { BiSolidMedal } from 'react-icons/bi';
 import { RiStarSFill } from 'react-icons/ri';
 import Link from 'next/link';
 
-const LeaderboardTable: React.FC<{ leaderboardData: LeaderboardDataProps }> = ({ leaderboardData }) => {
+const LeaderboardTable: React.FC<{ leaderboardData: UserLeaderboardData[] }> = ({ leaderboardData }) => {
   const searchParams = useSearchParams();
 
   const currentPage: string = searchParams.get('page')?.toString() || '1';

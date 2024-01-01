@@ -6,7 +6,7 @@ import { disabledButtons, getCurrentHand, getGameStatus } from '@/lib/helpers';
 import { GameFooter } from './_components/GameFooter';
 
 export default async function Play() {
-  const gameData: Game | null = await getCurrentGame();
+  const gameData: Pick<Game, 'active' | 'id' | 'state' | 'hashedSeed'> | null = await getCurrentGame();
 
   const gameState = gameData?.state || null;
   const [gameStatus1, gameStatus2, currentHand, isDisabled] = await Promise.all([
@@ -30,7 +30,10 @@ export default async function Play() {
             gameId={gameData?.id}
           />
         </div>
-        <GameFooter serverSeed={gameData?.seed} />
+        <GameFooter
+          serverSeed={gameData?.hashedSeed}
+          gameId={gameData?.id}
+        />
       </div>
     </>
   );

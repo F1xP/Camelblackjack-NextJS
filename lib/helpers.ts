@@ -59,7 +59,7 @@ export const isAllowedToInsure = async (gameState: GameState | null) => {
   return true;
 };
 
-export const disabledButtons = async (gameData: Game | null) => {
+export const disabledButtons = async (gameData: Pick<Game, 'active' | 'id' | 'state' | 'hashedSeed'> | null) => {
   const gameState: GameState | null = gameData?.state || null;
   const isGameActive = gameData?.active;
 
@@ -221,7 +221,7 @@ export const deductCoins = async (tx: Prisma.TransactionClient, userEmail: strin
 };
 
 export const dealerTurn = async (game: Game, clientSeed: string, nonce: number) => {
-  const serverSeed = game.seed;
+  const serverSeed = game.hashedSeed;
   const cursor = game.cursor;
   const dealerState = game.state.dealer;
 
@@ -262,6 +262,9 @@ export const gameEnded = async (tx: Prisma.TransactionClient, game: Game) => {
     await tx.user.update({
       where: { email: game.user_email as string },
       data: {
+        nonce: {
+          increment: 1,
+        },
         wager: {
           increment: amount,
         },

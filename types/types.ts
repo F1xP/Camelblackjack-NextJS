@@ -1,27 +1,25 @@
 import { User } from '@prisma/client';
 
-export type LeaderboardDataProps = {
+export type GameHistoryData = Pick<Game, 'id' | 'state' | 'hashedSeed' | 'payout' | 'createdAt'>;
+
+export type UserLeaderboardData = {
   id: string;
   name: string | null;
-  email: string | null;
-  emailVerified: Date | null;
   image: string | null;
-  bio: string;
   coins: number;
   games: number;
   wins: number;
   loses: number;
   pushes: number;
   winRate: number;
-  createdAt: Date;
-  updatedAt: Date;
-}[];
+};
 
 export type Game = {
   id: string;
   active: boolean;
   payout: number;
   state: GameState;
+  hashedSeed: string;
   seed: string;
   cursor: number;
   user_email?: string | null;

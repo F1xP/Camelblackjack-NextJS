@@ -10,9 +10,15 @@ export const getCurrentGame = async () => {
     const user = await getCurrentUser();
     if (!user || !user.email) return null;
 
-    const game: Game | null = await prisma.game.findFirst({
+    const game: Pick<Game, 'active' | 'id' | 'state' | 'hashedSeed'> | null = await prisma.game.findFirst({
       where: {
         OR: [{ user_email: user.email, active: true }, { user_email: user.email }],
+      },
+      select: {
+        active: true,
+        id: true,
+        state: true,
+        hashedSeed: true,
       },
       orderBy: { updatedAt: 'desc' },
     });

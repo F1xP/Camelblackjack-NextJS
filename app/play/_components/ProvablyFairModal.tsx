@@ -9,9 +9,10 @@ import { updateSeedAction } from '../_actions/updateSeed';
 
 type GameFooterProps = {
   serverSeed: string | undefined;
+  gameId: string | undefined;
 };
 
-export const ProvablyFairModal: React.FC<GameFooterProps> = ({ serverSeed }) => {
+export const ProvablyFairModal: React.FC<GameFooterProps> = ({ serverSeed, gameId }) => {
   const { isOpen, onOpen, onClose, onOpenChange } = useDisclosure();
   const { data: session } = useSession();
 
@@ -42,6 +43,9 @@ export const ProvablyFairModal: React.FC<GameFooterProps> = ({ serverSeed }) => 
             <h1 className="font-bold text-2xl text-accent">Provably Fair</h1>
           </ModalHeader>
           <ModalBody>
+            <li className="list-disc">
+              <strong>Game ID:</strong> {gameId}
+            </li>
             <ServerSeed
               onClose={onClose}
               serverSeed={serverSeed}
@@ -118,7 +122,7 @@ const ClientSeed: React.FC<{ onClose: () => void }> = ({ onClose }) => {
           paddingRounding={'md'}
           name="seed">
           <button
-            className="bg-secondary dark:bg-dark_secondary text-text dark:text-dark_text hover:opacity-50 transition-all duration-300 disabled:opacity-20 disabled:cursor-not-allowed px-1"
+            className="bg-secondary dark:bg-dark_secondary text-text dark:text-dark_text hover:opacity-50 transition-all duration-300 disabled:opacity-20 disabled:cursor-not-allowed px-2 font-bold"
             type="submit"
             disabled={loading}>
             {loading ? 'Saving...' : 'Change'}

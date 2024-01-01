@@ -5,7 +5,7 @@ import { getCurrentUser } from '@/lib/session';
 import { calculateHandValue, deductCoins, gameEnded, getCard, shouldGameEnd } from '@/lib/helpers';
 import { revalidatePath } from 'next/cache';
 import { getErrorMessage } from '@/lib/utils';
-import { randomUUID } from 'crypto';
+import { createHmac, randomUUID } from 'crypto';
 
 export const betAction = async (formData: FormData) => {
   try {
@@ -22,16 +22,18 @@ export const betAction = async (formData: FormData) => {
     if (isActive) throw new Error('You must finish your active game in order to start another.');
 
     const serverSeed = randomUUID();
+    const hashedServerSeed = createHmac('sha256', serverSeed).digest('hex');
+
     const clientSeed = user.seed;
     const nonce = user.nonce;
 
     await prisma.$transaction(async (tx) => {
       const [coinsDeducted, playerCard1, playerCard2, dealerCard1, dealerCard2] = await Promise.all([
         deductCoins(tx, user.email as string, betAmount),
-        getCard(serverSeed, clientSeed, nonce, 0),
-        getCard(serverSeed, clientSeed, nonce, 1),
-        getCard(serverSeed, clientSeed, nonce, 2),
-        getCard(serverSeed, clientSeed, nonce, 3),
+        getCard(hashedServerSeed, clientSeed, nonce, 0),
+        getCard(hashedServerSeed, clientSeed, nonce, 1),
+        getCard(hashedServerSeed, clientSeed, nonce, 2),
+        getCard(hashedServerSeed, clientSeed, nonce, 3),
       ]);
 
       const [playerValue, dealerValue] = await Promise.all([
@@ -47,6 +49,7 @@ export const betAction = async (formData: FormData) => {
             dealer: { value: dealerValue, actions: ['DEAL'], cards: [dealerCard1, dealerCard2] },
           },
           seed: serverSeed,
+          hashedSeed: hashedServerSeed,
           user_email: user.email,
         },
       });
