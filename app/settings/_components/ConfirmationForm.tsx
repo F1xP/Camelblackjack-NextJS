@@ -1,12 +1,13 @@
 'use client';
-import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure, modal } from '@nextui-org/react';
+import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure } from '@nextui-org/react';
 import useAction from '@/app/hooks/useAction';
 import { signOut, useSession } from 'next-auth/react';
 import { Button } from '@/app/_components/ui/Button';
 import { Input } from '@/app/_components/ui/Input';
+import { deleteProfile, resetProfile } from '../_actions/actions';
 
 type ConfirmationFormProps = {
-  action: (formData: FormData) => Promise<{ message: string | null; error: string | null }>;
+  actionName: string;
   text: string;
   modalTitle: string;
   submitText: string;
@@ -15,7 +16,7 @@ type ConfirmationFormProps = {
 };
 
 export default function ConfirmationForm({
-  action,
+  actionName,
   text,
   modalTitle,
   submitText,
@@ -25,6 +26,9 @@ export default function ConfirmationForm({
   const { isOpen, onOpen, onClose, onOpenChange } = useDisclosure();
   const { loading, handleAction } = useAction();
   const { update, data: session } = useSession();
+
+  const action: (formData: FormData) => Promise<{ message: string | null; error: string | null }> =
+    actionName === 'delete' ? deleteProfile : resetProfile;
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

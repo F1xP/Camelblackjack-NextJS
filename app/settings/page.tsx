@@ -1,7 +1,6 @@
 import { Header } from '../_components/ui/Header';
 import ConfirmationForm from './_components/ConfirmationForm';
 import { SaveForm } from './_components/SaveForm';
-import { deleteProfile, resetProfile } from './_actions/actions';
 
 export default function Settings() {
   return (
@@ -11,7 +10,7 @@ export default function Settings() {
         <SaveForm />
         <div className="flex-start flex flex-row gap-2">
           <ConfirmationForm
-            action={resetProfile}
+            actionName="reset"
             text="RESET ACCOUNT"
             modalTitle="Reset your account"
             submitText="CONFIRM"
@@ -19,7 +18,7 @@ export default function Settings() {
             withSignOut={false}
           />
           <ConfirmationForm
-            action={deleteProfile}
+            actionName="delete"
             text="DELETE ACCOUNT"
             modalTitle="Delete your account"
             submitText="CONFIRM"

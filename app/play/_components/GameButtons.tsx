@@ -50,13 +50,13 @@ export const GameButtons: React.FC<GameButtonsProps> = ({ isDisabled }) => {
           value={betAmount}
           onChange={(e) => setBetAmount(e.target.value)}
           variant={'transparent'}
-          className="mb-2"
         />
         <Button
           variant={'outlined'}
           size={'xl'}
           disabled={isDisabled.bet || loading}
-          onClick={() => handleActions('BET')}>
+          onClick={() => handleActions('BET')}
+          className="mt-2">
           BET
         </Button>
       </div>
