@@ -44,7 +44,6 @@ export const updateSeedAction = async (formData: FormData) => {
         seed: formData.get('seed') as string,
       },
     });
-    revalidatePath('/play');
 
     return { message: 'Your seed has been updated successfully.', error: null };
   } catch (e: unknown) {

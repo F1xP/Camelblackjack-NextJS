@@ -3,7 +3,7 @@ import React from 'react';
 import { BiNotepad } from 'react-icons/bi';
 import { Modal, ModalContent, ModalHeader, ModalBody, useDisclosure } from '@nextui-org/react';
 
-export const GameRulesModal: React.FC = () => {
+export const RulesModal: React.FC = () => {
   const { isOpen, onOpen, onClose, onOpenChange } = useDisclosure();
 
   return (

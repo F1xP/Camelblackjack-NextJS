@@ -2,11 +2,14 @@
 import { useState } from 'react';
 import { useToast } from '../_components/ui/Toasts';
 
-type ActionFunction = (formData: FormData) => Promise<{ message: string | null; error: string | null }>;
+type ActionFunction = (
+  formData: FormData
+) => Promise<{ message: string | null; error: string | null; state?: string | null }>;
 
 const useAction = () => {
   const { addToast, removeToast, toasts } = useToast();
   const [loading, setLoading] = useState(false);
+  const [state, setState] = useState('');
 
   const handleAction = async (
     action: ActionFunction,
@@ -22,6 +25,7 @@ const useAction = () => {
         addToast(actionResponse.error, 'Error');
         throw new Error('An error occurred while processing the action.');
       }
+      if (actionResponse.state) setState(actionResponse.state);
     } catch (e) {
       console.log(e);
     } finally {
@@ -29,7 +33,7 @@ const useAction = () => {
     }
   };
 
-  return { loading, handleAction };
+  return { loading, handleAction, state };
 };
 
 export default useAction;

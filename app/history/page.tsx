@@ -1,8 +1,8 @@
 import { prisma } from '@/lib/prisma';
-import Navigation from './_components/Navigation';
 import { Header } from '../_components/ui/Header';
 import GameHistoryTable from './_components/GameHistoryTable';
 import { GameHistoryData } from '@/types/types';
+import TableNavigation from '../_components/ui/TableNavigation';
 
 export default async function History() {
   const gameHistory: GameHistoryData[] | null = await prisma.game.findMany({
@@ -22,7 +22,7 @@ export default async function History() {
     <>
       <Header className="mb-4 self-start">History</Header>
       <GameHistoryTable ganeHistory={gameHistory} />
-      <Navigation dataLength={gameHistory.length} />
+      <TableNavigation dataLength={gameHistory.length} />
     </>
   );
 }

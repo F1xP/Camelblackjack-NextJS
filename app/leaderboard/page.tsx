@@ -1,8 +1,8 @@
 import { prisma } from '@/lib/prisma';
 import LeaderboardTable from './_components/LeaderboardTable';
-import Navigation from './_components/Navigation';
 import { Header } from '../_components/ui/Header';
 import { UserLeaderboardData } from '@/types/types';
+import TableNavigation from '../_components/ui/TableNavigation';
 
 export default async function Leaderboard() {
   const leaderboardData: Omit<UserLeaderboardData, 'winRate'>[] | null = await prisma.user.findMany();
@@ -15,7 +15,7 @@ export default async function Leaderboard() {
     <>
       <Header className="mb-4 self-start">Leaderboard</Header>
       <LeaderboardTable leaderboardData={leaderboardDataWithWinRate} />
-      <Navigation dataLength={leaderboardDataWithWinRate.length} />
+      <TableNavigation dataLength={leaderboardDataWithWinRate.length} />
     </>
   );
 }

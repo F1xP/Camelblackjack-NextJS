@@ -3,7 +3,7 @@ import Dropdown from '@/app/_components/ui/Dropdown';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { MdOutlineKeyboardDoubleArrowRight, MdOutlineKeyboardArrowRight } from 'react-icons/md';
 
-const Navigation: React.FC<{ dataLength: number }> = ({ dataLength }) => {
+const TableNavigation: React.FC<{ dataLength: number }> = ({ dataLength }) => {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const { replace } = useRouter();
@@ -48,29 +48,36 @@ const Navigation: React.FC<{ dataLength: number }> = ({ dataLength }) => {
       </p>
 
       <div className="text-text dark:text-dark_text flex flex-row text-3xl justify-center items-center gap-1">
-        <button
-          onClick={() => setPage(1)}
-          className="border border-secondary dark:border-dark_secondary rounded-sm hover:bg-secondary dark:hover:bg-dark_secondary transition-all duration-300 rotate-180">
-          <MdOutlineKeyboardDoubleArrowRight />
-        </button>
-        <button
-          onClick={() => setPage(Number(currentPage) - 1)}
-          className="border border-secondary dark:border-dark_secondary rounded-sm hover:bg-secondary dark:hover:bg-dark_secondary transition-all duration-300 rotate-180">
-          <MdOutlineKeyboardArrowRight />
-        </button>
-        <button
-          onClick={() => setPage(Number(currentPage) + 1)}
-          className="border border-secondary dark:border-dark_secondary rounded-sm hover:bg-secondary dark:hover:bg-dark_secondary transition-all duration-300">
-          <MdOutlineKeyboardArrowRight />
-        </button>
-        <button
-          onClick={() => setPage(totalPages)}
-          className="border border-secondary dark:border-dark_secondary rounded-sm hover:bg-secondary dark:hover:bg-dark_secondary transition-all duration-300">
-          <MdOutlineKeyboardDoubleArrowRight />
-        </button>
+        {[
+          {
+            icon: <MdOutlineKeyboardDoubleArrowRight />,
+            onClick: () => setPage(1),
+          },
+          {
+            icon: <MdOutlineKeyboardArrowRight />,
+            onClick: () => setPage(Number(currentPage) - 1),
+          },
+          {
+            icon: <MdOutlineKeyboardArrowRight />,
+            onClick: () => setPage(Number(currentPage) + 1),
+          },
+          {
+            icon: <MdOutlineKeyboardDoubleArrowRight />,
+            onClick: () => setPage(totalPages),
+          },
+        ].map((button, index) => (
+          <button
+            key={index}
+            onClick={button.onClick}
+            className={`border border-secondary dark:border-dark_secondary rounded-sm hover:bg-secondary dark:hover:bg-dark_secondary transition-all duration-300 ${
+              index === 0 || index === 1 ? 'rotate-180' : ''
+            }`}>
+            {button.icon}
+          </button>
+        ))}
       </div>
     </section>
   );
 };
 
-export default Navigation;
+export default TableNavigation;
