@@ -162,3 +162,11 @@ input[type='number']::-webkit-outer-spin-button {
     transform: scale(1) rotate(160deg);
   }
 }
+
+.accordion-collapsed {
+  grid-template-rows: 0fr;
+}
+
+.accordion-expanded {
+  grid-template-rows: 1fr;
+}

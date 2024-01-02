@@ -8,6 +8,7 @@ import useAction from '@/app/hooks/useAction';
 import { updateSeedAction } from '../_actions/updateSeed';
 import { Button } from '@/app/_components/ui/Button';
 import { unhashSeedAction } from '../_actions/unhashSeed';
+import { IoMdArrowRoundForward } from 'react-icons/io';
 
 type GameFooterProps = {
   serverSeed: string | undefined;
@@ -140,6 +141,16 @@ const VerifyTab: React.FC = () => {
           </button>
         </Input>
       </li>
+
+      <Button
+        href="/provablyfair"
+        size={'md'}>
+        <p className="mr-2">PROVABLY FAIR DETAILS</p>
+        <IoMdArrowRoundForward
+          className="font-bold"
+          size={24}
+        />
+      </Button>
     </>
   );
 };
