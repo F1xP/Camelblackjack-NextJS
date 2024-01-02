@@ -6,7 +6,7 @@ import React from 'react';
 import { Card, DownCard } from './Card';
 
 type GameDisplayProps = {
-  gameState: GameState | null;
+  gameState: GameState | undefined;
   currentHand: number;
   isSplitted: boolean;
   status1: { state: string; text: string } | null;

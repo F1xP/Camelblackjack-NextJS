@@ -5,10 +5,10 @@ import { createHmac } from 'crypto';
 // Pick<Type, Keys>
 // Omit<Type, Keys>
 
-export const hasPlayerSplitted = async (gameState: GameState | null) =>
+export const hasPlayerSplitted = async (gameState: GameState | undefined) =>
   ['SPLIT'].some((action) => gameState?.player[0].actions.includes(action as Actions));
 
-export const getCurrentHand = async (gameState: GameState | null) => {
+export const getCurrentHand = async (gameState: GameState | undefined) => {
   if (!gameState) return 0;
   const playerHands = gameState.player.length;
   const currentHand =
@@ -20,7 +20,7 @@ export const getCurrentHand = async (gameState: GameState | null) => {
   return currentHand;
 };
 
-export const isAllowedToSplit = async (gameState: GameState | null) => {
+export const isAllowedToSplit = async (gameState: GameState | undefined) => {
   if (!gameState) return false;
 
   const playerHands = gameState.player.length;
@@ -35,7 +35,7 @@ export const isAllowedToSplit = async (gameState: GameState | null) => {
   return true;
 };
 
-export const isAllowedToDouble = async (gameState: GameState | null, hand: number) => {
+export const isAllowedToDouble = async (gameState: GameState | undefined, hand: number) => {
   if (!gameState) return false;
 
   const playerState = gameState.player[hand];
@@ -44,14 +44,14 @@ export const isAllowedToDouble = async (gameState: GameState | null, hand: numbe
   return true;
 };
 
-export const isAllowedToStand = async (gameState: GameState | null, hand: number) => {
+export const isAllowedToStand = async (gameState: GameState | undefined, hand: number) => {
   if (!gameState) return false;
   const playerState = gameState.player[hand];
   if (['DOUBLE', 'STAND', 'BUST'].some((action) => playerState.actions.includes(action as Actions))) return false;
   return true;
 };
 
-export const isAllowedToInsure = async (gameState: GameState | null) => {
+export const isAllowedToInsure = async (gameState: GameState | undefined) => {
   if (!gameState) return false;
   const playerState = gameState.player[0];
   const lastPlayerAction = playerState.actions.slice(-1)[0];
@@ -60,7 +60,7 @@ export const isAllowedToInsure = async (gameState: GameState | null) => {
 };
 
 export const disabledButtons = async (gameData: Pick<Game, 'active' | 'id' | 'state' | 'hashedSeed'> | null) => {
-  const gameState: GameState | null = gameData?.state || null;
+  const gameState = gameData?.state;
   const isGameActive = gameData?.active;
 
   const currentHand = await getCurrentHand(gameState);
@@ -135,7 +135,7 @@ export const getCard = async (serverSeed: string, clientSeed: string, nonce: num
   }
 };
 
-export const getGameStatus = async (isGameActive: boolean, gameState: GameState | null, hand: number) => {
+export const getGameStatus = async (isGameActive: boolean, gameState: GameState | undefined, hand: number) => {
   if (isGameActive) return null;
   if (!gameState || !gameState.player[hand]) return null;
   const hasSplitted = await hasPlayerSplitted(gameState);
@@ -174,7 +174,7 @@ export const getGameStatus = async (isGameActive: boolean, gameState: GameState 
   return null;
 };
 
-export const shouldGameEnd = async (gameState: GameState | null, end: boolean) => {
+export const shouldGameEnd = async (gameState: GameState | undefined, end: boolean) => {
   if (!gameState) return true;
 
   const dealerState = gameState.dealer;

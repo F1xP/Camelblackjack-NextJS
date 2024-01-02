@@ -8,13 +8,15 @@ import { GameFooter } from './_components/GameFooter';
 export default async function Play() {
   const gameData: Pick<Game, 'active' | 'id' | 'state' | 'hashedSeed'> | null = await getCurrentGame();
 
-  const gameState = gameData?.state || null;
-  const [gameStatus1, gameStatus2, currentHand, isDisabled] = await Promise.all([
+  const gameState = gameData?.state;
+  const [status1, status2, currentHand, isDisabled] = await Promise.all([
     getGameStatus(!!gameData?.active, gameState, 0),
     getGameStatus(!!gameData?.active, gameState, 1),
     getCurrentHand(gameState),
     disabledButtons(gameData),
   ]);
+  const isSplitted = gameState?.player.length === 2;
+  const gameId = gameData?.id;
 
   return (
     <>
@@ -24,15 +26,15 @@ export default async function Play() {
           <GameDisplay
             gameState={gameState}
             currentHand={currentHand}
-            status1={gameStatus1}
-            status2={gameStatus2}
-            isSplitted={gameState?.player.length === 2}
-            gameId={gameData?.id}
+            status1={status1}
+            status2={status2}
+            isSplitted={isSplitted}
+            gameId={gameId}
           />
         </div>
         <GameFooter
           serverSeed={gameData?.hashedSeed}
-          gameId={gameData?.id}
+          gameId={gameId}
         />
       </div>
     </>
