@@ -28,8 +28,16 @@ export const betAction = async (formData: FormData) => {
     const nonce = user.nonce;
 
     await prisma.$transaction(async (tx) => {
-      const [coinsDeducted, playerCard1, playerCard2, dealerCard1, dealerCard2] = await Promise.all([
+      const [coinsDeducted, incrementedNonce, playerCard1, playerCard2, dealerCard1, dealerCard2] = await Promise.all([
         deductCoins(tx, user.email as string, betAmount),
+        tx.user.update({
+          where: { email: user.email as string },
+          data: {
+            nonce: {
+              increment: 1,
+            },
+          },
+        }),
         getCard(serverSeed, clientSeed, nonce, 0),
         getCard(serverSeed, clientSeed, nonce, 1),
         getCard(serverSeed, clientSeed, nonce, 2),

@@ -262,9 +262,6 @@ export const gameEnded = async (tx: Prisma.TransactionClient, game: Game) => {
     await tx.user.update({
       where: { email: game.user_email as string },
       data: {
-        nonce: {
-          increment: 1,
-        },
         wager: {
           increment: amount,
         },
