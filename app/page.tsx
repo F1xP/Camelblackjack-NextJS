@@ -40,7 +40,7 @@ export default function Home() {
           href="/play"
           className="group">
           <p className="z-10">PLAY NOW</p>
-          <div className={`absolute opacity-40 group-hover:opacity-0 transition-all duration-1000 z-0`}>
+          <div className={`absolute opacity-50 group-hover:opacity-0 transition-all duration-1000 z-0`}>
             {icons[Math.floor(Math.random() * icons.length)]}
           </div>
         </Button>

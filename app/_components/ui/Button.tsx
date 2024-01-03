@@ -10,7 +10,7 @@ export const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          'bg-buttonBg dark:dark_bg-buttonBg text-primary dark:text-dark_primary hover:text-background dark:hover:text-dark_background hover:-translate-y-1 hover:bg-textt dark:bg-dark_text font-extrabold font-sans duration-1000',
+          'bg-accent dark:bg-accent text-background dark:text-dark_background hover:-translate-y-1 font-extrabold font-sans hover:bg-accent/70 dark:hover:bg-accent/70 duration-1000',
         transparent:
           'font-mono border-2 border-secondary dark:border-dark_secondary font-bold text-text dark:text-dark_text hover:bg-secondary dark:hover:bg-dark_secondary',
         outlined:

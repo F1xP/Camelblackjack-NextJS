@@ -48,7 +48,7 @@ export default function Navbar() {
               href={link.href}
               className={`text-accent small-caps text-[1.2rem] font-bold hover:text-text dark:hover:text-dark_text hover:bg-secondary dark:hover:bg-dark_secondary px-4 h-full flex justify-center items-center transition-all duration-300 ${
                 link.href === location
-                  ? 'border-b border-secondary dark:border-dark_secondary text-text dark:text-dark_text'
+                  ? 'border-b-3 border-secondary dark:border-dark_secondary text-text dark:text-dark_text'
                   : 'border-none'
               }`}>
               {link.name}

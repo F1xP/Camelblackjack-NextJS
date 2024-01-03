@@ -23,13 +23,11 @@ const config: Config = {
         accentBlue: '#1428dd',
         primary: '#15183b',
         */
-        buttonBg: '#d79e00',
-        text: '#3a3a3a',
-        background: '#ffffff',
-        primary: '#c2c2c2',
-        secondary: '#888686',
+        text: '#000000',
+        background: '#e5ebf5',
+        primary: '#96a8c9',
+        secondary: '#b7c2d6',
 
-        dark_buttonBg: '#ffffff',
         dark_text: '#c8c8c8',
         dark_background: '#0c0d24',
         dark_primary: '#15183b',

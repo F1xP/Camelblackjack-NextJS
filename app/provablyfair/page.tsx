@@ -6,7 +6,7 @@ import { atomOneDark, atomOneLight } from 'react-syntax-highlighter/dist/cjs/sty
 import { Header } from '../_components/ui/Header';
 
 export default function ProvablyFair() {
-  const { theme } = useTheme();
+  const { theme, systemTheme } = useTheme();
   const [activeAccordion, setActiveAccordion] = useState<number | null>(null);
 
   const toggleAccordion = (accordionIndex: number) =>
@@ -91,7 +91,15 @@ export default function ProvablyFair() {
           <SyntaxHighlighter
             className="rounded-md w-full h-[500px] border-1 border-secondary dark:border-dark_secondary"
             language="javascript"
-            style={theme === 'light' ? atomOneLight : atomOneDark}>
+            style={
+              theme === 'system'
+                ? systemTheme === 'light'
+                  ? atomOneLight
+                  : atomOneDark
+                : theme === 'dark'
+                ? atomOneDark
+                : atomOneLight
+            }>
             {codeSnippet}
           </SyntaxHighlighter>
         </div>
