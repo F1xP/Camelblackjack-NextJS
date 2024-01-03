@@ -76,7 +76,7 @@ export default function ProvablyFair() {
         <p className="p-2 text-text dark:text-dark_text text-md">
           The Provably Fair algorithm works by combining the client seed, server seed, and nonce to create a unique and
           unpredictable result for each bet. The server seed is kept secret until the end of the game to prevent any
-          manipulation. Players can verify the fairness of their bets by checking the provided information.
+          manipulation.
         </p>
       ),
     },

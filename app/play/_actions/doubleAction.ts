@@ -28,7 +28,7 @@ export const doubleAction = async (formData: FormData) => {
       });
       if (!game) return { message: null, error: 'No active game found.' };
 
-      const serverSeed = game.hashedSeed;
+      const serverSeed = game.seed;
       const clientSeed = user.seed;
       const cursor = game.cursor;
       const nonce = user.nonce;

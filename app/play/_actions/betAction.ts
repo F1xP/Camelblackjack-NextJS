@@ -30,10 +30,10 @@ export const betAction = async (formData: FormData) => {
     await prisma.$transaction(async (tx) => {
       const [coinsDeducted, playerCard1, playerCard2, dealerCard1, dealerCard2] = await Promise.all([
         deductCoins(tx, user.email as string, betAmount),
-        getCard(hashedServerSeed, clientSeed, nonce, 0),
-        getCard(hashedServerSeed, clientSeed, nonce, 1),
-        getCard(hashedServerSeed, clientSeed, nonce, 2),
-        getCard(hashedServerSeed, clientSeed, nonce, 3),
+        getCard(serverSeed, clientSeed, nonce, 0),
+        getCard(serverSeed, clientSeed, nonce, 1),
+        getCard(serverSeed, clientSeed, nonce, 2),
+        getCard(serverSeed, clientSeed, nonce, 3),
       ]);
 
       const [playerValue, dealerValue] = await Promise.all([

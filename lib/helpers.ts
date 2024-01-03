@@ -221,7 +221,7 @@ export const deductCoins = async (tx: Prisma.TransactionClient, userEmail: strin
 };
 
 export const dealerTurn = async (game: Game, clientSeed: string, nonce: number) => {
-  const serverSeed = game.hashedSeed;
+  const serverSeed = game.seed;
   const cursor = game.cursor;
   const dealerState = game.state.dealer;
 
