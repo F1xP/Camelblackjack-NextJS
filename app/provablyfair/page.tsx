@@ -20,10 +20,10 @@ export default function ProvablyFair() {
     // Function to verify the bet by re-performing the code
     const verifyBet = async () => {
     // Placeholder values for serverSeed, clientSeed, nonce, and cursor
-    const serverSeed = 'serverSeed';  // Replace with actual serverSeed
-    const clientSeed = 'clientSeed';  // Replace with actual clientSeed
-    const nonce = 0;       // Replace with actual nonce
-    const cursor = 1;      // Replace with actual cursor
+    const serverSeed = 'serverSeed'; // Replace with actual serverSeed
+    const clientSeed = 'clientSeed'; // Replace with actual clientSeed
+    const nonce = 0; // Replace with actual nonce
+    const cursor = 1; // Replace with actual cursor
   
     // Calculate the current round and initialize the cursor
     let currentRound = Math.floor(cursor / 32);

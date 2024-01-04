@@ -54,7 +54,7 @@ export default async function Profile({ params }: { params: { id: string } }) {
             return (
               <div
                 key={index}
-                className={`px-2 py-4 bg-background dark:bg-dark_secondary flex-1 min-w-[200px] rounded-lg flex flex-col justify-center items-center shadow-md overflow-hidden overflow-ellipsis`}>
+                className={`px-2 py-4 bg-background dark:bg-dark_background flex-1 min-w-[200px] rounded-lg flex flex-col justify-center items-center shadow-md overflow-hidden overflow-ellipsis`}>
                 <p className="text-center text-accent font-bold">{item.value}</p>
                 <p className="text-center text-text dark:text-dark_text font-bold text-sm">{item.text}</p>
               </div>
