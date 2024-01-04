@@ -20,6 +20,7 @@ const GameHistoryHead: React.FC = () => {
     <thead className="w-full text-left">
       <tr>
         <th className="px-4 py-2">Game ID</th>
+        <th className="px-4 py-2">Server Seed</th>
         {[
           { filter: 'date', text: 'Date' },
           { filter: 'bet', text: 'Total Bet' },

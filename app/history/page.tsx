@@ -20,7 +20,7 @@ export default async function History() {
 
   return (
     <>
-      <Header className="mb-4 self-start">History</Header>
+      <Header className="mb-4 self-start">Game History</Header>
       <GameHistoryTable ganeHistory={gameHistory} />
       <TableNavigation dataLength={gameHistory.length} />
     </>

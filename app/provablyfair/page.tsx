@@ -38,8 +38,8 @@ export default function ProvablyFair() {
       while (currentRoundCursor < 32) {
         const rank = ranks[buffer[currentRoundCursor] % ranks.length]
         const suit = suits[buffer[currentRoundCursor] % suits.length]
-        // Log nonce, cursor, and serverSeed for transparency
-        console.log(\`nonce: \${nonce}, cursor: \${cursor}, serverSeed: \${serverSeed}\`);
+        // Log nonce, cursor, clientSeed and serverSeed for transparency
+        console.log(\`nonce: \${nonce}, cursor: \${cursor}, serverSeed: \${serverSeed}\, clientSeed: \${clientSeed}\`);
         // Calculate and log the result of the bet
         console.log(\`Result: \${rank} of \${suit}\`);
         // Return the result as an object with 'rank' and 'suit'

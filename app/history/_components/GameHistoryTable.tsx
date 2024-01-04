@@ -47,6 +47,7 @@ const GameHistoryTable: React.FC<{
               key={index}
               className="border-t-[0.5px] transition-all duration-300 border-secondary dark:border-dark_secondary text-text dark:text-dark_text font-semibold w-full hover:bg-secondary dark:hover:bg-dark_secondary">
               <td className="px-4 py-2">{game.id}</td>
+              <td className="px-4 py-2">{game.hashedSeed}</td>
               <td className="px-4 py-2">{new Date(game.createdAt).toLocaleDateString()}</td>
               <td className="px-4 py-2">
                 {game.state.player[1]
