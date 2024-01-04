@@ -19,45 +19,45 @@ export default function ProvablyFair() {
   
     // Function to verify the bet by re-performing the code
     const verifyBet = async () => {
-      // Placeholder values for serverSeed, clientSeed, nonce, and cursor
-      const serverSeed = '';  // Replace with actual serverSeed
-      const clientSeed = '';  // Replace with actual clientSeed
-      const nonce = '';       // Replace with actual nonce
-      const cursor = '';      // Replace with actual cursor
+    // Placeholder values for serverSeed, clientSeed, nonce, and cursor
+    const serverSeed = 'serverSeed';  // Replace with actual serverSeed
+    const clientSeed = 'clientSeed';  // Replace with actual clientSeed
+    const nonce = 0;       // Replace with actual nonce
+    const cursor = 1;      // Replace with actual cursor
   
-      // Calculate the current round and initialize the cursor
-      let currentRound = Math.floor(cursor / 32);
-      let currentRoundCursor = cursor;
+    // Calculate the current round and initialize the cursor
+    let currentRound = Math.floor(cursor / 32);
+    let currentRoundCursor = cursor;
   
-      while (true) {
-        // Create an HMAC instance using SHA-256 and update it with the provided values
-        const hmac = createHmac('sha256', serverSeed);
-        hmac.update(\`\${clientSeed}:\${nonce}:\${currentRound}\`);
-        const buffer = hmac.digest();
+    while (true) {
+      // Create an HMAC instance using SHA-256 and update it with the provided values
+      const hmac = createHmac('sha256', serverSeed);
+      hmac.update(\`\${clientSeed}:\${nonce}:\${currentRound}\`);
+      const buffer = hmac.digest();
   
-        while (currentRoundCursor < 32) {
-          const rank = ranks[buffer[currentRoundCursor] % ranks.length]
-          const suit = suits[buffer[currentRoundCursor] % suits.length]
-          // Log nonce, cursor, and serverSeed for transparency
-          console.log(\`nonce: \${nonce}, cursor: \${cursor}, serverSeed: \${serverSeed}\`);
-          // Calculate and log the result of the bet
-          console.log(\`Result: \${rank} of \${suit}\`);
-          // Return the result as an object with 'rank' and 'suit'
-          return {
-            rank: rank,
-            suit: suit,
-          };
-        }
-  
-        // Reset the cursor for the next round
-        currentRoundCursor = 0;
-        currentRound += 1;
+      while (currentRoundCursor < 32) {
+        const rank = ranks[buffer[currentRoundCursor] % ranks.length]
+        const suit = suits[buffer[currentRoundCursor] % suits.length]
+        // Log nonce, cursor, and serverSeed for transparency
+        console.log(\`nonce: \${nonce}, cursor: \${cursor}, serverSeed: \${serverSeed}\`);
+        // Calculate and log the result of the bet
+        console.log(\`Result: \${rank} of \${suit}\`);
+        // Return the result as an object with 'rank' and 'suit'
+        return {
+          rank: rank,
+          suit: suit,
+        };
       }
-    };
   
-    // Call the verifyBet function to re-perform the code and verify the bet
-    verifyBet().then((result) => console.log(result));
-  `;
+      // Reset the cursor for the next round
+      currentRoundCursor = 0;
+      currentRound += 1;
+    }
+  };
+  
+  // Call the verifyBet function to re-perform the code and verify the bet
+  verifyBet().then((result) => console.log(result));
+`;
 
   const accordionItems = [
     {

@@ -2,9 +2,6 @@ import { Actions, Game, GameState, UserState } from '@/types/types';
 import { Prisma } from '@prisma/client';
 import { createHmac } from 'crypto';
 
-// Pick<Type, Keys>
-// Omit<Type, Keys>
-
 export const hasPlayerSplitted = async (gameState: GameState | undefined) =>
   ['SPLIT'].some((action) => gameState?.player[0].actions.includes(action as Actions));
 
@@ -119,12 +116,6 @@ export const getCard = async (serverSeed: string, clientSeed: string, nonce: num
     hmac.update(`${clientSeed}:${nonce}:${currentRound}`);
     const buffer = hmac.digest();
     while (currentRoundCursor < 32) {
-      console.log(`nonce: ${nonce}, cursor: ${cursor}, serverSeed: ${serverSeed}`);
-      console.log(
-        `Results: ${
-          (ranks[buffer[currentRoundCursor] % ranks.length], suits[buffer[currentRoundCursor] % suits.length])
-        }`
-      );
       return {
         rank: ranks[buffer[currentRoundCursor] % ranks.length],
         suit: suits[buffer[currentRoundCursor] % suits.length],
@@ -256,7 +247,6 @@ export const gameEnded = async (tx: Prisma.TransactionClient, game: Game) => {
         : handResult?.state === 'Push'
         ? 1
         : 0;
-    if (resultMultiplier === 0) return;
     const incrementAmount = amount * resultMultiplier;
     totalPayout += incrementAmount;
     await tx.user.update({
