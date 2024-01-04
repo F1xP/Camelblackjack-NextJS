@@ -9,15 +9,12 @@ type GameFooterProps = {
 
 export const GameFooter: React.FC<GameFooterProps> = ({ serverSeed, gameId }) => {
   return (
-    <section className="w-full h-10 flex flex-col">
-      <span className="w-full h-[3px] bg-secondary dark:bg-dark_secondary"></span>
-      <div className="w-full h-10 flex items-center px-2">
-        <RulesModal />
-        <ProvablyFairModal
-          serverSeed={serverSeed}
-          gameId={gameId}
-        />
-      </div>
+    <section className="w-full flex flex-row items-center p-1.5 border-t-2 border-secondary dark:border-dark_secondary">
+      <RulesModal />
+      <ProvablyFairModal
+        serverSeed={serverSeed}
+        gameId={gameId}
+      />
     </section>
   );
 };

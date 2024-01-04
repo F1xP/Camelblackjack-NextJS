@@ -14,7 +14,7 @@ export const buttonVariants = cva(
         transparent:
           'font-mono border-2 border-secondary dark:border-dark_secondary font-bold text-text dark:text-dark_text hover:bg-secondary dark:hover:bg-dark_secondary',
         outlined:
-          'font-mono text-lg bg-secondary dark:bg-dark_secondary border border-secondary dark:border-dark_secondary font-bold text-text dark:text-dark_text hover:border-text',
+          'font-mono text-lg bg-secondary dark:bg-dark_secondary border border-secondary dark:border-dark_secondary font-bold text-text dark:text-dark_text hover:border-text dark:hover:border-dark_text',
       },
       size: {
         xs: 'py-1 px-4 text-xs rounded-sm',

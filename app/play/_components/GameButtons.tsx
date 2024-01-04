@@ -41,25 +41,23 @@ export const GameButtons: React.FC<GameButtonsProps> = ({ isDisabled }) => {
   };
 
   return (
-    <section className="w-full h-auto flex-1 flex flex-col p-1 bg-primary dark:bg-dark_primary/30">
-      <div className="flex flex-col px-1">
-        <UserCoins />
-        <Input
-          type="number"
-          inputMode="numeric"
-          value={betAmount}
-          onChange={(e) => setBetAmount(e.target.value)}
-          variant={'transparent'}
-        />
-        <Button
-          variant={'outlined'}
-          size={'xl'}
-          disabled={isDisabled.bet || loading}
-          onClick={() => handleActions('BET')}
-          className="mt-2">
-          BET
-        </Button>
-      </div>
+    <section className="w-full h-auto flex-1 flex flex-col px-2 py-1 gap-1 bg-primary/30 dark:bg-dark_primary/30">
+      <UserCoins />
+      <Input
+        type="number"
+        inputMode="numeric"
+        value={betAmount}
+        onChange={(e) => setBetAmount(e.target.value)}
+        variant={'transparent'}
+      />
+      <Button
+        variant={'outlined'}
+        size={'xl'}
+        disabled={isDisabled.bet || loading}
+        onClick={() => handleActions('BET')}
+        className="mt-2">
+        BET
+      </Button>
       {!isDisabled.insurance ? <InsuranceButtons isDisabled={isDisabled} /> : <PlayButtons isDisabled={isDisabled} />}
     </section>
   );
@@ -126,7 +124,7 @@ const PlayButtons: React.FC<GameButtonsProps> = ({ isDisabled }) => {
     }
   };
   return (
-    <div className="flex flex-col p-1 gap-1">
+    <div className="flex flex-col gap-1">
       <div className="flex flex-row gap-1">
         {[
           {
@@ -199,7 +197,7 @@ const InsuranceButtons: React.FC<GameButtonsProps> = ({ isDisabled }) => {
   };
 
   return (
-    <div className="flex flex-col p-1 gap-1">
+    <div className="flex flex-col gap-1">
       <p className="text-center text-2xl font-bold text-text dark:text-dark_text font-mono">Insurance?</p>
       <div className="flex flex-row gap-1">
         {[
