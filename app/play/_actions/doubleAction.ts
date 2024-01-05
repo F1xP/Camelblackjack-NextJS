@@ -20,14 +20,14 @@ import { getErrorMessage } from '@/lib/utils';
 export const doubleAction = async (formData: FormData) => {
   try {
     const user = await getCurrentUser();
-    if (!user || !user.email) return { message: null, error: 'You must be signed in.' };
+    if (!user || !user.email) throw new Error('You must be signed in.');
+
+    const game: Game | null = await prisma.game.findFirst({
+      where: { active: true, user_email: user.email },
+    });
+    if (!game) throw new Error('No active game found.');
 
     await prisma.$transaction(async (tx) => {
-      const game: Game | null = await tx.game.findFirst({
-        where: { active: true, user_email: user.email },
-      });
-      if (!game) return { message: null, error: 'No active game found.' };
-
       const serverSeed = game.seed;
       const clientSeed = user.seed;
       const cursor = game.cursor;
@@ -36,10 +36,7 @@ export const doubleAction = async (formData: FormData) => {
       const currentHand = await getCurrentHand(game.state);
       const canDouble = await isAllowedToDouble(game.state, currentHand);
       if (!canDouble)
-        return {
-          message: null,
-          error: 'Double action is not available at this point. Please check your current game status.',
-        };
+        throw new Error('Double action is not available at this point. Please check your current game status.');
 
       const hasSplitted = await hasPlayerSplitted(game.state);
       const playerState = game.state.player[currentHand];
@@ -70,8 +67,8 @@ export const doubleAction = async (formData: FormData) => {
             },
           },
         });
-      revalidatePath('/play');
     });
+    revalidatePath('/play');
     return { message: 'Double action finished.', error: null };
   } catch (e) {
     console.log(e);

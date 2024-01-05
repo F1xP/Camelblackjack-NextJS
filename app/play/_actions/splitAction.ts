@@ -10,20 +10,16 @@ import { getErrorMessage } from '@/lib/utils';
 export const splitAction = async (formData: FormData) => {
   try {
     const user = await getCurrentUser();
-    if (!user || !user.email) return { message: null, error: 'You must be signed in.' };
+    if (!user || !user.email) throw new Error('You must be signed in.');
 
     const game: Game | null = await prisma.game.findFirst({
       where: { active: true, user_email: user.email },
     });
-
-    if (!game) return { message: null, error: 'No active game found.' };
+    if (!game) throw new Error('No active game found.');
 
     const canSplit = await isAllowedToSplit(game.state);
     if (!canSplit)
-      return {
-        message: null,
-        error: 'Split action is not available at this point. Please check your current game status.',
-      };
+      throw new Error('Split action is not available at this point. Please check your current game status.');
 
     const playerState = game.state.player[0];
 
@@ -46,19 +42,21 @@ export const splitAction = async (formData: FormData) => {
     game.state.player[0] = playerState;
 
     await prisma.$transaction(async (tx) => {
-      await deductCoins(tx, user.email as string, playerState.amount);
-
-      await tx.game.update({
-        where: { id: game.id },
-        data: {
-          state: {
-            player: game.state.player,
-            dealer: game.state.dealer,
+      await Promise.all([
+        deductCoins(tx, user.email as string, playerState.amount),
+        tx.game.update({
+          where: { id: game.id },
+          data: {
+            state: {
+              player: game.state.player,
+              dealer: game.state.dealer,
+            },
           },
-        },
-      });
-      revalidatePath('/play');
+        }),
+      ]);
     });
+    revalidatePath('/play');
+
     return { message: 'Split action finished.', error: null };
   } catch (e: unknown) {
     console.log(e);

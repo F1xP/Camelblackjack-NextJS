@@ -17,13 +17,12 @@ import { getErrorMessage } from '@/lib/utils';
 export const standAction = async (formData: FormData) => {
   try {
     const user = await getCurrentUser();
-    if (!user || !user.email) return { message: null, error: 'You must be signed in.' };
+    if (!user || !user.email) throw new Error('You must be signed in.');
 
     const game: Game | null = await prisma.game.findFirst({
       where: { active: true, user_email: user.email },
     });
-
-    if (!game) return { message: null, error: 'No active game found.' };
+    if (!game) throw new Error('No active game found.');
 
     const clientSeed = user.seed;
 
@@ -31,10 +30,7 @@ export const standAction = async (formData: FormData) => {
 
     const canStand = await isAllowedToStand(game.state, currentHand);
     if (!canStand)
-      return {
-        message: null,
-        error: 'Stand action is not available at this point. Please check your current game status.',
-      };
+      throw new Error('Stand action is not available at this point. Please check your current game status.');
 
     const hasSplitted = await hasPlayerSplitted(game.state);
 
@@ -56,8 +52,8 @@ export const standAction = async (formData: FormData) => {
             },
           },
         });
-      revalidatePath('/play');
     });
+    revalidatePath('/play');
     return { message: 'Stand action finished.', error: null };
   } catch (e) {
     console.log(e);

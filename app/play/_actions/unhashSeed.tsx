@@ -9,10 +9,10 @@ import { z } from 'zod';
 export const unhashSeedAction = async (formData: FormData) => {
   try {
     const user = await getCurrentUser();
-    if (!user || !user.email) return { message: null, error: 'You must be signed in.' };
+    if (!user || !user.email) throw new Error('You must be signed in.');
 
     const seed: any = formData.get('seed');
-    if (!seed) return { message: null, error: `Server Seed field is required.` };
+    if (!seed) throw new Error(`Server Seed field is required.`);
 
     const schema = z.object({
       seed: z.string(),
@@ -33,7 +33,7 @@ export const unhashSeedAction = async (formData: FormData) => {
       where: { hashedSeed: seed },
     });
 
-    if (unhashedSeed?.active) return { message: null, error: `Unable to unhash, game is in progress.` };
+    if (unhashedSeed?.active) throw new Error(`Unable to unhash, game is in progress.`);
 
     return { message: 'Seed unhashed successfully.', error: null, state: unhashedSeed?.seed };
   } catch (e: unknown) {

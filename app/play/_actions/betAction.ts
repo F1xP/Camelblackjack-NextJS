@@ -10,11 +10,11 @@ import { createHmac, randomUUID } from 'crypto';
 export const betAction = async (formData: FormData) => {
   try {
     const user = await getCurrentUser();
-    if (!user || !user.email) return { message: null, error: 'You must be signed in.' };
+    if (!user || !user.email) throw new Error('You must be signed in.');
 
     const betAmount: number = Number(formData.get('betAmount'));
-    if (isNaN(betAmount)) return { message: null, error: 'Bet amount must be a valid number.' };
-    if (betAmount < 10) return { message: null, error: 'Minimum bet amount is 10.' };
+    if (isNaN(betAmount)) throw new Error('Bet amount must be a valid number.');
+    if (betAmount < 10) throw new Error('Minimum bet amount is 10.');
 
     const isActive = await prisma.game.findFirst({
       where: { active: true, user_email: user.email },
@@ -28,16 +28,13 @@ export const betAction = async (formData: FormData) => {
     const nonce = user.nonce;
 
     await prisma.$transaction(async (tx) => {
-      const [coinsDeducted, incrementedNonce, playerCard1, playerCard2, dealerCard1, dealerCard2] = await Promise.all([
-        deductCoins(tx, user.email as string, betAmount),
-        tx.user.update({
-          where: { email: user.email as string },
-          data: {
-            nonce: {
-              increment: 1,
-            },
-          },
-        }),
+      console.log(
+        'Start of transaction:',
+        new Date().toLocaleTimeString('en-US', { hour12: false }) + '.' + new Date().getMilliseconds()
+      );
+
+      const [coinsDeducted, playerCard1, playerCard2, dealerCard1, dealerCard2] = await Promise.all([
+        deductCoins(tx, user.email as string, betAmount, true),
         getCard(serverSeed, clientSeed, nonce, 0),
         getCard(serverSeed, clientSeed, nonce, 1),
         getCard(serverSeed, clientSeed, nonce, 2),
@@ -75,8 +72,12 @@ export const betAction = async (formData: FormData) => {
             },
           },
         });
-      revalidatePath('/play');
+      console.log(
+        'End of transaction:',
+        new Date().toLocaleTimeString('en-US', { hour12: false }) + '.' + new Date().getMilliseconds()
+      );
     });
+    revalidatePath('/play');
     return { message: 'Bet action finished.', error: null };
   } catch (e: unknown) {
     console.log(e);

@@ -19,31 +19,24 @@ import { getErrorMessage } from '@/lib/utils';
 export const hitAction = async (formData: FormData) => {
   try {
     const user = await getCurrentUser();
-    if (!user || !user.email) return { message: null, error: 'You must be signed in.' };
+    if (!user || !user.email) throw new Error('You must be signed in.');
 
     const game: Game | null = await prisma.game.findFirst({
       where: { active: true, user_email: user.email },
     });
-
-    if (!game) return { message: null, error: 'No active game found.' };
+    if (!game) throw new Error('No active game found.');
 
     const serverSeed = game.seed;
     const clientSeed = user.seed;
     const cursor = game.cursor;
     const nonce = user.nonce;
 
-    const currentHand = await getCurrentHand(game.state);
-    const hasSplitted = await hasPlayerSplitted(game.state);
+    const [currentHand, hasSplitted] = await Promise.all([getCurrentHand(game.state), hasPlayerSplitted(game.state)]);
 
     const playerState = game.state.player[currentHand];
-
     const canHit = await isAllowedToStand(game.state, currentHand);
-    if (!canHit)
-      return {
-        message: null,
-        error: 'Hit action is not available at this point. Please check your current game status.',
-      };
 
+    if (!canHit) throw new Error('Hit action is not available at this point. Please check your current game status.');
     const newPlayerCard = await getCard(serverSeed, clientSeed, nonce, cursor);
     playerState.cards = [...playerState.cards, newPlayerCard];
     playerState.value = await calculateHandValue(playerState.cards, 'P');
@@ -67,8 +60,8 @@ export const hitAction = async (formData: FormData) => {
             },
           },
         });
-      revalidatePath('/play');
     });
+    revalidatePath('/play');
     return { message: 'Hit action finished.', error: null };
   } catch (e) {
     console.log(e);

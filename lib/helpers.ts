@@ -199,12 +199,20 @@ export const shouldGameEnd = async (gameState: GameState | undefined, end: boole
   return hasBusted || end;
 };
 
-export const deductCoins = async (tx: Prisma.TransactionClient, userEmail: string, amountToDeduct: number) => {
+export const deductCoins = async (
+  tx: Prisma.TransactionClient,
+  userEmail: string,
+  amountToDeduct: number,
+  incrementNonce?: boolean
+) => {
   const deducted = await tx.user.update({
     where: { email: userEmail as string },
     data: {
       coins: {
         decrement: amountToDeduct,
+      },
+      nonce: {
+        increment: incrementNonce ? 1 : 0,
       },
     },
   });

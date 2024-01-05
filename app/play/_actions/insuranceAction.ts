@@ -10,22 +10,19 @@ import { getErrorMessage } from '@/lib/utils';
 export const insuranceAcceptAction = async (formData: FormData) => {
   try {
     const user = await getCurrentUser();
-    if (!user || !user.email) return { message: null, error: 'You must be signed in.' };
+    if (!user || !user.email) throw new Error('You must be signed in.');
+
+    const game: Game | null = await prisma.game.findFirst({
+      where: { active: true, user_email: user.email },
+    });
+    if (!game) throw new Error('No active game found.');
 
     await prisma.$transaction(async (tx) => {
-      const game: Game | null = await tx.game.findFirst({
-        where: { active: true, user_email: user.email },
-      });
-      if (!game) return { message: null, error: 'No active game found.' };
-
       const playerState = game.state.player[0];
 
       const canInsure = await isAllowedToInsure(game.state);
       if (!canInsure)
-        return {
-          message: null,
-          error: 'Insurance action is not available at this point. Please check your current game status.',
-        };
+        throw new Error('Insurance action is not available at this point. Please check your current game status.');
 
       await deductCoins(tx, user.email as string, playerState.amount / 2);
 
@@ -45,13 +42,12 @@ export const insuranceAcceptAction = async (formData: FormData) => {
             },
           },
         });
-
-      revalidatePath('/play');
     });
+    revalidatePath('/play');
     return { message: 'Insurance accepted action finished.', error: null };
   } catch (e) {
     console.log(e);
-    return { message: null, error: 'An error occurred while processing your insurance action.' };
+    return { message: null, error: getErrorMessage(e) };
   }
 };
 
@@ -89,8 +85,8 @@ export const insuranceDeclineAction = async (formData: FormData) => {
             },
           },
         });
-      revalidatePath('/play');
     });
+    revalidatePath('/play');
     return { message: 'Insurance declined action finished.', error: null };
   } catch (e) {
     console.log(e);
