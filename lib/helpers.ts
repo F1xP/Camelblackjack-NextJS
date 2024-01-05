@@ -56,11 +56,13 @@ export const isAllowedToInsure = async (gameState: GameState | undefined) => {
   return true;
 };
 
-export const disabledButtons = async (gameData: Pick<Game, 'active' | 'id' | 'state' | 'hashedSeed'> | null) => {
+export const disabledButtons = async (
+  gameData: Pick<Game, 'active' | 'id' | 'state' | 'hashedSeed'> | null,
+  currentHand: 0 | 1
+) => {
   const gameState = gameData?.state;
   const isGameActive = gameData?.active;
 
-  const currentHand = await getCurrentHand(gameState);
   const [canDouble, canSplit, canStand, canInsure] = await Promise.all([
     isAllowedToDouble(gameState, currentHand),
     isAllowedToSplit(gameState),
@@ -69,7 +71,7 @@ export const disabledButtons = async (gameData: Pick<Game, 'active' | 'id' | 'st
   ]);
 
   return {
-    bet: gameData?.active || false,
+    bet: isGameActive || false,
     split: !isGameActive || !canSplit,
     stand: !isGameActive || !canStand,
     double: !isGameActive || !canDouble,
@@ -83,9 +85,8 @@ export const calculateHandValue = async (hand: any, type: 'P' | 'D') => {
   let aceCount = 0;
 
   for (const card of hand) {
-    const cardValue = card.rank === 'A' ? 11 : isNaN(Number(card.rank)) ? 10 : Number(card.rank);
     if (card.rank === 'A') aceCount++;
-    else values[0] += cardValue;
+    else values[0] += card.rank === 'A' ? 11 : Number(card.rank) || 10;
   }
 
   for (let i = 0; i < aceCount; i++) {
@@ -95,9 +96,7 @@ export const calculateHandValue = async (hand: any, type: 'P' | 'D') => {
         values[1] = values[0] + 11;
         values[0] += 1;
       }
-      if (type === 'D') {
-        values[0] += 11;
-      }
+      if (type === 'D') values[0] += 11;
     }
   }
 
@@ -129,13 +128,15 @@ export const getCard = async (serverSeed: string, clientSeed: string, nonce: num
 export const getGameStatus = async (isGameActive: boolean, gameState: GameState | undefined, hand: number) => {
   if (isGameActive) return null;
   if (!gameState || !gameState.player[hand]) return null;
-  const hasSplitted = await hasPlayerSplitted(gameState);
+  const [hasSplitted, playerValue] = await Promise.all([
+    hasPlayerSplitted(gameState),
+    getHandValue(gameState.player[hand]),
+  ]);
+
+  const dealerValue = Number(gameState.dealer.value[0]);
 
   const playerCards = gameState.player[hand].cards;
   const dealerCards = gameState.dealer.cards;
-
-  const playerValue = await getHandValue(gameState.player[hand]);
-  const dealerValue = Number(gameState.dealer.value[0]);
 
   const lastPlayerAction = gameState.player[hand].actions.slice(-1)[0];
   const lastDealerAction = gameState.dealer.actions.slice(-1)[0];
@@ -219,17 +220,18 @@ export const deductCoins = async (
   if (deducted.coins < 0) throw new Error('Insufficient coins.');
 };
 
-export const dealerTurn = async (game: Game, clientSeed: string, nonce: number) => {
+export const dealerTurn = async (
+  game: Pick<Game, 'id' | 'state' | 'seed' | 'cursor'>,
+  clientSeed: string,
+  nonce: number
+) => {
   const serverSeed = game.seed;
   const cursor = game.cursor;
   const dealerState = game.state.dealer;
 
   const { value, actions, cards } = dealerState;
 
-  if (value[0] >= 17) {
-    actions.push(value[0] > 21 ? 'BUST' : 'STAND');
-    return;
-  }
+  if (value[0] >= 17) return actions.push(value[0] > 21 ? 'BUST' : 'STAND');
 
   const newDealerCard = await getCard(serverSeed, clientSeed, nonce, cursor);
   dealerState.cards = [...cards, newDealerCard];
@@ -240,7 +242,10 @@ export const dealerTurn = async (game: Game, clientSeed: string, nonce: number) 
   await dealerTurn(game, clientSeed, nonce);
 };
 
-export const gameEnded = async (tx: Prisma.TransactionClient, game: Game) => {
+export const gameEnded = async (
+  tx: Prisma.TransactionClient,
+  game: Pick<Game, 'id' | 'state' | 'seed' | 'cursor' | 'active' | 'user_email'>
+) => {
   let totalPayout = 0;
   const updateCoins = async (index: number) => {
     const playerState = game.state.player[index];

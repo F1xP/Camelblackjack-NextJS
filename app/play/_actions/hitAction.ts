@@ -1,7 +1,7 @@
 'use server';
 
 import { prisma } from '@/lib/prisma';
-import { getCurrentUser } from '@/lib/session';
+import { getCurrentServerGame, getCurrentUser } from '@/lib/session';
 import {
   calculateHandValue,
   dealerTurn,
@@ -12,7 +12,6 @@ import {
   isAllowedToStand,
   shouldGameEnd,
 } from '@/lib/helpers';
-import { Game } from '@/types/types';
 import { revalidatePath } from 'next/cache';
 import { getErrorMessage } from '@/lib/utils';
 
@@ -21,10 +20,7 @@ export const hitAction = async (formData: FormData) => {
     const user = await getCurrentUser();
     if (!user || !user.email) throw new Error('You must be signed in.');
 
-    const game: Game | null = await prisma.game.findFirst({
-      where: { active: true, user_email: user.email },
-    });
-    if (!game) throw new Error('No active game found.');
+    const game = await getCurrentServerGame(user.email);
 
     const serverSeed = game.seed;
     const clientSeed = user.seed;

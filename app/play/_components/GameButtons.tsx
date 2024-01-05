@@ -137,9 +137,9 @@ const PlayButtons: React.FC<GameButtonsProps> = ({ isDisabled }) => {
             action: 'STAND',
             disabled: isDisabled.stand || loading,
           },
-        ].map((item, index) => (
+        ].map((item) => (
           <Button
-            key={index}
+            key={item.name}
             variant="outlined"
             size="md"
             disabled={item.disabled}
@@ -161,9 +161,9 @@ const PlayButtons: React.FC<GameButtonsProps> = ({ isDisabled }) => {
             action: 'DOUBLE',
             disabled: isDisabled.double || loading,
           },
-        ].map((item, index) => (
+        ].map((item) => (
           <Button
-            key={index}
+            key={item.name}
             variant="outlined"
             size="md"
             disabled={item.disabled}

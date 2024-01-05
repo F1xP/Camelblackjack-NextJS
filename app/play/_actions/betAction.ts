@@ -18,6 +18,9 @@ export const betAction = async (formData: FormData) => {
 
     const isActive = await prisma.game.findFirst({
       where: { active: true, user_email: user.email },
+      select: {
+        active: true,
+      },
     });
     if (isActive) throw new Error('You must finish your active game in order to start another.');
 
@@ -28,11 +31,6 @@ export const betAction = async (formData: FormData) => {
     const nonce = user.nonce;
 
     await prisma.$transaction(async (tx) => {
-      console.log(
-        'Start of transaction:',
-        new Date().toLocaleTimeString('en-US', { hour12: false }) + '.' + new Date().getMilliseconds()
-      );
-
       const [coinsDeducted, playerCard1, playerCard2, dealerCard1, dealerCard2] = await Promise.all([
         deductCoins(tx, user.email as string, betAmount, true),
         getCard(serverSeed, clientSeed, nonce, 0),
@@ -72,10 +70,6 @@ export const betAction = async (formData: FormData) => {
             },
           },
         });
-      console.log(
-        'End of transaction:',
-        new Date().toLocaleTimeString('en-US', { hour12: false }) + '.' + new Date().getMilliseconds()
-      );
     });
     revalidatePath('/play');
     return { message: 'Bet action finished.', error: null };

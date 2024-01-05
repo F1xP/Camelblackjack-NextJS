@@ -31,6 +31,7 @@ export const unhashSeedAction = async (formData: FormData) => {
 
     const unhashedSeed = await prisma.game.findFirst({
       where: { hashedSeed: seed },
+      select: { active: true, seed: true },
     });
 
     if (unhashedSeed?.active) throw new Error(`Unable to unhash, game is in progress.`);

@@ -2,7 +2,6 @@
 
 import { prisma } from '@/lib/prisma';
 import { getCurrentUser } from '@/lib/session';
-import { revalidatePath } from 'next/cache';
 import { getErrorMessage } from '@/lib/utils';
 import { fromZodError } from 'zod-validation-error';
 import { z } from 'zod';
@@ -14,6 +13,9 @@ export const updateSeedAction = async (formData: FormData) => {
 
     const isActive = await prisma.game.findFirst({
       where: { active: true, user_email: user.email },
+      select: {
+        active: true,
+      },
     });
     if (isActive) throw new Error('You must finish your active game in order to update your seed.');
 

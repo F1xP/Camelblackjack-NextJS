@@ -8,7 +8,7 @@ type ActionFunction = (
 
 const useAction = () => {
   const { addToast, removeToast, toasts } = useToast();
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [state, setState] = useState('');
 
   const handleAction = async (
@@ -17,8 +17,8 @@ const useAction = () => {
     successToast: boolean = true,
     errorToast: boolean = true
   ) => {
-    setLoading(true);
     try {
+      setLoading(true);
       const actionResponse = await action(formData);
       if (actionResponse.message && successToast) addToast(actionResponse.message, 'Success');
       if (actionResponse.error && errorToast) {

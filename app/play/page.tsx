@@ -9,12 +9,12 @@ export default async function Play() {
   const gameData: Pick<Game, 'active' | 'id' | 'state' | 'hashedSeed'> | null = await getCurrentGame();
 
   const gameState = gameData?.state;
-  const [status1, status2, currentHand, isDisabled] = await Promise.all([
+  const [status1, status2, currentHand] = await Promise.all([
     getGameStatus(!!gameData?.active, gameState, 0),
     getGameStatus(!!gameData?.active, gameState, 1),
     getCurrentHand(gameState),
-    disabledButtons(gameData),
   ]);
+  const isDisabled = await disabledButtons(gameData, currentHand);
   const isSplitted = gameState?.player.length === 2;
   const gameId = gameData?.id;
 
