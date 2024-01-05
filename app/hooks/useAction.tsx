@@ -8,7 +8,7 @@ type ActionFunction = (
 
 const useAction = () => {
   const { addToast, removeToast, toasts } = useToast();
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [state, setState] = useState('');
 
   const handleAction = async (
