@@ -70,7 +70,7 @@ model Game {
   payout     Int       @default(0)
   state      GameState
   seed       String
-  hashedSeed String     
+  hashedSeed String
   cursor     Int       @default(0)
   user_email String?
   user       User?     @relation(fields: [user_email], references: [email], onDelete: Cascade)

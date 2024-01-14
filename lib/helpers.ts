@@ -1,6 +1,7 @@
 import { Actions, Game, GameState, UserState } from '@/types/types';
 import { Prisma } from '@prisma/client';
 import { createHmac } from 'crypto';
+import { ranks, suits } from './constants';
 
 export const hasPlayerSplitted = async (gameState: GameState | undefined) =>
   ['SPLIT'].some((action) => gameState?.player[0].actions.includes(action as Actions));
@@ -86,7 +87,7 @@ export const calculateHandValue = async (hand: any, type: 'P' | 'D') => {
 
   for (const card of hand) {
     if (card.rank === 'A') aceCount++;
-    else values[0] += card.rank === 'A' ? 11 : Number(card.rank) || 10;
+    else values[0] += Number(card.rank) || 10;
   }
 
   for (let i = 0; i < aceCount; i++) {
@@ -102,9 +103,6 @@ export const calculateHandValue = async (hand: any, type: 'P' | 'D') => {
 
   return values;
 };
-
-const ranks = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
-const suits = ['Hearts', 'Diamonds', 'Clubs', 'Spades'];
 
 export const getCard = async (serverSeed: string, clientSeed: string, nonce: number, cursor: number) => {
   let currentRound = Math.floor(cursor / 32);
@@ -236,7 +234,8 @@ export const dealerTurn = async (
   const newDealerCard = await getCard(serverSeed, clientSeed, nonce, cursor);
   dealerState.cards = [...cards, newDealerCard];
   dealerState.actions = [...actions, 'HIT'];
-  dealerState.value = await calculateHandValue(dealerState.cards, 'D');
+  const dealerValue = await calculateHandValue(dealerState.cards, 'D');
+  dealerState.value = dealerValue;
   game.cursor += 1;
 
   await dealerTurn(game, clientSeed, nonce);

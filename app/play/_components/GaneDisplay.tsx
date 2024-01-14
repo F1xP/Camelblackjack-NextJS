@@ -1,9 +1,9 @@
-import { cn } from '@/lib/utils';
 import { CardType } from '@/types/types';
 import { GameState } from '@prisma/client';
 import Image from 'next/image';
 import React from 'react';
-import { Card, DownCard } from './Card';
+import { Card, CardBack } from './Card';
+import { Result } from './Results';
 
 type GameDisplayProps = {
   gameState: GameState | undefined;
@@ -39,6 +39,7 @@ export const GameDisplay: React.FC<GameDisplayProps> = ({
             isCurrent={currentHand === 0}
             isSplitted={isSplitted}
             gameId={gameId}
+            type={'P'}
           />
           {isSplitted && (
             <Hand
@@ -53,6 +54,7 @@ export const GameDisplay: React.FC<GameDisplayProps> = ({
               isCurrent={currentHand === 1}
               isSplitted={isSplitted}
               gameId={gameId}
+              type={'P'}
             />
           )}
         </div>
@@ -65,6 +67,7 @@ export const GameDisplay: React.FC<GameDisplayProps> = ({
             isCurrent={false}
             isSplitted={false}
             gameId={gameId}
+            type={'D'}
           />
         </div>
       </div>
@@ -78,9 +81,10 @@ type HandProps = {
   handValues: React.ReactNode;
   status: { state: string; text: string } | null;
   isCurrent: boolean;
+  type: 'P' | 'D';
 } & Pick<GameDisplayProps, 'gameId' | 'isSplitted'>;
 
-const Hand: React.FC<HandProps> = ({ cards, downCard, handValues, status, isCurrent, isSplitted, gameId }) => {
+const Hand: React.FC<HandProps> = ({ cards, downCard, handValues, status, isCurrent, isSplitted, gameId, type }) => {
   return (
     <div className="flex items-center justify-center flex-col relative">
       <Result
@@ -88,19 +92,34 @@ const Hand: React.FC<HandProps> = ({ cards, downCard, handValues, status, isCurr
         handValues={handValues}
         isCurrent={isCurrent}
         isSplitted={isSplitted}
+        type={type}
       />
       <div className="flex relative item-start mt-1 min-h-[7.9rem] min-w-[5rem]">
         {cards?.map((card: any, index: number) => (
-          <React.Fragment key={`${card?.rank}${card?.suit}${index}${gameId}`}>
+          <React.Fragment key={index}>
             <Card
               index={index}
+              uniqueKey={`${card?.rank}${card?.suit}${index}${gameId}${type}`}
               rank={card?.rank}
               suit={card?.suit}
               status={status}
               isCurrent={isCurrent}
               isSplitted={isSplitted}
+              type={type}
             />
-            {downCard && <DownCard />}
+            {downCard && (
+              <Card
+                index={index + 1}
+                uniqueKey={`${card?.rank}${card?.suit}${index + 1}${gameId}${type}`}
+                rank={'0'}
+                suit={card?.suit}
+                status={status}
+                isCurrent={isCurrent}
+                isSplitted={isSplitted}
+                type={type}
+                isHidden={true}
+              />
+            )}
           </React.Fragment>
         ))}
       </div>
@@ -108,50 +127,21 @@ const Hand: React.FC<HandProps> = ({ cards, downCard, handValues, status, isCurr
   );
 };
 
-type ResultProps = Pick<HandProps, 'handValues' | 'status' | 'isCurrent' | 'isSplitted'>;
-
-const Result: React.FC<ResultProps> = ({ handValues, status, isCurrent, isSplitted }) => {
-  return (
-    <div className="flex flex-col gap-0.5">
-      {status && (
-        <p
-          className={cn(
-            'px-2 text-black font-bold font-mono rounded-sm text-center',
-            isCurrent && !status && isSplitted
-              ? 'bg-accentBlue'
-              : status?.state === 'Push'
-              ? 'bg-accent'
-              : status?.state === 'Lose' || status?.state === 'DBJ'
-              ? 'bg-accentRed'
-              : status?.state === 'Win' || status?.state === 'PBJ'
-              ? 'bg-accentGreen'
-              : 'bg-gray'
-          )}>
-          {status?.text}
-        </p>
-      )}
-      <p
-        className={cn(
-          'px-2 text-black font-bold font-mono rounded-sm text-center',
-          isCurrent && !status && isSplitted
-            ? 'bg-accentBlue'
-            : status?.state === 'Push'
-            ? 'bg-accent'
-            : status?.state === 'Lose' || status?.state === 'DBJ'
-            ? 'bg-accentRed'
-            : status?.state === 'Win' || status?.state === 'PBJ'
-            ? 'bg-accentGreen'
-            : 'bg-gray'
-        )}>
-        {handValues}
-      </p>
-    </div>
-  );
-};
-
 const Decoration: React.FC = () => {
   return (
     <>
+      <div className="relative -translate-y-10 -translate-x-4">
+        {[0, 0, 0, 0, 0].map((item, index) => {
+          return (
+            <div
+              key={index}
+              className={`w-[3.5rem] h-[5.5rem] md:w-16 md:h-24 xl:w-20 xl:h-32 bg-transparent rounded-md shadow-sm shadow-black bg-white border-3 border-transparent absolute right-0`}
+              style={{ top: `-${index * 4}px` }}>
+              <CardBack />
+            </div>
+          );
+        })}
+      </div>
       <div className="absolute left-1/2 transform -translate-x-1/2 top-1/2 -translate-y-1/2">
         <Image
           src="/CamelBlackjackLogo.png"
