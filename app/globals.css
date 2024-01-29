@@ -25,12 +25,28 @@
   animation: slideIn 0.3s forwards;
 }
 
+.result-animation {
+  animation: resultAnimation 1.2s ease forwards;
+}
+
+@keyframes resultAnimation {
+  0%,
+  85% {
+    opacity: 0;
+    transform: translate(-200px, 0px);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(0px, 0px);
+  }
+}
+
 .d-card-animation {
-  animation: dCardAnimation 1.5s ease forwards;
+  animation: dCardAnimation 1s ease forwards;
 }
 
 .p-card-animation {
-  animation: pCardAnimation 1.5s ease forwards;
+  animation: pCardAnimation 1s ease forwards;
 }
 
 @keyframes dCardAnimation {
@@ -94,14 +110,14 @@
 }
 
 .card-flip-animation {
-  animation: cardFlipAnimation 1.5s alternate forwards;
+  animation: cardFlipAnimation 1s linear forwards;
 }
 
 @keyframes cardFlipAnimation {
   0% {
     transform: rotateY(0deg);
   }
-  90% {
+  95% {
     transform: rotateY(0deg);
   }
   100% {

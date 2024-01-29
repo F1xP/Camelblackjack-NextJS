@@ -20,13 +20,16 @@ type HandProps = {
   isCurrent: boolean;
 } & Pick<GameDisplayProps, 'gameId' | 'isSplitted'>;
 
-type ResultProps = {
-  type: 'P' | 'D';
-} & Pick<HandProps, 'handValues' | 'status' | 'isCurrent' | 'isSplitted'>;
+type ResultProps = { uniqueKey: string | undefined } & Pick<
+  HandProps,
+  'handValues' | 'status' | 'isCurrent' | 'isSplitted'
+>;
 
-export const Result: React.FC<ResultProps> = ({ handValues, status, isCurrent, isSplitted, type }) => {
+export const Result: React.FC<ResultProps> = ({ handValues, status, isCurrent, isSplitted, uniqueKey }) => {
   return (
-    <div className="flex flex-col gap-0.5">
+    <div
+      className="flex flex-col gap-0.5 result-animation"
+      key={uniqueKey}>
       <p
         className={cn('px-2 text-black font-bold font-mono rounded-sm text-center', {
           'bg-accentBlue': isCurrent && !status && isSplitted,

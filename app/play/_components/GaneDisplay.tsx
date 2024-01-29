@@ -88,11 +88,11 @@ const Hand: React.FC<HandProps> = ({ cards, downCard, handValues, status, isCurr
   return (
     <div className="flex items-center justify-center flex-col relative">
       <Result
+        uniqueKey={gameId}
         status={status}
         handValues={handValues}
         isCurrent={isCurrent}
         isSplitted={isSplitted}
-        type={type}
       />
       <div className="flex relative item-start mt-1 min-h-[7.9rem] min-w-[5rem]">
         {cards?.map((card: any, index: number) => (
