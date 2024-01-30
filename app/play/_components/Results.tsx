@@ -1,5 +1,4 @@
 'use client';
-import { cn } from '@/lib/utils';
 import { CardType } from '@/types/types';
 import { GameState } from '@prisma/client';
 import React, { useEffect, useState } from 'react';
@@ -27,12 +26,12 @@ type ResultProps = { uniqueKey: string | undefined } & Pick<
 >;
 
 export const Result: React.FC<ResultProps> = ({ handValues, status, isCurrent, isSplitted, uniqueKey }) => {
-  const [delayedHandValues, setDelayedHandValues] = useState<React.ReactNode | null>(null);
+  const [delayedHandValues, setDelayedHandValues] = useState<React.ReactNode | null>(<>0</>);
   const [color, setColor] = useState<string>('bg-gray');
   const [statusText, setStatusText] = useState<string | null>(null);
 
   useEffect(() => {
-    setDelayedHandValues(null);
+    setDelayedHandValues(<>0</>);
     setStatusText(null);
     setColor('bg-gray');
   }, [uniqueKey]);

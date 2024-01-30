@@ -26,7 +26,7 @@
 }
 
 .result-animation {
-  animation: resultAnimation 1.2s ease forwards;
+  animation: resultAnimation 3.3s ease forwards;
 }
 
 @keyframes resultAnimation {

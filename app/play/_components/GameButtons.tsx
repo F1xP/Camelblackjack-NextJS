@@ -70,7 +70,10 @@ const UserCoins: React.FC = () => {
 
   useEffect(() => {
     if (coins === coinsValue.end) return;
-    setCoinsValue((current) => ({ start: current.end, end: coins }));
+    const timeoutId = setTimeout(() => {
+      setCoinsValue((current) => ({ start: current.end, end: coins }));
+    }, 1500);
+    return () => clearTimeout(timeoutId);
   }, [coins]);
 
   const isIncreasing = coinsValue.start < coinsValue.end;
@@ -80,7 +83,7 @@ const UserCoins: React.FC = () => {
     <div className="flex flex-row items-center">
       <p className="text-accent text-lg font-mono font-bold">Bet Amount</p>
       <p
-        key={coins}
+        key={coinsValue.end}
         className={`text-text dark:text-dark_text text-md font-mono ml-auto font-bold ${
           isIncreasing ? 'coins-plus' : isDecreasing ? 'coins-minus' : ''
         }`}>
