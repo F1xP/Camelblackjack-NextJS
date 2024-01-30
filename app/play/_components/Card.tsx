@@ -1,5 +1,6 @@
+'use client';
 import { cn } from '@/lib/utils';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { CardBackSVG } from '@/app/_components/ui/CardBackSVG';
 import { suitIcons } from '@/app/_components/ui/Suits';
 
@@ -26,17 +27,30 @@ export const Card: React.FC<CardProps> = ({
   type,
   isHidden = false,
 }) => {
+  const [border, setBorder] = useState<string>('bg-gray');
+
+  useEffect(() => {
+    setBorder('border-transparent');
+  }, [uniqueKey]);
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      if (isCurrent && !status && isSplitted) setBorder('border-accentBlue');
+      else if (status?.state === 'Push') setBorder('border-accent');
+      else if (status?.state === 'Lose' || status?.state === 'DBJ') setBorder('border-accentRed');
+      else if (status?.state === 'Win' || status?.state === 'PBJ') setBorder('border-accentGreen');
+      else setBorder('border-transparent');
+    }, 1500);
+
+    return () => clearTimeout(timeoutId);
+  }, [isCurrent, status, isSplitted]);
+
   return (
     <div
       key={uniqueKey}
       className={cn(
-        `flip-card w-[3.5rem] h-[5.5rem] md:w-16 md:h-24 xl:w-20 xl:h-32 bg-transparent rounded-md shadow-sm shadow-black border-2 xl:border-3 bg-white`,
+        `flip-card w-[3.5rem] h-[5.5rem] md:w-16 md:h-24 xl:w-20 xl:h-32 bg-transparent rounded-md shadow-sm shadow-black border-2 xl:border-3 bg-white ${border}`,
         {
-          'border-accentBlue': isCurrent && !status && isSplitted,
-          'border-accent': status?.state === 'Push',
-          'border-accentRed': status?.state === 'Lose' || status?.state === 'DBJ',
-          'border-accentGreen': status?.state === 'Win' || status?.state === 'PBJ',
-          'border-transparent': !status,
           'p-card-animation': type === 'P',
           'd-card-animation': type === 'D',
         }
