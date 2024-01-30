@@ -27,7 +27,7 @@ export const Card: React.FC<CardProps> = ({
   type,
   isHidden = false,
 }) => {
-  const [border, setBorder] = useState<string>('bg-gray');
+  const [border, setBorder] = useState<string>('border-transparent');
 
   useEffect(() => {
     setBorder('border-transparent');
