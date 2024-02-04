@@ -87,6 +87,9 @@
 
 .flip-card {
   perspective: 1000px;
+  -moz-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
 .flip-card-inner {
@@ -94,6 +97,9 @@
   width: 100%;
   height: 100%;
   transform-style: preserve-3d;
+  -moz-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
 .flip-card-front,

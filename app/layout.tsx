@@ -22,7 +22,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     <html
       lang="en"
       suppressHydrationWarning>
-      <body className={`${GeistSans.className} font-sans`}>
+      <body className={`${GeistSans.className} font-sans bg-background dark:bg-dark_background`}>
         <ThemeProvider>
           <SessionProvider
             session={session}
@@ -32,7 +32,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                 <div id="portal-root"></div>
                 <ToastsDisplay />
                 <Navbar />
-                <main className="flex min-h-screen gap-2 flex-col items-center justify-center py-10 px-4 sm:px-14 md:px-18 lg:px-44 xl:px-64 bg-background dark:bg-dark_background">
+                <main className="flex min-h-screen gap-2 flex-col items-center justify-center py-10 px-4 sm:px-14 md:px-18 lg:px-44 xl:px-64">
                   <span className="mt-2"></span>
                   {children}
                 </main>
