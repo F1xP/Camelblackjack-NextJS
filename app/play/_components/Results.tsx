@@ -52,7 +52,7 @@ export const Result: React.FC<ResultProps> = ({ handValues, status, isCurrent, i
 
   return (
     <div
-      className="flex flex-col gap-0.5 result-animation"
+      className="flex flex-col gap-0.5 animate-slide-in-result"
       key={uniqueKey}>
       <p className={`px-2 text-black font-bold font-mono rounded-sm text-center ${color}`}>{statusText}</p>
       <p className={`px-2 text-black font-bold font-mono rounded-sm text-center ${color}`}>{delayedHandValues}</p>

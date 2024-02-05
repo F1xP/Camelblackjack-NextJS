@@ -59,7 +59,7 @@ export const ToastsDisplay = () => {
   const { addToast, removeToast, toasts } = useToast();
 
   return (
-    <section className="fixed top-12 right-0 p-4 w-full md:w-[340px] flex flex-col-reverse gap-1 h-[calc(100%-3rem)] overflow-auto noti pointer-events-none z-30">
+    <section className="fixed top-12 right-0 p-4 w-full md:w-[340px] flex flex-col-reverse gap-1 h-[calc(100%-3rem)] overflow-auto animate-noti-bounce pointer-events-none z-30">
       {toasts.map((item) => (
         <Toast
           item={item}
@@ -73,7 +73,7 @@ export const ToastsDisplay = () => {
 
 const Toast: React.FC<{ item: ToastProps; onDismiss: () => void }> = ({ item, onDismiss }) => {
   return (
-    <div className="bg-secondary dark:bg-dark_secondary text-lg font-sans px-4 py-3 rounded-md relative noti pointer-events-auto">
+    <div className="bg-secondary dark:bg-dark_secondary text-lg font-sans px-4 py-3 rounded-md relative animate-noti-bounce pointer-events-auto">
       <svg
         onClick={onDismiss}
         version="1.1"

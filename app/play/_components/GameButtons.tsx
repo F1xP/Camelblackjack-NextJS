@@ -85,7 +85,7 @@ const UserCoins: React.FC = () => {
       <p
         key={coinsValue.end}
         className={`text-text dark:text-dark_text text-md font-mono ml-auto font-bold ${
-          isIncreasing ? 'coins-plus' : isDecreasing ? 'coins-minus' : ''
+          isIncreasing ? 'animate-coins-plus' : isDecreasing ? 'animate-coins-minus' : ''
         }`}>
         Coins:
         <AnimatedNumber

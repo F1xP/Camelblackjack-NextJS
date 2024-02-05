@@ -88,7 +88,7 @@ const LeaderboardPlace: React.FC<{ index: number; compensation: number }> = ({ i
           <RiStarSFill
             size={15}
             color="FFFFFF"
-            className="absolute top-2.5 left-4 opacity-0 shine"
+            className="absolute top-2.5 left-4 opacity-0 animate-medal-shine"
           />
         </span>
       ) : (

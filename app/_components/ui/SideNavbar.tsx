@@ -56,7 +56,7 @@ const SideNavbar: React.FC = () => {
             <aside
               ref={navbarRef}
               className={`fixed z-50 bg-background dark:bg-dark_background p-6 shadow-lg inset-y-0 right-0 h-full border-l border-secondary dark:border-dark_secondary sm:max-w-sm w-[300px] sm:w-[540px] flex flex-col ${
-                isSideNavbarOpen && 'opened'
+                isSideNavbarOpen && 'animate-slide-in'
               }`}>
               <svg
                 onClick={() => setIsSideNavbarOpen(false)}

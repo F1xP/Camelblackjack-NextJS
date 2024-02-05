@@ -49,10 +49,10 @@ export const Card: React.FC<CardProps> = ({
     <div
       key={uniqueKey}
       className={cn(
-        `flip-card w-[3.5rem] h-[5.5rem] md:w-16 md:h-24 xl:w-20 xl:h-32 bg-transparent rounded-md shadow-sm shadow-black border-2 xl:border-3 bg-white ${border}`,
+        `w-[3.5rem] h-[5.5rem] md:w-16 md:h-24 xl:w-20 xl:h-32 bg-transparent rounded-md shadow-sm shadow-black border-2 xl:border-3 bg-white ${border}`,
         {
-          'p-card-animation': type === 'P',
-          'd-card-animation': type === 'D',
+          'animate-p-card': type === 'P',
+          'animate-d-card': type === 'D',
         }
       )}
       style={{
@@ -61,7 +61,7 @@ export const Card: React.FC<CardProps> = ({
         marginLeft: index > 0 ? '-2.4rem' : '0',
         transform: 'translate(0px, 1000px)',
       }}>
-      <div className={`flip-card-inner ${!isHidden && 'card-flip-animation'}`}>
+      <div className={`flip-card-inner ${!isHidden && 'animate-card-flip'}`}>
         <CardFront
           suit={suit}
           rank={rank}
@@ -88,7 +88,7 @@ const CardFront: React.FC<{ suit: string; rank: string }> = ({ suit, rank }) => 
 
   return (
     <div className="flip-card-front flex self-start">
-      <div className="flex flex-col items-center ml-0.5 5 md:ml-1">
+      <div className="flex flex-col items-center ml-0.5 5 md:ml-1 animate">
         <p
           className={`font-mono text-2xl md:text-4xl xl:text-5xl font-bold`}
           style={{ color: suitColor }}>
