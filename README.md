@@ -1,43 +1,57 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with
-[`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+<h1 align="center" id="title">Camel Blackjack</h1>
 
-## Getting Started
+<p id="description">An open source web-based blackjack game.</p>
 
-First, run the development server:
+<h2>🚀 Demo</h2>
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+[https://camelblackjack.vercel.app](https://camelblackjack.vercel.app)
+
+<h2>🛠️ Installation Steps:</h2>
+
+<p>1. Create a .env.local file in the root of the project</p>
+
+<p>2. Set the environment variables</p>
+
+```
+MONGO_URI="YOUR MONGO URI HERE"
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+```
+NEXTAUTH_URL="YOUR APP DOMAIN" // If running locally set to "http://localhost:3000"
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```
+NEXTAUTH_SECRET="YOUR SECRET HERE"
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and
-load Inter, a custom Google Font.
+```
+GOOGLE_ID="YOUR GOOGLE OAUTH CLIENT ID HERE"
+```
 
-## Learn More
+```
+GOOGLE_SECRET="YOUR GOOGLE OAUTH SECRET HERE"
+```
 
-To learn more about Next.js, take a look at the following resources:
+<p>2. Run locally</p>
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```
+npm run dev
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions
-are welcome!
+<h2>🍰 Contribution Guidelines:</h2>
 
-## Deploy on Vercel
+  
+  
+<h2>💻 Built with</h2>
 
-The easiest way to deploy your Next.js app is to use the
-[Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme)
-from the creators of Next.js.
+Technologies used in the project:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+*   NextJS
+*   Prisma
+*   MongoDB
+*   Typescript
+*   Tailwind
 
-Design and layout inspired by CodeRacer
+<h2>🛡️ License:</h2>
+
+This project is licensed under the MIT license.
