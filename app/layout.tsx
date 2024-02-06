@@ -8,6 +8,7 @@ import { ToastsDisplay, ToastsProvider } from './_components/ui/Toasts';
 import { nextAuthOptions } from './api/auth/[...nextauth]/route';
 import Footer from './_components/ui/Footer';
 import ThemeProvider from './_components/providers/ThemeProvider';
+import { Analytics } from '@vercel/analytics/react';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -41,6 +42,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             </ToastsProvider>
           </SessionProvider>
         </ThemeProvider>
+        <Analytics />
       </body>
     </html>
   );
